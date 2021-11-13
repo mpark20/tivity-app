@@ -1,4 +1,13 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { 
+  getAuth, 
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup, 
+  updateProfile, 
+  signOut 
+} from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 import "./firebase"
 
@@ -6,7 +15,18 @@ const SignIn = () => {
   const auth = getAuth();
   const db = getDatabase();
   const provider = new GoogleAuthProvider();
-
+  onAuthStateChanged(auth, (user) => {
+    var login = document.getElementById("login-btn");
+    var logout = document.getElementById("logout-btn");
+    if (user) {
+      login.style.display = "none";
+      logout.style.display = "block";
+    } else {
+      login.style.display = "block";
+      logout.style.display = "none";
+    }
+  });
+  
   function showSU() {
     var su = document.getElementById("signup");
     var li = document.getElementById("login");
@@ -28,11 +48,14 @@ const SignIn = () => {
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
-      welMess(message, user); 
       set(ref(db, 'users/' + user.uid), {
-        username: uname,
+        displayName: uname,
         email: email
       });
+      updateProfile(auth.currentUser, {
+        displayName: uname, email: email
+      }, welMess(message, user));
+      
     })
     .catch((error) => {
       errMess(message, error);
@@ -61,6 +84,10 @@ const SignIn = () => {
       // The signed-in user info.
       const user = result.user;
       document.getElementById("login-message").innerHTML = "hello "+user.displayName+"!";
+      set(ref(db, 'users/' + user.uid), {
+        displayName: user.displayName,
+        email: user.email
+      });
     })
     .catch((error) => {
       // Handle Errors here.
@@ -73,15 +100,24 @@ const SignIn = () => {
       // ...
     });
   }
+  function logOut() {
+    signOut(auth).then(() => {
+      window.location.reload();
+    }).catch((error) => {
+      
+    });  
+  }
   function welMess(message, user) {
     message.style.color = "black";
-    message.innerHTML = "ID: "+user.uid;
+    message.innerHTML = "hello "+user.displayName+"!";
+    document.getElementById("password").value = ""; 
   }
   function errMess(message, error) {
     const errorCode = error.code;
     const errorMessage = error.message;
     message.innerHTML = (errorMessage + "/n Code: " + errorCode);
     message.style.color = "red";
+    document.getElementById("password").value = ""; 
   }
   return (
     <>
@@ -90,7 +126,7 @@ const SignIn = () => {
       <div>
         <input type="text" className="text-field" id="new-email" placeholder="e-mail address"/>
         <input type="text" className="text-field" id="username" placeholder="username"/>
-        <input type="password" className="text-field" id="new-password" placeholder="password"/>A
+        <input type="password" className="text-field" id="new-password" placeholder="password"/>
         <button className="btn" onClick={signUp} style={{margin: "10px 5px 20px 0"}}>sign up</button> 
         <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>
       </div>
@@ -102,7 +138,8 @@ const SignIn = () => {
       <div>
         <input type="text" className="text-field" id="email" placeholder="e-mail address"/>
         <input type="password" className="text-field" id="password" placeholder="password"/>
-        <button className="btn" onClick={logIn} style={{margin: "10px 5px 20px 0"}}>log in</button>
+        <button className="btn" onClick={logIn} id="login-btn" style={{margin: "10px 5px 20px 0"}}>log in</button>
+        <button className="btn" onClick={logOut} id="logout-btn" style={{margin: "10px 5px 20px 0"}}>log out</button>
         <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>
       </div>
       <div onClick={showSU} className="message"><a>create a new account</a></div>
