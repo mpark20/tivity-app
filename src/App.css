@@ -15,6 +15,9 @@ body {
   margin: 0;
   font-family: nunito;
 }
+.content {
+  padding: 10px; 
+}
 ul {
   font-size: 18px;
   list-style-type: none;
@@ -187,5 +190,15 @@ a {
 #signup, #logout {
   display: none; 
 }
-
-
+.container {
+  width: 70%; 
+  margin: auto; 
+}
+.dash {
+  border: solid 1px; 
+  border-radius: 5px; 
+  overflow: hidden; 
+  float: left; 
+  width: 30%; 
+  margin: auto; 
+}
