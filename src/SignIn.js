@@ -130,7 +130,7 @@ const SignIn = () => {
         <button className="btn" onClick={signUp} style={{margin: "10px 5px 20px 0"}}>sign up</button> 
         <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>
       </div>
-      <div onClick={showLI} className="message"><a>log into an existing account</a></div>
+      <div onClick={showLI} className="message"><button>log into an existing account</button></div>
       <div className="message" id="register-message"></div>
     </div>
     <div className="signin" id="login">
@@ -142,7 +142,7 @@ const SignIn = () => {
         <button className="btn" onClick={logOut} id="logout-btn" style={{margin: "10px 5px 20px 0"}}>log out</button>
         <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>
       </div>
-      <div onClick={showSU} className="message"><a>create a new account</a></div>
+      <div onClick={showSU} className="message"><button>create a new account</button></div>
       <div className="message" id="login-message"></div>
     </div>
     </>

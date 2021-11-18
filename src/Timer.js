@@ -186,31 +186,34 @@ class Timer extends Component {
   render() {
     
     return (
-      <div>
-          <div className="split" style={{marginLeft:"18px"}}>
-            <h2>to-do list</h2>
-            <div id="task-list">
-              <TaskList tasks={this.state.tasks} delete={this.deleteTask} />
-            </div>
-            <form autoComplete="off" onLoad={this.enterToClick}> 
-                <input type="text" placeholder="task name..." id="task" required />
-                <input type="number" step="15" placeholder="minutes" id="time" required/>
-            </form>
-            <br/><br/>
-            <div className="btn-container">
-              <button onClick={this.addTask} className="btn" id="add-task">enter</button>
-              <button onClick={this.clear} className="btn" id="white-btn">clear</button>
-              <AddToCalendar tasks={this.state.tasks}/>
-            </div>
-            <form style={{marginTop: "20px"}}>
-              <input type="checkbox" placeholder="insert breaks" onChange={this.changeBreakOption} id="break-opt" style={{margin: "0 3px"}} defaultChecked></input>
-              <label htmlFor="break-opt" style={{fontSize: "14px"}}>insert breaks</label>
-            </form>
-            
-          </div>
-          <div className="divide"/>
+      <div className="timer-container">
           <div className="split" >  
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
+          </div>
+
+          <div className="divide"/>
+
+          <div className="split">
+            <div style={{width: "80%", margin: "10px auto"}}>
+              <h2>to-do list</h2>
+              <div id="task-list">
+                <TaskList tasks={this.state.tasks} delete={this.deleteTask} />
+              </div>
+              <form autoComplete="off" onLoad={this.enterToClick}> 
+                  <input type="text" placeholder="task name..." id="task" required />
+                  <input type="number" step="15" placeholder="minutes" id="time" required/>
+              </form>
+              <br/><br/>
+              <div className="btn-container">
+                <button onClick={this.addTask} className="btn" id="add-task">enter</button>
+                <button onClick={this.clear} className="btn" id="white-btn">clear</button>
+                <AddToCalendar tasks={this.state.tasks}/>
+              </div>
+              <form style={{marginTop: "20px"}}>
+                <input type="checkbox" placeholder="insert breaks" onChange={this.changeBreakOption} id="break-opt" style={{margin: "0 3px"}} defaultChecked></input>
+                <label htmlFor="break-opt" style={{fontSize: "14px"}}>insert breaks</label>
+              </form>
+            </div>
           </div>
         </div>
     );
