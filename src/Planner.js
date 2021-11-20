@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import './App.css';
 
-class Planner extends Component {
-  render() {
-    return (
-        <div>
-          <h1>my saved lists</h1>
-        </div>
-    );
-  }
+const Planner = () => {
+  return (
+    <div className="page-container">
+      <h2>my saved lists</h2>
+    </div>
+  );
 }
  
 export default Planner;

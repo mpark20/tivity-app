@@ -111,10 +111,10 @@ a {
 .inactive:hover {
   opacity: 1; 
 }
-#white-btn {
+.white {
   background-color: #f7f7f7; 
   color: black; 
-  border: solid #d9d9d9 1px;
+  box-shadow: 5px black; 
 }
 .btn-container {
   overflow: hidden; 
@@ -227,6 +227,9 @@ a {
 }
 .indented {
   margin: 0 18px; 
+}
+p {
+  margin: 0; 
 }
 @media screen and (max-width: 700px) {
 

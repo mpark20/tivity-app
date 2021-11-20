@@ -50,7 +50,8 @@ const SignIn = () => {
       const user = userCredential.user;
       set(ref(db, 'users/' + user.uid), {
         displayName: uname,
-        email: email
+        email: email,
+        savedLists: "test"
       });
       updateProfile(auth.currentUser, {
         displayName: uname, email: email

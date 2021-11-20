@@ -31,7 +31,7 @@ const AddToCalendar = (props) => {
     
     return(
         <div>
-            <button className="btn" id="white-btn">
+            <button className="btn white">
                 <a href={link} target="_blank" rel="noreferrer">add to google calendar</a>
             </button>
         </div>

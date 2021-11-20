@@ -3,6 +3,8 @@ import './App.css';
 import TaskList from "./components/TaskList"
 import Countdown from "./components/Countdown"
 import AddToCalendar from "./components/AddToCalendar"
+import { getDatabase, set, ref, onValue } from "firebase/database"; 
+import { getAuth } from "firebase/auth";
 class Timer extends Component {
   constructor(props) {
     super(props); 
@@ -28,6 +30,8 @@ class Timer extends Component {
     this.resumeTimer = this.resumeTimer.bind(this);
     this.clearTimer = this.clearTimer.bind(this);
     this.enterToClick = this.enterToClick.bind(this);
+    this.saveList = this.saveList.bind(this);
+    
   }
   formatted(num) {
     var doubleDigit = ("0" + num).slice(-2);
@@ -183,6 +187,22 @@ class Timer extends Component {
       }
     })
   }
+  saveList() {
+    let tasks = this.state.tasks.length;
+    var list = [];  
+    for (let i=0; i<tasks; i++) {
+      list[i] = this.state.tasks[i].title; 
+    }
+    const db = getDatabase(); 
+    const auth = getAuth(); 
+    const user = auth.currentUser; 
+    const listId = Date.now();
+    if (user) {
+      var node = ref(db, 'users/' + user.uid + '/savedLists/' + listId);
+      set(node, list); 
+    }
+       
+  }
   render() {
     
     return (
@@ -206,7 +226,8 @@ class Timer extends Component {
               <br/><br/>
               <div className="btn-container">
                 <button onClick={this.addTask} className="btn" id="add-task">enter</button>
-                <button onClick={this.clear} className="btn" id="white-btn">clear</button>
+                <button onClick={this.clear} className="btn white" id="white-btn">clear</button>
+                <button onClick={this.saveList} className="btn white" id="white-btn">save</button>
                 <AddToCalendar tasks={this.state.tasks}/>
               </div>
               <form style={{marginTop: "20px"}}>
