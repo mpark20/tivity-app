@@ -105,7 +105,7 @@ const SignIn = () => {
     signOut(auth).then(() => {
       window.location.reload();
     }).catch((error) => {
-      
+      console.log(error); 
     });  
   }
   function welMess(message, user) {

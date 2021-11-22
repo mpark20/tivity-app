@@ -7,7 +7,6 @@ const Account = ( props ) => {
                 <p>display name: {props.dn}</p>
                 <p>email: {props.email}</p>
                 <p>user ID: {props.uid}</p>
-                <p>photo: </p>
             </div>
         </div> 
     )

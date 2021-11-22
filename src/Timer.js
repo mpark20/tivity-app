@@ -201,6 +201,9 @@ class Timer extends Component {
       var node = ref(db, 'users/' + user.uid + '/savedLists/' + listId);
       set(node, list); 
     }
+    else {
+      
+    }
        
   }
   render() {
