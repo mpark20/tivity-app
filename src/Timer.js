@@ -3,8 +3,9 @@ import './App.css';
 import TaskList from "./components/TaskList"
 import Countdown from "./components/Countdown"
 import AddToCalendar from "./components/AddToCalendar"
-import { getDatabase, set, ref, onValue } from "firebase/database"; 
+import { getDatabase, set, ref } from "firebase/database"; 
 import { getAuth } from "firebase/auth";
+
 class Timer extends Component {
   constructor(props) {
     super(props); 
