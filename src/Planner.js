@@ -1,4 +1,3 @@
-import React, { Component } from "react";
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 import SavedLists from "./components/SavedLists"
@@ -8,23 +7,34 @@ const Planner = () => {
   const auth = getAuth(); 
   const user = auth.currentUser; 
   const db = getDatabase(); 
-  var lists = ["log in to view saved lists"];
+  var savedLists;
+  var li = false; 
 
   if (user) {
+    li = true; 
     var node = ref(db, "users/" + user.uid + "/savedLists"); 
     onValue(node, (snapshot) => {
-      var savedLists = snapshot.val(); 
-      getList(savedLists); 
+      console.log(snapshotToArray(snapshot))
     })
   }
-  function getList(savedLists) {
-    lists = savedLists; 
-    console.log(lists);
+  else {
+    savedLists = null; 
   }
+  function snapshotToArray(snapshot) {
+    savedLists = [];
+
+    snapshot.forEach(function(childSnapshot) {
+        var item = childSnapshot.val();
+        item.key = childSnapshot.key;
+
+        savedLists.push(item);
+    });
+    return savedLists;
+  };
   return (
     <div className="page-container">
       <h2>my saved lists</h2>
-      <SavedLists lists={lists}/>
+      <SavedLists lists={savedLists} loggedIn={li}/>
     </div>
   );
 }
