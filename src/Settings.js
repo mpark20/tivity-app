@@ -1,9 +1,8 @@
-import React, { Component } from "react";
-import { NavLink } from "react-router-dom";
 import { getAuth, deleteUser, signOut, onAuthStateChanged } from "firebase/auth"
 import { getDatabase, ref, remove } from "firebase/database";
 import './App.css';
 import Account from "./components/Account";
+import Display from "./components/Display";
 
 const Settings = () => {
   const auth = getAuth(); 
@@ -57,8 +56,8 @@ const Settings = () => {
     <div className="page-container"> 
       <h1>settings</h1>
       <div id="not-logged-in" ><p><a href="/#/auth" style={{textDecoration: "underline"}}>log in</a> to view your user stats</p></div>
-      <Account dn={dn} uid={uid} email={email}/>
-      <button className="btn white" id="deleteUser" onClick={deleteAcct}>delete account</button>
+      <Account dn={dn} uid={uid} email={email} deleteAcct={deleteAcct}/>
+      <Display/>
     </div>
   )
 }

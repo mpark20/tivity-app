@@ -26,15 +26,24 @@ const Planner = () => {
     snapshot.forEach(function(childSnapshot) {
         var item = childSnapshot.val();
         item.key = childSnapshot.key;
-
         savedLists.push(item);
     });
     return savedLists;
   };
+  function showList(index) {
+    var item = document.getElementsByClassName("list-contents")[index]
+    if (item.style.display === "none") {
+      item.style.display = "block";
+    }
+    else {
+      item.style.display = "none"
+    }
+    
+  }
   return (
     <div className="page-container">
       <h2>my saved lists</h2>
-      <SavedLists lists={savedLists} loggedIn={li}/>
+      <SavedLists lists={savedLists} loggedIn={li} showList={showList}/>
     </div>
   );
 }
