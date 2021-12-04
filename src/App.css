@@ -15,6 +15,15 @@ body {
   margin: 0;
   font-family: nunito;
 }
+
+.darkNav {
+  background-color: #3e4b57;
+  color: white; 
+}
+.dark {
+  background-color: #546875; 
+  color: white; 
+}
 .content {
   padding: 10px 0;  
 }
@@ -112,7 +121,7 @@ a {
   opacity: 1; 
 }
 .white {
-  background-color: #f7f7f7; 
+  background-color: #ededed; 
   color: black; 
   box-shadow: 5px black; 
 }
@@ -157,6 +166,7 @@ a {
   text-align: center;
   padding: 5% 0; 
   background-color: white; 
+  color: black; 
 }
 #task-label {
   font-size: 16px; 
@@ -168,6 +178,11 @@ a {
   float: none; 
   margin: 10px 0;  
   width: 90%;
+}
+#breakLength {
+  width: 10%; 
+  margin: 0 0 20px 0; 
+  float: none; 
 }
 .signin {
   width: 250px;

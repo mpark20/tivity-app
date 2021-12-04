@@ -19,7 +19,7 @@ class App extends Component {
   render() {
     return (
       <HashRouter>
-        <div>
+        <div >
           <ul className="nav">
               <li><NavLink to="/auth">login</NavLink></li>
               <li><NavLink to="/settings">settings</NavLink></li>

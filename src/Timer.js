@@ -32,7 +32,9 @@ class Timer extends Component {
     this.clearTimer = this.clearTimer.bind(this);
     this.enterToClick = this.enterToClick.bind(this);
     this.saveList = this.saveList.bind(this);
-    
+    this.auth = getAuth(); 
+    this.db = getDatabase(); 
+    this.user = this.auth.currentUser; 
   }
   formatted(num) {
     var doubleDigit = ("0" + num).slice(-2);
@@ -194,16 +196,14 @@ class Timer extends Component {
     for (let i=0; i<tasks; i++) {
       list[i] = this.state.tasks[i].title; 
     }
-    const db = getDatabase(); 
-    const auth = getAuth(); 
-    const user = auth.currentUser; 
     const listId = Date.now();
-    if (user) {
-      var node = ref(db, 'users/' + user.uid + '/savedLists/' + listId);
+    if (this.user) {
+      var node = ref(this.db, 'users/' + this.user.uid + '/savedLists/' + listId);
       set(node, list); 
+      console.log("saved!")
     }
     else {
-      
+      console.log("please log in to save lists to your planner.")
     }
        
   }

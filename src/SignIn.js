@@ -51,7 +51,8 @@ const SignIn = () => {
       set(ref(db, 'users/' + user.uid), {
         displayName: uname,
         email: email,
-        savedLists: "test"
+        savedLists: "test",
+        settings: {lightMode: "true", darkMode: "false", breakLength: "5"}
       });
       updateProfile(auth.currentUser, {
         displayName: uname, email: email
