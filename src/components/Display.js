@@ -1,42 +1,71 @@
-import { getAuth } from "firebase/auth";
+
 import { getDatabase, ref, set, onValue } from "firebase/database";
+import { useEffect } from 'react'; 
 
 const Display = (props) => {
     const db = getDatabase();  
     const body = document.querySelector("body");
+    
     var light = true; 
     var dark = false;
     var breakLength = 5; 
     
+    useEffect(() => {
+        // Runs once, after mounting
+        fillValues(); 
+    });
+    
     //set light, dark, and breakLength to user's saved settings in database. 
     if (props.user) { 
+        console.log("test");
         var node = ref(db, "users/" + props.user.uid + "/settings");
         onValue(node, (snapshot) => {
             snapshotToArray(snapshot);  
         })
         
     }
-    if (light===true) {
-        body.classList.remove("dark");
-        //document.getElementById("lightMode").checked = true; 
-        console.log("light") 
-    }
     else {
-        body.classList.add("dark");
-        //document.getElementById("darkMode").checked = true;
-        console.log("dark"); 
+        setTheme(light); 
     }
     
+    function setTheme(light) {
+        if (light===true) {
+            body.classList.remove("dark"); 
+            console.log("light") 
+        }
+        else {
+            body.classList.add("dark");
+            console.log("dark"); 
+        } 
+    }
+    function fillValues() {
+        let lightBox = document.getElementById("lightMode");
+        let darkBox = document.getElementById("darkMode");
+        if (light===true) {
+            lightBox.checked = true; 
+            darkBox.checked = false; 
+        }
+        else {
+            darkBox.checked = true;
+            lightBox.checked = false; 
+        } 
+        document.getElementById("breakLength").value = breakLength; 
+        console.log(breakLength);
+    }
     function snapshotToArray(snapshot) {
         var settings = [];
         snapshot.forEach(function(childSnapshot) {
             var option = childSnapshot.val();
             settings.push(option);
         });
-        breakLength = settings[0];
-        dark = settings[1]; 
-        light = settings[2];  
-        console.log(settings);  
+        let bl = settings[0];
+        let d = settings[1]; 
+        let l = settings[2];  
+        console.log(settings); 
+        breakLength = bl;
+        dark = d; 
+        light = l;   
+        setTheme(l);
     }
     function darkMode() {
         dark = !dark; 
@@ -94,5 +123,6 @@ const Display = (props) => {
             <button className="btn" id="saveSettings" onClick={saveSettings} style={{float:"none"}}>save settings</button>
         </div> 
     );
+    
 }
 export default Display

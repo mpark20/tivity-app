@@ -1,6 +1,6 @@
 
 const SavedLists = (props) => {
-    if (props.loggedIn && props.lists) {
+    if (props.user && props.lists) {
         var length = props.lists.length;
         for (let i=0; i<length; i++) {
             var ms = parseInt(props.lists[i].key); 
@@ -11,7 +11,6 @@ const SavedLists = (props) => {
         function listItems(list) {
             var tasks = JSON.stringify(list);
             tasks = tasks.replace(/"/g, '')
-            //tasks = tasks.replace(/,/g, ' ')
             tasks = tasks.replace('[', '')
             tasks = tasks.replace(']', '')
             var tasksArr = tasks.split(","); 

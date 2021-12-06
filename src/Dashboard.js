@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import './App.css';
 import { getAuth } from "firebase/auth";
@@ -9,19 +9,23 @@ const Dashboard = () => {
   const auth = getAuth();
   const user = auth.currentUser;
   const db = getDatabase();
-  const heading = document.getElementById("dash-heading");
+  var heading = document.getElementById("dash-heading");
   var headingContent = "hello user";
-  const message = document.getElementById("unlogged");
+  var message = document.getElementById("unlogged");
 
+  useEffect(() => {
+    customHeading(); 
+  });
+
+  function customHeading() {
+      if (user) {
+      document.getElementById("unlogged").style.display = "none";
+      document.getElementById("dash-heading").style.marginBottom = "30px"; 
+    } 
+  }
   if (user) {
-    if (message && heading) {
-      message.style.display = "none";
-      heading.style.marginBottom = "30px";
-    }
     headingContent = user.displayName + "'s dashboard";
-  } 
-  
-
+  }
   return (
     <>
     <div className="page-container">

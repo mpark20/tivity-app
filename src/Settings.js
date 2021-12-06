@@ -3,21 +3,26 @@ import { getDatabase, ref, remove } from "firebase/database";
 import './App.css';
 import Account from "./components/Account";
 import Display from "./components/Display";
+import { useEffect } from "react";
 
 const Settings = () => {
   const auth = getAuth(); 
-  
   const user = auth.currentUser; 
   const db = getDatabase();
+
+  useEffect(() => {
+    // Runs once, after mounting
+     onAuthStateChanged(auth, (user) => {
+      if (user) { 
+        document.getElementById("not-logged-in").style.display = "none";
+        //console.log("user!"); 
+      } else { 
+        document.getElementById("not-logged-in").style.display = "block";  
+        //console.log("no user");
+      }
+    });
+  }, []);
   
-  onAuthStateChanged(auth, (user) => {
-    if (user) { 
-      document.getElementById("not-logged-in").style.display = "none";
-      console.log("user!"); 
-    } else {   
-      console.log("no user");
-    }
-  });
   
   function deleteAcct() {
     deleteUser(user)
@@ -45,6 +50,8 @@ const Settings = () => {
       <Display user={user}/>
     </div>
   )
+  
+  
 }
  
 export default Settings;

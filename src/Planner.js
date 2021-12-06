@@ -7,11 +7,9 @@ const Planner = () => {
   const auth = getAuth(); 
   const user = auth.currentUser; 
   const db = getDatabase(); 
-  var savedLists;
-  var li = false; 
+  var savedLists; 
 
   if (user) {
-    li = true; 
     var node = ref(db, "users/" + user.uid + "/savedLists"); 
     onValue(node, (snapshot) => {
       console.log(snapshotToArray(snapshot))
@@ -43,7 +41,7 @@ const Planner = () => {
   return (
     <div className="page-container">
       <h2>my saved lists</h2>
-      <SavedLists lists={savedLists} loggedIn={li} showList={showList}/>
+      <SavedLists lists={savedLists} user={user} showList={showList}/>
     </div>
   );
 }
