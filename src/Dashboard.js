@@ -9,9 +9,7 @@ const Dashboard = () => {
   const auth = getAuth();
   const user = auth.currentUser;
   const db = getDatabase();
-  var heading = document.getElementById("dash-heading");
   var headingContent = "hello user";
-  var message = document.getElementById("unlogged");
 
   useEffect(() => {
     customHeading(); 

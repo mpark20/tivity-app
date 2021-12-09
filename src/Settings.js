@@ -7,23 +7,20 @@ import { useEffect } from "react";
 
 const Settings = () => {
   const auth = getAuth(); 
-  const user = auth.currentUser; 
+  const user = auth.currentUser;  
   const db = getDatabase();
 
+
   useEffect(() => {
-    // Runs once, after mounting
      onAuthStateChanged(auth, (user) => {
       if (user) { 
         document.getElementById("not-logged-in").style.display = "none";
-        //console.log("user!"); 
       } else { 
-        document.getElementById("not-logged-in").style.display = "block";  
-        //console.log("no user");
+        document.getElementById("not-logged-in").style.display = "block"; 
       }
-    });
+     });
   }, []);
-  
-  
+
   function deleteAcct() {
     deleteUser(user)
     .then(() => {
@@ -45,9 +42,8 @@ const Settings = () => {
     <div className="page-container"> 
       <h1>settings</h1>
       <div id="not-logged-in" ><p><a href="/#/auth" style={{textDecoration: "underline"}}>log in</a> to view your user stats</p></div>
-      <p></p>
       <Account user={user} deleteAcct={deleteAcct}/>
-      <Display user={user}/>
+      <Display/>
     </div>
   )
   

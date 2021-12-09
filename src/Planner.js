@@ -7,7 +7,7 @@ const Planner = () => {
   const auth = getAuth(); 
   const user = auth.currentUser; 
   const db = getDatabase(); 
-  var savedLists; 
+  var savedLists = [];  
 
   if (user) {
     var node = ref(db, "users/" + user.uid + "/savedLists"); 
@@ -19,7 +19,7 @@ const Planner = () => {
     savedLists = null; 
   }
   function snapshotToArray(snapshot) {
-    savedLists = [];
+    //savedLists = [];
 
     snapshot.forEach(function(childSnapshot) {
         var item = childSnapshot.val();

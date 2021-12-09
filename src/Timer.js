@@ -3,7 +3,7 @@ import './App.css';
 import TaskList from "./components/TaskList"
 import Countdown from "./components/Countdown"
 import AddToCalendar from "./components/AddToCalendar"
-import { getDatabase, set, ref } from "firebase/database"; 
+import { getDatabase, set, ref, onValue } from "firebase/database"; 
 import { getAuth } from "firebase/auth";
 
 class Timer extends Component {
@@ -30,11 +30,20 @@ class Timer extends Component {
     this.pauseTimer = this.pauseTimer.bind(this);
     this.resumeTimer = this.resumeTimer.bind(this);
     this.clearTimer = this.clearTimer.bind(this);
-    this.enterToClick = this.enterToClick.bind(this);
     this.saveList = this.saveList.bind(this);
+    this.setBreakLength = this.setBreakLength.bind(this);
     this.auth = getAuth(); 
     this.db = getDatabase(); 
     this.user = this.auth.currentUser; 
+    if (this.user) {
+      onValue(ref(this.db, "users/" + this.user.uid + "/settings/breakLength"), (snapshot) => {
+        this.setBreakLength(snapshot);  
+      })
+    }
+    
+  }
+  setBreakLength(snapshot) {
+    this.breakLength = snapshot.val(); 
   }
   formatted(num) {
     var doubleDigit = ("0" + num).slice(-2);
@@ -52,7 +61,7 @@ class Timer extends Component {
         console.log(this.state.tasks); 
         this.setTimer(this.state.tasks[0].time); 
         document.getElementById("task-label").innerHTML = this.state.tasks[0].title;
-      }); //setState({newStateObj}, functionUponUpdating())
+      }); 
 
       document.getElementById("task").value = "";
       document.getElementById("time").value = "";
@@ -182,14 +191,7 @@ class Timer extends Component {
     this.insertBreaks = !this.insertBreaks;
     console.log(this.insertBreaks);
   }
-  enterToClick() {
-    var addBtn = document.getElementById("add-task");
-    addBtn.addEventListener("keyup", function(event) {
-      if (event.key===13) {
-        addBtn.click(); 
-      }
-    })
-  }
+  
   saveList() {
     let tasks = this.state.tasks.length;
     var list = [];  
