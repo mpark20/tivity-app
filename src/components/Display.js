@@ -1,14 +1,14 @@
 
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { onAuthStateChanged, getAuth} from "@firebase/auth";
-import { useEffect } from "react";
+import { useEffect, useState} from "react";
 
 const Display = () => {
     const db = getDatabase();  
     const body = document.querySelector("body");
     const auth = getAuth(); 
     const user = auth.currentUser; 
-    
+     
     var light = true; 
     var dark = false;
     var breakLength = 5;
@@ -108,7 +108,7 @@ const Display = () => {
             document.getElementById("save-message").innerHTML = "please log in to save settings."; 
         }
     }
-    function fillValues() {
+    function fillValues() { 
         let lightBox = document.getElementById("lightMode");
         let darkBox = document.getElementById("darkMode");
         if (light===true) {
@@ -121,7 +121,9 @@ const Display = () => {
         } 
         document.getElementById("breakLength").value = breakLength; 
         console.log(breakLength);
+        
     }
+    
     return(
         <div id="display" className="indented">
             <h2>display</h2>

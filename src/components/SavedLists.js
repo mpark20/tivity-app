@@ -2,7 +2,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 const SavedLists = (props) => {
     const auth = getAuth(); 
     const user = auth.currentUser; 
-    
+ 
     if (props.lists) {
         var length = props.lists.length;
         for (let i=0; i<length; i++) {
@@ -11,6 +11,7 @@ const SavedLists = (props) => {
             props.lists[i].date = d.toString(); 
         }
     }
+    
     function listItems(list) {
         var tasks = JSON.stringify(list);
         tasks = tasks.replace(/"/g, '')
@@ -23,6 +24,7 @@ const SavedLists = (props) => {
         }
         return tasks; 
     }
+    
     if (user) {
         return(
             <>
