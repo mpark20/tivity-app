@@ -15,8 +15,26 @@ import SignIn from "./SignIn";
 
 
 class App extends Component {
-  
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true
+    }
+  }
+
+  componentDidMount() {
+    this.setState({
+      loading: false
+    }, () => {console.log("loaded")})
+    
+  }
   render() {
+    if (this.state.loading === true) {
+      console.log("sdfsdfsdf")
+      return(
+        <div>loading...</div>
+      )
+    }
     return (
       <HashRouter>
         <div >

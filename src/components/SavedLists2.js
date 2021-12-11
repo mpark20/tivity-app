@@ -1,6 +1,7 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useEffect, useState } from "react";
+import Loading from "./Loading";
 
 const SavedLists2 = () => {
     const auth = getAuth(); 
@@ -9,10 +10,12 @@ const SavedLists2 = () => {
     var lists = [];  
     
     const [savedLists, setSavedLists] = useState([]);
+    const [loading, setLoadingState] = useState(true); 
 
     useEffect(() => {
         setTimeout(()=> {
             setSavedLists(lists);
+            setLoadingState(false);
         }, 1000); 
     }, []); 
 
@@ -33,7 +36,8 @@ const SavedLists2 = () => {
         for (let i=0; i<lists.length; i++) {
             var ms = parseInt(lists[i].key); 
             var d = new Date(ms); 
-            lists[i].date = d.toString(); 
+            var ds = d.toString()
+            lists[i].date = ds.substring(0, ds.indexOf("G")); 
         }
     }
     
@@ -48,22 +52,31 @@ const SavedLists2 = () => {
     } 
     function listItems(list) {
         var tasks = JSON.stringify(list);
+        var tl = "<ul>"; 
         tasks = tasks.replace(/"/g, '')
         tasks = tasks.replace('[', '')
         tasks = tasks.replace(']', '')
         var tasksArr = tasks.split(","); 
-        tasks = ""; 
-        for (let i=0; i<tasksArr.length; i++) {
-            tasks += tasksArr[i] + " ";   
-        }
-        return tasks; 
+        return (
+            <>
+            {tasksArr.map((task, index)=>(
+                <div key={list.key+index}>{task}</div>
+            ))}
+            </>
+        );  
+         
+    }
+    if (loading) {
+        return(
+            <Loading/>
+        )
     }
     if (user) {   
         return(
             <>
             {savedLists.map((list, index) => (
                 <div key={list.key}>
-                    <div key={list.key+"d"} style={{textDecoration: "underline"}} onClick={() => showList(index)}>{list.date}</div>
+                    <div key={list.key+"d"} className="list-title" onClick={() => showList(index)}>{list.date}</div>
                     <div key={list.key+"c"} className="list-contents">{listItems(list)}</div>
                 </div>
             ))}

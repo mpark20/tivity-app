@@ -2,12 +2,14 @@
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { onAuthStateChanged, getAuth} from "@firebase/auth";
 import { useEffect, useState} from "react";
+import Loading from "./Loading"
 
 const Display = () => {
     const db = getDatabase();  
     const body = document.querySelector("body");
     const auth = getAuth(); 
     const user = auth.currentUser; 
+    const [loading, setLoadingState] = useState(true);
      
     var light = true; 
     var dark = false;
@@ -15,7 +17,8 @@ const Display = () => {
 
     useEffect(() => {
         setTimeout(()=> {
-            fillValues(); 
+            setLoadingState(false);
+            fillValues();
         }, 1000); 
         //console.log("DOM loaded")
     }, []); 
@@ -123,7 +126,11 @@ const Display = () => {
         console.log(breakLength);
         
     }
-    
+    if (loading) {
+        return(
+            <Loading/>
+        )
+    }
     return(
         <div id="display" className="indented">
             <h2>display</h2>

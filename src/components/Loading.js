@@ -1,8 +1,8 @@
+
 const Loading = () => {
+    //https://loading.io/css/
     return(
-        <div>
-            loading...
-        </div>
+        <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
     )
 }
 export default Loading; 

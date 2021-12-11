@@ -236,7 +236,7 @@ class Timer extends Component {
                 <button onClick={this.saveList} className="btn white" id="white-btn">save</button>
                 <AddToCalendar tasks={this.state.tasks}/>
               </div>
-              <form style={{marginTop: "20px"}}>
+              <form>
                 <input type="checkbox" placeholder="insert breaks" onChange={this.changeBreakOption} id="break-opt" style={{margin: "0 3px"}} defaultChecked></input>
                 <label htmlFor="break-opt" style={{fontSize: "14px"}}>insert breaks</label>
               </form>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getAuth, deleteUser, signOut, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, remove } from "firebase/database";
+import Loading from './Loading';
 
 const Account = ( props ) => {
     const auth = getAuth(); 
@@ -9,10 +10,12 @@ const Account = ( props ) => {
     var tempUserInfo = []; 
 
     const [userInfo, setUserInfo] = useState({dn:"", email:"", uid:""});
+    const [loading, setLoadingState] = useState(true);
     
     useEffect(()=> {
         setTimeout(() => {
             setFields(); 
+            setLoadingState(false);
         }, 1000)
     }, []);
 
@@ -46,7 +49,11 @@ const Account = ( props ) => {
           console.log(error); 
         });
     }
-    console.log(userInfo.dn)
+    if (loading) {
+        return(
+            <Loading/>
+        )
+    }
     return(
         <div id="acct" className="indented">
             <h2>account</h2>

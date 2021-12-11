@@ -21,7 +21,7 @@ body {
   color: white; 
 }
 .dark {
-  background-color: #546875; 
+  background-color: #546875;
   color: white; 
 }
 .inactive {
@@ -104,6 +104,10 @@ a {
     width: 50%; 
     border-bottom: solid 1px;
   }
+button {
+  color: inherit; 
+  background-color: inherit; 
+}
 .btn { 
   font-family: nunito-sb;
   display: block;
@@ -116,6 +120,7 @@ a {
   padding: 1% 2%;
   margin: 10px 5px 0 0;
   float: left; 
+  
 }
 .btn:hover {
   opacity: 0.7;
@@ -126,12 +131,12 @@ a {
 .white {
   background-color: #ededed; 
   color: black; 
-  box-shadow: 5px black; 
+  
 }
 .btn-container {
   overflow: hidden; 
   width: 100%; 
-  margin-bottom: 10px;  
+  padding-bottom: 20px;  
 }
 .x-btn {
   font-family: nunito-sb;
@@ -144,6 +149,15 @@ a {
   display: block;
   float: left; 
   align-items: baseline; 
+}
+input {
+  color: inherit; 
+  background-color: inherit;
+  border-color: inherit;
+  border-width: 1.5px;  
+}
+::placeholder {
+  color: inherit; 
 }
 #task-title {
   float: left; 
@@ -168,8 +182,8 @@ a {
   width: 100%;
   text-align: center;
   padding: 5% 0; 
-  background-color: white; 
-  color: black; 
+  /*background-color: white; 
+  color: black; */
 }
 #task-label {
   font-size: 16px; 
@@ -186,14 +200,22 @@ a {
   width: 10%; 
   margin: 0 0 20px 0; 
   float: none; 
+  background-color: white; 
+  color: black; 
 }
 .signin {
   width: 250px;
   margin: 50px auto;
   padding: 40px;
   overflow: hidden; 
-  border: solid 1px;
+  border: solid 0.1px #d6d6d6;
   border-radius: 5px; 
+  color: black; 
+  background-color: white;
+  box-shadow: 2px 2px 4px 2px #d6d6d6;
+}
+.dark .signin {
+  box-shadow: none; 
 }
 .active {
   font-weight: bold;  
@@ -247,21 +269,44 @@ a {
   margin: 0 18px; 
   display: block; 
   float: none; 
+  opacity: inherit; 
 }
 p {
   margin: 0; 
 }
+.list-title {
+  cursor: pointer; 
+  text-decoration: underline;
+  width: fit-content; 
+  margin: 10px 0; 
+}
+  .list-title:hover {
+    opacity: 0.5; 
+    transition: opacity 100ms linear;
+  }
 .list-contents {
   display: none;
+  margin-bottom: 10px; 
+  padding: 10px; 
+  width: 50%; 
   font-style: italic; 
+  background-color: white; 
+  color: black;  
+  border: solid 0.5px #d6d6d6;  
+  box-shadow: 2px 2px 4px 2px#d6d6d6;
+  border-radius: 2px; 
 }
-
+.dark .list-contents {
+  box-shadow: none;
+}
 .checklist {
   display: block; 
 }
 .checklist input {
   float: left; 
 }
+
+
 @media screen and (max-width: 700px) {
 
   .split {
@@ -275,3 +320,42 @@ p {
     display: block; 
   }
 }
+
+
+/*LOADING ANIMATION*/
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  margin: 4px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff #9cbfd6 #9cbfd6 #9cbfd6;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
