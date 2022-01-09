@@ -26,6 +26,7 @@ body {
 }
 .inactive {
   opacity: 0.5; 
+  pointer-events: none; 
 }
 .content {
   padding: 10px 0;  
@@ -141,7 +142,7 @@ button {
 .x-btn {
   font-family: nunito-sb;
   font-size: 15px; 
-  color: black;
+  color: inherit;
   background-color: transparent;
   border: none; 
   margin: 0 10px 0 0; 
@@ -275,18 +276,24 @@ p {
   margin: 0; 
 }
 .list-title {
+  display: inline; 
   cursor: pointer; 
   text-decoration: underline;
-  width: fit-content; 
   margin: 10px 0; 
 }
   .list-title:hover {
     opacity: 0.5; 
     transition: opacity 100ms linear;
   }
+
+.list-date {
+  text-decoration: none;
+  margin-left: 10px; 
+  color: gray; 
+}
 .list-contents {
   display: none;
-  margin-bottom: 10px; 
+  margin: 10px 18px; 
   padding: 10px; 
   width: 50%; 
   font-style: italic; 

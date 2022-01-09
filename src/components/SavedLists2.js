@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
@@ -34,10 +34,13 @@ const SavedLists2 = () => {
             lists.push(item);
         });
         for (let i=0; i<lists.length; i++) {
-            var ms = parseInt(lists[i].key); 
-            var d = new Date(ms); 
+            var key = lists[i].key; 
+            var ms = key.substring(0, key.indexOf("_")); //remove user title from key
+            var title = key.substring(key.indexOf("_")+1); 
+            var d = new Date(parseInt(ms)); //convert number portion of key to date time
             var ds = d.toString()
-            lists[i].date = ds.substring(0, ds.indexOf("G")); 
+            lists[i].date = ds.substring(0, ds.indexOf("G")); //removes time zone 
+            lists[i].title = title; 
         }
     }
     
@@ -60,12 +63,21 @@ const SavedLists2 = () => {
         return (
             <>
             {tasksArr.map((task, index)=>(
-                <div key={list.key+index}>{task}</div>
+                <div key={list.key+"_"+index}>{task}</div>
             ))}
             </>
         );  
          
     }
+    function confirmDelete() {
+
+    }
+    function deleteList(key) {
+        setSavedLists(lists.filter((list) => list.key !== key));
+        var node = ref(db, "users/" + user.uid + "/savedLists/" + key); 
+        remove(node);
+    }
+
     if (loading) {
         return(
             <Loading/>
@@ -76,8 +88,10 @@ const SavedLists2 = () => {
             <>
             {savedLists.map((list, index) => (
                 <div key={list.key}>
-                    <div key={list.key+"d"} className="list-title" onClick={() => showList(index)}>{list.date}</div>
-                    <div key={list.key+"c"} className="list-contents">{listItems(list)}</div>
+                    <button key={list.key + "_x"} className="x-btn" onClick={() => deleteList(list.key)}>x</button>
+                    <div key={list.key+"_title"} className="list-title" onClick={() => showList(index)}>{list.title}</div>
+                    <div key={list.key+"_date"} className="list-date">{list.date}</div>
+                    <div key={list.key+"_items"} className="list-contents">{listItems(list)}</div>
                 </div>
             ))}
             </>

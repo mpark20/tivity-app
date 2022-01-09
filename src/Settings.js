@@ -4,10 +4,9 @@ import Account from "./components/Account";
 import Display from "./components/Display";
 import { useEffect, useState } from "react";
 
-const Settings = () => {
+const Settings = (props) => {
   const auth = getAuth();
   const user = auth.currentUser; 
-
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) { 

@@ -20,7 +20,7 @@ class Timer extends Component {
     this.startTimer = this.startTimer.bind(this);
     this.intervals = 0;
     this.timer = 0;
-    this.breakLength = 5; 
+    this.breakLength = props.breakLength; 
     this.isBreak = false; 
     this.insertBreaks = true;
     this.changeBreakOption = this.changeBreakOption.bind(this);
@@ -32,18 +32,22 @@ class Timer extends Component {
     this.clearTimer = this.clearTimer.bind(this);
     this.saveList = this.saveList.bind(this);
     this.setBreakLength = this.setBreakLength.bind(this);
+    this.nameList = this.nameList.bind(this);
+    this.listName = ""; 
+    this.cancelSaveList = this.cancelSaveList.bind(this);
     this.auth = getAuth(); 
     this.db = getDatabase(); 
     this.user = this.auth.currentUser; 
     if (this.user) {
-      onValue(ref(this.db, "users/" + this.user.uid + "/settings/breakLength"), (snapshot) => {
-        this.setBreakLength(snapshot);  
-      })
+      var node = ref(this.db, "users/" + this.user.uid + "/settings/breakLength");
+        onValue(node, (snapshot) => {
+            this.setBreakLength(snapshot.val());  
+        })
     }
-    
   }
-  setBreakLength(snapshot) {
-    this.breakLength = snapshot.val(); 
+  setBreakLength(bl) {
+    this.breakLength = bl;
+    console.log(bl)
   }
   formatted(num) {
     var doubleDigit = ("0" + num).slice(-2);
@@ -61,6 +65,7 @@ class Timer extends Component {
         console.log(this.state.tasks); 
         this.setTimer(this.state.tasks[0].time); 
         document.getElementById("task-label").innerHTML = this.state.tasks[0].title;
+        document.getElementById("save-list").classList.remove("inactive");
       }); 
 
       document.getElementById("task").value = "";
@@ -85,6 +90,9 @@ class Timer extends Component {
     
   }
   adjustIDs(id) {
+    if (this.state.tasks.length > 0) {
+      document.getElementById("save-list").classList.remove("inactive");
+    }
     var tasks = this.state.tasks;
     tasks = tasks.slice(0, id);
     var newTasks = [];
@@ -191,23 +199,44 @@ class Timer extends Component {
     this.insertBreaks = !this.insertBreaks;
     console.log(this.insertBreaks);
   }
-  
+  nameList() {
+    if (this.state.tasks.length > 0) {
+      document.getElementById("name-list").style.display = "block";
+      document.getElementById("exit-save").innerHTML = "cancel"
+    }
+  }
+
   saveList() {
+    this.listName = document.getElementById("list-name").value;
+    if (this.listName.indexOf("_")!= -1) {
+      this.listName.replace("_", " "); 
+    }
+    console.log(this.listName);
     let tasks = this.state.tasks.length;
     var list = [];  
     for (let i=0; i<tasks; i++) {
       list[i] = this.state.tasks[i].title; 
     }
-    const listId = Date.now();
+    var dateTime = Date.now(); 
+    var listId = dateTime + "_" + this.listName;
+    
     if (this.user) {
       var node = ref(this.db, 'users/' + this.user.uid + '/savedLists/' + listId);
       set(node, list); 
-      console.log("saved!")
+      document.getElementById("save-message").innerHTML = "list saved"
+      document.getElementById("exit-save").innerHTML = "done"
     }
     else {
       console.log("please log in to save lists to your planner.")
-    }
-       
+    } 
+    
+    
+  }
+  cancelSaveList() {
+    document.getElementById("list-name").value = ""; 
+    document.getElementById("name-list").style.display = "none";
+    document.getElementById("exit-save").innerHTML = "cancel"
+    document.getElementById("save-message").innerHTML = ""
   }
   render() {
     
@@ -232,9 +261,19 @@ class Timer extends Component {
               <br/><br/>
               <div className="btn-container">
                 <button onClick={this.addTask} className="btn" id="add-task">enter</button>
-                <button onClick={this.clear} className="btn white" id="white-btn">clear</button>
-                <button onClick={this.saveList} className="btn white" id="white-btn">save</button>
+                <button onClick={this.clear} className="btn white">clear</button>
+                <button onClick={this.nameList} className="btn white inactive" id="save-list">save</button>
                 <AddToCalendar tasks={this.state.tasks}/>
+              </div>
+              <div id="name-list" style={{display:"none"}}>
+                <form>
+                  <input type="text" className="text-field" id="list-name" placeholder="enter list name..."/>
+                </form>
+                <div className="btn-container">
+                  <button onClick={this.saveList} className="btn white">OK</button>
+                  <button onClick={this.cancelSaveList} className="btn white" id="exit-save">cancel</button>
+                </div>
+                <div className="message" id="save-message" style={{marginTop: "0"}}></div>
               </div>
               <form>
                 <input type="checkbox" placeholder="insert breaks" onChange={this.changeBreakOption} id="break-opt" style={{margin: "0 3px"}} defaultChecked></input>

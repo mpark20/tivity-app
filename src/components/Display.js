@@ -4,7 +4,7 @@ import { onAuthStateChanged, getAuth} from "@firebase/auth";
 import { useEffect, useState} from "react";
 import Loading from "./Loading"
 
-const Display = () => {
+const Display = (props) => {
     const db = getDatabase();  
     const body = document.querySelector("body");
     const auth = getAuth(); 
@@ -13,7 +13,7 @@ const Display = () => {
      
     var light = true; 
     var dark = false;
-    var breakLength = 5;
+    var breakLength = 5;    //try to convert to state variable
 
     useEffect(() => {
         setTimeout(()=> {

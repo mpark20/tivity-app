@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 import "./firebase"
-
+//someone@example.com, 000000 
 const SignIn = () => {  
   const auth = getAuth();
   const db = getDatabase();
@@ -103,7 +103,8 @@ const SignIn = () => {
   }
   function logOut() {
     signOut(auth).then(() => {
-      window.location.reload();
+      logOut.style.display = "none";
+      logIn.style.display = "block";
     }).catch((error) => {
       console.log(error); 
     });  
