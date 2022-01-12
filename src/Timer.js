@@ -4,7 +4,7 @@ import TaskList from "./components/TaskList"
 import Countdown from "./components/Countdown"
 import AddToCalendar from "./components/AddToCalendar"
 import { getDatabase, set, ref, onValue } from "firebase/database"; 
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 class Timer extends Component {
   constructor(props) {
@@ -13,6 +13,7 @@ class Timer extends Component {
       tasks: [],
       timeLeft: {h:"00", m:"00", s:"00"},
     } 
+    this.totalTime = 0; 
     this.addTask = this.addTask.bind(this);
     this.clear = this.clear.bind(this);
     this.deleteTask = this.deleteTask.bind(this);
@@ -28,6 +29,7 @@ class Timer extends Component {
     this.formatted = this.formatted.bind(this);
     this.adjustIDs = this.adjustIDs.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
+    this.pauses = 0; 
     this.resumeTimer = this.resumeTimer.bind(this);
     this.clearTimer = this.clearTimer.bind(this);
     this.saveList = this.saveList.bind(this);
@@ -37,13 +39,19 @@ class Timer extends Component {
     this.cancelSaveList = this.cancelSaveList.bind(this);
     this.auth = getAuth(); 
     this.db = getDatabase(); 
-    this.user = this.auth.currentUser; 
-    if (this.user) {
-      var node = ref(this.db, "users/" + this.user.uid + "/settings/breakLength");
+    this.user = this.auth.currentUser;
+
+    onAuthStateChanged(this.auth, (user) => {
+      if (this.user) {
+        console.log("user!!");
+        var node = ref(this.db, "users/" + this.user.uid + "/settings/breakLength");
         onValue(node, (snapshot) => {
             this.setBreakLength(snapshot.val());  
         })
-    }
+      }
+    })
+    
+    
   }
   setBreakLength(bl) {
     this.breakLength = bl;
@@ -78,6 +86,10 @@ class Timer extends Component {
       tasks: [],
       timeLeft: {h: "00", m: "00", s: "00"},
     });
+    this.totalTime = 0; 
+    this.pauses = 0;   
+    document.getElementsByClassName("timer-container")[0].removeAttribute("id"); 
+    document.getElementById("summary").style.opacity = "0";
   }
   deleteTask(id) {
     const tasks = this.state.tasks;
@@ -121,6 +133,8 @@ class Timer extends Component {
   startTimer() {
     //this.setTimer(parseInt(this.state.tasks[this.intervals].time));
     if ((parseInt(this.state.timeLeft.h) > 0 || parseInt(this.state.timeLeft.m) > 0)) {
+      document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
+      this.totalTime += 1; 
       this.timer = setInterval(this.tick, 10);
     } 
   }
@@ -132,7 +146,9 @@ class Timer extends Component {
       if (!this.isBreak) {  //if the interval that just finished was not a break, the next one will be.
         alert(this.state.tasks[this.intervals].title + ": time's up")
         this.intervals += 1;
-        if (this.insertBreaks) {this.isBreak = true; }
+        if (this.insertBreaks && this.intervals < this.state.tasks.length) {
+          this.isBreak = true; 
+        }
       }
       else {  //if the interval that just finished was a break, the next one will not be.
         alert(this.breakLength + "min break has finished")
@@ -150,9 +166,11 @@ class Timer extends Component {
         
       }
       else {
-        clearInterval(this.timer);
+        clearInterval(this.timer); 
         this.intervals = 0; 
         document.getElementById("task-label").innerHTML = "";
+        document.getElementsByClassName("timer-container")[0].removeAttribute("id"); 
+        document.getElementById("summary").style.opacity = "1";;
       }
     }
     else {
@@ -166,16 +184,18 @@ class Timer extends Component {
       }  
       if (min === 0 && hr > 0) {
         min = 60;
-        hr--;
+        hr--; 
       }
       this.setState({
         tasks: [...this.state.tasks],
         timeLeft: {h: this.formatted(hr), m: this.formatted(min), s: this.formatted(sec - 1)}
       });
+      if(!this.isBreak){this.totalTime += 1}
     }
     
   }
   pauseTimer() {
+    this.pauses += 1; 
     clearInterval(this.timer);
     console.log("paused")
     document.getElementById("pause").style.display = "none";
@@ -194,6 +214,9 @@ class Timer extends Component {
     clearInterval(this.timer); 
     document.getElementById("pause").style.display = "";
     document.getElementById("resume").style.display = "none";
+    document.getElementsByClassName("timer-container")[0].removeAttribute("id");
+    this.totalTime = 0;
+    this.pauses = 0;   
   }
   changeBreakOption() {
     this.insertBreaks = !this.insertBreaks;
@@ -241,7 +264,7 @@ class Timer extends Component {
   render() {
     
     return (
-      <div className="timer-container">
+      <div className="timer-container" > 
           <div className="split" >  
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
           </div>
@@ -279,6 +302,13 @@ class Timer extends Component {
                 <input type="checkbox" placeholder="insert breaks" onChange={this.changeBreakOption} id="break-opt" style={{margin: "0 3px"}} defaultChecked></input>
                 <label htmlFor="break-opt" style={{fontSize: "14px"}}>insert breaks</label>
               </form>
+              <div className="message" id="summary">
+                <button onClick={this.clear} className="x-btn">x</button>
+                <h3 style={{display:"inline"}}>session summary</h3>
+                <p>duration: {((this.totalTime)/60.0).toFixed(1)} min</p>
+                <p>pauses: {this.pauses}</p>
+                <p># of tasks: {this.state.tasks.length}</p>
+              </div>
             </div>
           </div>
         </div>

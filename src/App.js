@@ -11,16 +11,13 @@ import Planner from "./Planner";
 import Dashboard from "./Dashboard";
 import Settings from "./Settings";
 import SignIn from "./SignIn";
-import { getDatabase, ref, set, onValue } from "firebase/database";
-import { getAuth } from "firebase/auth";
+import { getDatabase, ref, onValue } from "firebase/database";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      loading: true, 
-    }
     this.snapshotToArray = this.snapshotToArray.bind(this);
     this.dark = false; 
     this.light = true; 
@@ -28,25 +25,47 @@ class App extends Component {
     this.auth = getAuth(); 
     this.db = getDatabase();
     this.updateUser = this.updateUser.bind(this); 
+    this.loading = true;
+    this.user = this.auth.currentUser; 
+    /*this.state = {
+      loading: true,
+      user: this.auth.currentUser 
+    }
+    onAuthStateChanged(this.auth, (user) => {
+      if (this.user) { 
+        var node = ref(this.db, "users/" + this.user.uid + "/settings");
+        onValue(node, (snapshot) => {
+            this.snapshotToArray(snapshot);
+        })
+      } else { 
+          document.querySelector('body').classList.remove("dark"); 
+          console.log("light")
+      }
+    })
+     
+    this.loading = false*/
   }
-  componentDidMount() { 
-    setTimeout(this.updateUser, 500); 
+  componentDidMount() {
+    this.loading = false; 
+    setTimeout(this.updateUser, 1000);
   }
   updateUser() {
+    this.loading = false;
     this.setState({
       loading: false,
       user: this.auth.currentUser
     }, () => { 
-      if (this.state.user) { 
-        var node = ref(this.db, "users/" + this.state.user.uid + "/settings");
+      if (this.user) { 
+        var node = ref(this.db, "users/" + this.user.uid + "/settings");
         onValue(node, (snapshot) => {
-            this.snapshotToArray(snapshot);  
+            this.snapshotToArray(snapshot);
         })
         
       } else { 
           document.querySelector('body').classList.remove("dark"); 
           console.log("light")
       } 
+       
     })
   }
   snapshotToArray(snapshot) {
@@ -54,12 +73,11 @@ class App extends Component {
     var body = document.querySelector('body'); 
     snapshot.forEach(function(childSnapshot) {
         var option = childSnapshot.val();
-        settings.push(option);
+        settings.push(option); 
     });
-    this.breakLength = parseInt(settings[0]);
+    this.breakLength = settings[0];
     this.dark = settings[1]; 
     this.light = settings[2];  
-    console.log(settings); 
     
     if (this.light===true) {
         body.classList.remove("dark"); 
@@ -69,10 +87,11 @@ class App extends Component {
         body.classList.add("dark");
         console.log("dark"); 
     } 
+  
   }
   render() {
-    if (this.state.loading === true) {
-      console.log("sdfsdfsdf")
+    if (this.loading === true) {
+      console.log("loading")
       return(
         <div>loading...</div>
       )
@@ -91,11 +110,11 @@ class App extends Component {
           <div className="logo"><Link to="/">tiviti</Link></div>
           <div className="content">
           
-            <Route path="/focus-timer" component={()=> <Timer breakLength={this.breakLength}/>}/>
-            <Route path="/planner" component={Planner}/>
-            <Route path="/dashboard" component={Dashboard}/>
-            <Route path="/settings" component={()=> <Settings breakLength={this.breakLength}/>}/>
-            <Route path="/auth" component={SignIn}/>
+            <Route path="/focus-timer" component={()=> <Timer user={this.user} breakLength={this.breakLength}/>}/>
+            <Route path="/planner" component={()=> <Planner user={this.user} light={this.light}/>}/>
+            <Route path="/dashboard" component={()=> <Dashboard user={this.user} light={this.light}/>}/>
+            <Route path="/settings" component={()=> <Settings user={this.user} light={this.light} breakLength={this.breakLength}/>}/>
+            <Route path="/auth" component={()=> <SignIn user={this.user} light={this.light}/>}/>
           </div>
         </div>
       </HashRouter>

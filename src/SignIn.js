@@ -51,7 +51,7 @@ const SignIn = () => {
       set(ref(db, 'users/' + user.uid), {
         displayName: uname,
         email: email,
-        savedLists: "test",
+        savedLists: "",
         settings: {lightMode: "true", darkMode: "false", breakLength: "5"}
       });
       updateProfile(auth.currentUser, {
@@ -86,10 +86,16 @@ const SignIn = () => {
       // The signed-in user info.
       const user = result.user;
       document.getElementById("login-message").innerHTML = "hello "+user.displayName+"!";
-      set(ref(db, 'users/' + user.uid), {
-        displayName: user.displayName,
-        email: user.email
-      });
+      var userNode = ref(db, 'users/' + user.uid); 
+      if (!userNode) {
+        set(ref(userNode), {
+          displayName: user.displayName,
+          email: user.email,
+          savedLists: "",
+          settings: {lightMode: "true", darkMode: "false", breakLength: "5"}
+        });
+      }
+      
     })
     .catch((error) => {
       // Handle Errors here.
@@ -132,7 +138,7 @@ const SignIn = () => {
         <button className="btn" onClick={signUp} style={{margin: "10px 5px 20px 0"}}>sign up</button> 
         <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>
       </div>
-      <div onClick={showLI} className="message"><button>log into an existing account</button></div>
+      <div onClick={showLI} className=" "><button>log into an existing account</button></div>
       <div className="message" id="register-message"></div>
     </div>
     <div className="signin" id="login">

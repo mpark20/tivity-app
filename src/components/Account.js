@@ -5,13 +5,13 @@ import Loading from './Loading';
 
 const Account = ( props ) => {
     const auth = getAuth(); 
-    const user = auth.currentUser; 
+    const user = props.user; 
     const db = getDatabase(); 
     var tempUserInfo = []; 
 
     const [userInfo, setUserInfo] = useState({dn:"", email:"", uid:""});
     const [loading, setLoadingState] = useState(true);
-    
+    //add user as a state variable?
     useEffect(()=> {
         setTimeout(() => {
             setFields(); 
@@ -25,13 +25,11 @@ const Account = ( props ) => {
             tempUserInfo = {dn:user.displayName, email:user.email, uid:user.uid};
         } else { 
             console.log("no user"); 
-            tempUserInfo = {dn:"",email:"", uid:""}
         }
     });
     
     function setFields() {   
         setUserInfo(tempUserInfo)
-        console.log("fields set")
     }
     function deleteAcct() {
         deleteUser(user)
