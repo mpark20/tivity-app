@@ -3,7 +3,7 @@ import { getDatabase, ref, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
-const SavedLists2 = () => {
+const SavedLists2 = (props) => {
     const auth = getAuth(); 
     const user = auth.currentUser; 
     const db = getDatabase(); 
@@ -17,7 +17,7 @@ const SavedLists2 = () => {
             setSavedLists(lists);
             setLoadingState(false);
         }, 1000); 
-    }, []); 
+    }, [props.key]); 
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -84,6 +84,14 @@ const SavedLists2 = () => {
         )
     }
     if (user) {   
+        
+        if (savedLists.length === 0) {
+            return(
+                <>
+                <div>you currently don't have any lists saved.</div>
+                </>
+            )
+        }
         return(
             <>
             {savedLists.map((list, index) => (

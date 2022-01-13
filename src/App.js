@@ -7,7 +7,7 @@ import {
   HashRouter
 } from "react-router-dom";
 import Timer from "./Timer";
-import Planner from "./Planner";
+import Planner2 from "./Planner2";
 import Dashboard from "./Dashboard";
 import Settings from "./Settings";
 import SignIn from "./SignIn";
@@ -27,6 +27,8 @@ class App extends Component {
     this.updateUser = this.updateUser.bind(this); 
     this.loading = true;
     this.user = this.auth.currentUser; 
+    this.login = "login";
+    
     /*this.state = {
       loading: true,
       user: this.auth.currentUser 
@@ -48,6 +50,7 @@ class App extends Component {
   componentDidMount() {
     this.loading = false; 
     setTimeout(this.updateUser, 1000);
+    
   }
   updateUser() {
     this.loading = false;
@@ -60,13 +63,15 @@ class App extends Component {
         onValue(node, (snapshot) => {
             this.snapshotToArray(snapshot);
         })
-        
+        this.login = "logout"
       } else { 
           document.querySelector('body').classList.remove("dark"); 
           console.log("light")
+          this.login = "login"
       } 
-       
+      
     })
+
   }
   snapshotToArray(snapshot) {
     var settings = [];
@@ -101,17 +106,18 @@ class App extends Component {
       <HashRouter>
         <div >
           <ul className="nav">
-              <li><NavLink to="/auth">login</NavLink></li>
+              <li><NavLink to="/auth">{this.login}</NavLink></li>
               <li><NavLink to="/settings">settings</NavLink></li>
               <li><NavLink to="/dashboard">dashboard</NavLink></li>
-              <li><NavLink to="/planner">planner</NavLink></li>
+              
               <li><NavLink to="/focus-timer">focus timer</NavLink></li>
+              <li><NavLink to="/planner">planner</NavLink></li>
           </ul>
           <div className="logo"><Link to="/">tiviti</Link></div>
           <div className="content">
-          
+            <Route path="/planner" component={()=> <Planner2 user={this.user} light={this.light}/>}/>
             <Route path="/focus-timer" component={()=> <Timer user={this.user} breakLength={this.breakLength}/>}/>
-            <Route path="/planner" component={()=> <Planner user={this.user} light={this.light}/>}/>
+            
             <Route path="/dashboard" component={()=> <Dashboard user={this.user} light={this.light}/>}/>
             <Route path="/settings" component={()=> <Settings user={this.user} light={this.light} breakLength={this.breakLength}/>}/>
             <Route path="/auth" component={()=> <SignIn user={this.user} light={this.light}/>}/>

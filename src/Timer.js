@@ -275,7 +275,7 @@ class Timer extends Component {
             <div style={{width: "80%", margin: "10px auto"}}>
               <h2>to-do list</h2>
               <div id="task-list">
-                <TaskList tasks={this.state.tasks} delete={this.deleteTask} />
+                <TaskList tasks={this.state.tasks} delete={this.deleteTask} origin="timer"/>
               </div>
               <form autoComplete="off" onLoad={this.enterToClick}> 
                   <input type="text" placeholder="task name..." id="task" required />
@@ -284,9 +284,9 @@ class Timer extends Component {
               <br/><br/>
               <div className="btn-container">
                 <button onClick={this.addTask} className="btn" id="add-task">enter</button>
-                <button onClick={this.clear} className="btn white">clear</button>
-                <button onClick={this.nameList} className="btn white inactive" id="save-list">save</button>
-                <AddToCalendar tasks={this.state.tasks}/>
+                <button onClick={this.clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
+                <button onClick={this.nameList} className="btn white inactive" style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
+                {/*<AddToCalendar tasks={this.state.tasks}/>*/}
               </div>
               <div id="name-list" style={{display:"none"}}>
                 <form>

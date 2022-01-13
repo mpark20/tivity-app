@@ -72,10 +72,10 @@ const Display = (props) => {
     function lightMode() {
         light = !light;         
         if (light === true) {
-            
             dark = false; 
             body.classList.remove("dark");
             document.getElementById("darkMode").checked = false;
+            
             document.getElementById("lightMode").checked = true;
         } 
         else {
