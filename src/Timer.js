@@ -273,7 +273,7 @@ class Timer extends Component {
 
           <div className="split">
             <div style={{width: "80%", margin: "10px auto"}}>
-              <h2>to-do list</h2>
+              <h2>task list</h2>
               <div id="task-list">
                 <TaskList tasks={this.state.tasks} delete={this.deleteTask} origin="timer"/>
               </div>

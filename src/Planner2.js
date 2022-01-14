@@ -16,13 +16,11 @@ class Planner2 extends Component {
         this.user = this.auth.currentUser; 
         this.newList = this.newList.bind(this);
         this.addTask = this.addTask.bind(this);
-        this.deleteTask = this.addTask.bind(this);
-        this.clear = this.addTask.bind(this);
-        this.addTask = this.addTask.bind(this);
+        this.deleteTask = this.deleteTask.bind(this);
+        this.clear = this.clear.bind(this);
         this.nameList = this.nameList.bind(this);
         this.saveList = this.saveList.bind(this);
         this.cancelSaveList = this.cancelSaveList.bind(this);
-        this.savedCount = 0; 
         
     }
     newList() {
@@ -70,7 +68,7 @@ class Planner2 extends Component {
         
       }
       nameList() {
-        console.log(this.state.tasks); 
+         
         if (this.state.tasks.length > 0) {
           document.getElementById("name-list").style.display = "block";
           document.getElementById("exit-save").innerHTML = "cancel"
@@ -91,6 +89,7 @@ class Planner2 extends Component {
         var dateTime = Date.now(); 
         var listId = dateTime + "_" + this.listName;
         
+        
         if (this.user) {
           var node = ref(this.db, 'users/' + this.user.uid + '/savedLists/' + listId);
           set(node, list); 
@@ -100,14 +99,18 @@ class Planner2 extends Component {
         else {
           console.log("please log in to save lists to your planner.")
         } 
-        window.location.reload();
-        this.savedCount += 1;  
+        //window.location.reload();  
       }
       cancelSaveList() {
         document.getElementById("list-name").value = ""; 
         document.getElementById("name-list").style.display = "none";
         document.getElementById("exit-save").innerHTML = "cancel"
         document.getElementById("save-message").innerHTML = ""
+        if (document.getElementById("exit-save").innerHTML = "done") {
+          this.setState({
+            tasks: []
+          })
+        }
       }
       render() {
           return(
@@ -140,9 +143,8 @@ class Planner2 extends Component {
                         <div className="message" id="save-message" style={{marginTop: "0"}}></div>
                     </div>
                 </div>
-                
-                <SavedLists2 key={this.savedCount}/>
-            </div>
+                <SavedLists2/>
+              </div>
             
           </>
           )

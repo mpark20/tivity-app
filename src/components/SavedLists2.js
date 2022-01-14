@@ -3,7 +3,7 @@ import { getDatabase, ref, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
-const SavedLists2 = (props) => {
+const SavedLists2 = () => {
     const auth = getAuth(); 
     const user = auth.currentUser; 
     const db = getDatabase(); 
@@ -17,7 +17,7 @@ const SavedLists2 = (props) => {
             setSavedLists(lists);
             setLoadingState(false);
         }, 1000); 
-    }, [props.key]); 
+    }, []); 
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -37,11 +37,12 @@ const SavedLists2 = (props) => {
             var key = lists[i].key; 
             var ms = key.substring(0, key.indexOf("_")); //remove user title from key
             var title = key.substring(key.indexOf("_")+1); 
-            var d = new Date(parseInt(ms)); //convert number portion of key to date time
+            var d = new Date(parseInt(ms)); //convert number portion of key to date time (on re-render this is causing an error?)
             var ds = d.toString()
             lists[i].date = ds.substring(0, ds.indexOf("G")); //removes time zone 
             lists[i].title = title; 
         }
+        
     }
     
     function showList(index) {
@@ -55,7 +56,6 @@ const SavedLists2 = (props) => {
     } 
     function listItems(list) {
         var tasks = JSON.stringify(list);
-        var tl = "<ul>"; 
         tasks = tasks.replace(/"/g, '')
         tasks = tasks.replace('[', '')
         tasks = tasks.replace(']', '')
@@ -69,9 +69,7 @@ const SavedLists2 = (props) => {
         );  
          
     }
-    function confirmDelete() {
-
-    }
+    
     function deleteList(key) {
         setSavedLists(lists.filter((list) => list.key !== key));
         var node = ref(db, "users/" + user.uid + "/savedLists/" + key); 
