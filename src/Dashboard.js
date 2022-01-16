@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import './App.css';
 import { getAuth } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+//import { getDatabase } from "firebase/database";
 import "./firebase";
 
 const Dashboard = () => {
   const auth = getAuth();
   const user = auth.currentUser;
-  const db = getDatabase();
+  //const db = getDatabase();
   var headingContent = "hello user";
 
   useEffect(() => {

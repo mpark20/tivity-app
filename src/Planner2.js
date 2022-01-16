@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import SavedLists2 from "./components/SavedLists2";
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import { getDatabase, ref, set, onValue } from "firebase/database";
+import { getAuth } from "@firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import './App.css';
 import TaskList from './components/TaskList';
 
@@ -77,7 +77,7 @@ class Planner2 extends Component {
     
       saveList() {
         this.listName = document.getElementById("list-name").value;
-        if (this.listName.indexOf("_")!= -1) {
+        if (this.listName.indexOf("_")!== -1) {
           this.listName.replace("_", " "); 
         }
         console.log(this.listName);
@@ -106,7 +106,7 @@ class Planner2 extends Component {
         document.getElementById("name-list").style.display = "none";
         document.getElementById("exit-save").innerHTML = "cancel"
         document.getElementById("save-message").innerHTML = ""
-        if (document.getElementById("exit-save").innerHTML = "done") {
+        if (document.getElementById("exit-save").innerHTML ===  "done") {
           this.setState({
             tasks: []
           })

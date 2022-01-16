@@ -8,7 +8,7 @@ const Display = (props) => {
     const db = getDatabase();  
     const auth = getAuth(); 
     const body = document.querySelector("body");
-    const user = props.user; 
+    //const user = props.user; 
     const [loading, setLoadingState] = useState(true);
     //const [theme, setTheme] = useState(props.light); 
     const [breakLength, setBreakLength] = useState(props.breakLength); 

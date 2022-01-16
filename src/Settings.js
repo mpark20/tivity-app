@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 const Settings = (props) => {
   const auth = getAuth();
-  const user = props.user; 
+  //const user = props.user; 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) { 

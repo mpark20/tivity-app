@@ -1,7 +1,7 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
-import Loading from "./Loading";
+import Loading from "./components/Loading";
 
 const SavedLists2 = () => {
     const auth = getAuth(); 
@@ -11,24 +11,27 @@ const SavedLists2 = () => {
     
     const [savedLists, setSavedLists] = useState([]);
     const [loading, setLoadingState] = useState(true); 
+    
 
     useEffect(() => {
-        setTimeout(()=> {
-            setSavedLists(lists);
-            setLoadingState(false);
-        }, 1000); 
-    }, []); 
+        readSavedLists(); 
+        setLoadingState(false);
+    }, [savedLists]); 
+    
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            var node = ref(db, "users/" + user.uid + "/savedLists"); 
-            onValue(node, (snapshot) => {
-                snapshotToArray(snapshot)
-            })
-        }
-    })
+    function readSavedLists() {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                var node = ref(db, "users/" + user.uid + "/savedLists"); 
+                onValue(node, (snapshot) => {
+                    snapshotToArray(snapshot)
+                })
+            }
+        })
+    }
+    
     function snapshotToArray(snapshot) {
-        snapshot.forEach(function(childSnapshot) {
+        snapshot.forEach(function(childSnapshot) { 
             var item = childSnapshot.val();
             item.key = childSnapshot.key;
             lists.push(item);
@@ -37,11 +40,13 @@ const SavedLists2 = () => {
             var key = lists[i].key; 
             var ms = key.substring(0, key.indexOf("_")); //remove user title from key
             var title = key.substring(key.indexOf("_")+1); 
-            var d = new Date(parseInt(ms)); //convert number portion of key to date time (on re-render this is causing an error?)
+            var d = new Date(parseInt(ms)); //convert number portion of key to date time 
             var ds = d.toString()
             lists[i].date = ds.substring(0, ds.indexOf("G")); //removes time zone 
             lists[i].title = title; 
         }
+        
+        //setSavedLists(lists);
         
     }
     
@@ -85,22 +90,24 @@ const SavedLists2 = () => {
         
         if (savedLists.length === 0) {
             return(
-                <>
-                <div>you currently don't have any lists saved.</div>
-                </>
+                <div className="page-container">
+                    <h2>saved lists</h2>
+                    <div>you currently don't have any lists saved.</div>
+                </div>
             )
         }
         return(
-            <>
-            {savedLists.map((list, index) => (
-                <div key={list.key}>
-                    <button key={list.key + "_x"} className="x-btn" onClick={() => deleteList(list.key)}>x</button>
-                    <div key={list.key+"_title"} className="list-title" onClick={() => showList(index)}>{list.title}</div>
-                    <div key={list.key+"_date"} className="list-date">{list.date}</div>
-                    <div key={list.key+"_items"} className="list-contents">{listItems(list)}</div>
-                </div>
-            ))}
-            </>
+            <div className="page-container">
+                <h2>saved lists</h2>
+                {savedLists.map((list, index) => (
+                    <div key={list.key}>
+                        <button key={list.key + "_x"} className="x-btn" onClick={() => deleteList(list.key)}>x</button>
+                        <div key={list.key+"_title"} className="list-title" onClick={() => showList(index)}>{list.title}</div>
+                        <div key={list.key+"_date"} className="list-date">{list.date}</div>
+                        <div key={list.key+"_items"} className="list-contents">{listItems(list)}</div>
+                    </div>
+                ))}
+            </div>
         )
     }  
     else {

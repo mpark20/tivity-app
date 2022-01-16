@@ -20,7 +20,7 @@ const TaskList = (props) => {
             {props.tasks.map((task) =>(
                 <div key={task.id} style={containerStyle}>
                     <button key={task.id + "x"} onClick={() => props.delete(task.id)} className="x-btn">x</button>
-                    <div key={task.id + "A"} id="task-title">{task.title}:</div>
+                    <div key={task.id + "A"} id="task-title">{task.title}</div>
                     <div key={task.id + "B"} id="task-time" style={timeStyle}>{task.time} min </div>
                 </div>
             ))}

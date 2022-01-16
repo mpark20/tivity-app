@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import './App.css';
 import TaskList from "./components/TaskList"
 import Countdown from "./components/Countdown"
-import AddToCalendar from "./components/AddToCalendar"
+//import AddToCalendar from "./components/AddToCalendar"
 import { getDatabase, set, ref, onValue } from "firebase/database"; 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -231,7 +231,7 @@ class Timer extends Component {
 
   saveList() {
     this.listName = document.getElementById("list-name").value;
-    if (this.listName.indexOf("_")!= -1) {
+    if (this.listName.indexOf("_")!== -1) {
       this.listName.replace("_", " "); 
     }
     console.log(this.listName);
@@ -265,11 +265,7 @@ class Timer extends Component {
     
     return (
       <div className="timer-container" > 
-          <div className="split" >  
-            <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
-          </div>
-
-          <div className="divide"/>
+          
 
           <div className="split">
             <div style={{width: "80%", margin: "10px auto"}}>
@@ -311,6 +307,12 @@ class Timer extends Component {
               </div>
             </div>
           </div>
+          <div className="divide"/>
+          <div className="split" >  
+            <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
+          </div>
+
+          
         </div>
     );
   }

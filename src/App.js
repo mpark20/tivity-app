@@ -7,12 +7,14 @@ import {
   HashRouter
 } from "react-router-dom";
 import Timer from "./Timer";
-import Planner2 from "./Planner2";
+import SavedLists2 from "./SavedLists2";
+import TodoList from "./TodoList";
 import Dashboard from "./Dashboard";
 import Settings from "./Settings";
 import SignIn from "./SignIn";
+import Loading from "./components/Loading"
 import { getDatabase, ref, onValue } from "firebase/database";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 
 class App extends Component {
@@ -98,7 +100,7 @@ class App extends Component {
     if (this.loading === true) {
       console.log("loading")
       return(
-        <div>loading...</div>
+        <Loading/>
       )
     }
     
@@ -109,13 +111,14 @@ class App extends Component {
               <li><NavLink to="/auth">{this.login}</NavLink></li>
               <li><NavLink to="/settings">settings</NavLink></li>
               <li><NavLink to="/dashboard">dashboard</NavLink></li>
-              
               <li><NavLink to="/focus-timer">focus timer</NavLink></li>
               <li><NavLink to="/planner">planner</NavLink></li>
+              <li><NavLink to="/todo-list">todo list</NavLink></li>
           </ul>
           <div className="logo"><Link to="/">tiviti</Link></div>
           <div className="content">
-            <Route path="/planner" component={()=> <Planner2 user={this.user} light={this.light}/>}/>
+            <Route path="/todo-list" component={()=> <TodoList/>}/>
+            <Route path="/planner" component={()=> <SavedLists2/>}/>
             <Route path="/focus-timer" component={()=> <Timer user={this.user} breakLength={this.breakLength}/>}/>
             
             <Route path="/dashboard" component={()=> <Dashboard user={this.user} light={this.light}/>}/>
