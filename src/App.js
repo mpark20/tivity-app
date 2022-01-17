@@ -27,14 +27,13 @@ class App extends Component {
     this.auth = getAuth(); 
     this.db = getDatabase();
     this.updateUser = this.updateUser.bind(this); 
-    this.loading = true;
-    this.user = this.auth.currentUser; 
+    this.loading = true; 
     this.login = "login";
-    
-    /*this.state = {
+    this.state = {
       loading: true,
       user: this.auth.currentUser 
     }
+    /*
     onAuthStateChanged(this.auth, (user) => {
       if (this.user) { 
         var node = ref(this.db, "users/" + this.user.uid + "/settings");
@@ -50,29 +49,22 @@ class App extends Component {
     this.loading = false*/
   }
   componentDidMount() {
-    this.loading = false; 
     setTimeout(this.updateUser, 1000);
-    
   }
   updateUser() {
-    this.loading = false;
     this.setState({
       loading: false,
       user: this.auth.currentUser
-    }, () => { 
-      if (this.user) { 
-        var node = ref(this.db, "users/" + this.user.uid + "/settings");
-        onValue(node, (snapshot) => {
-            this.snapshotToArray(snapshot);
-        })
-        this.login = "logout"
-      } else { 
-          document.querySelector('body').classList.remove("dark"); 
-          console.log("light")
-          this.login = "login"
-      } 
-      
     })
+    if (this.state.user) { 
+      var node = ref(this.db, "users/" + this.state.user.uid + "/settings");
+      onValue(node, (snapshot) => {
+          this.snapshotToArray(snapshot);
+      })
+    } else { 
+        document.querySelector('body').classList.remove("dark"); 
+        console.log("light")
+    }
 
   }
   snapshotToArray(snapshot) {
@@ -97,8 +89,8 @@ class App extends Component {
   
   }
   render() {
-    if (this.loading === true) {
-      console.log("loading")
+    if (this.state.loading === true) {
+      
       return(
         <Loading/>
       )
@@ -113,17 +105,17 @@ class App extends Component {
               <li><NavLink to="/dashboard">dashboard</NavLink></li>
               <li><NavLink to="/focus-timer">focus timer</NavLink></li>
               <li><NavLink to="/planner">planner</NavLink></li>
-              <li><NavLink to="/todo-list">todo list</NavLink></li>
+              <li><NavLink to="/todo">todo list</NavLink></li>
           </ul>
           <div className="logo"><Link to="/">tiviti</Link></div>
           <div className="content">
-            <Route path="/todo-list" component={()=> <TodoList/>}/>
+            <Route path="/todo" component={()=> <TodoList/>}/>
             <Route path="/planner" component={()=> <SavedLists2/>}/>
-            <Route path="/focus-timer" component={()=> <Timer user={this.user} breakLength={this.breakLength}/>}/>
+            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.breakLength}/>}/>
             
-            <Route path="/dashboard" component={()=> <Dashboard user={this.user} light={this.light}/>}/>
-            <Route path="/settings" component={()=> <Settings user={this.user} light={this.light} breakLength={this.breakLength}/>}/>
-            <Route path="/auth" component={()=> <SignIn user={this.user} light={this.light}/>}/>
+            <Route path="/dashboard" component={()=> <Dashboard user={this.state.user} light={this.light}/>}/>
+            <Route path="/settings" component={()=> <Settings user={this.state.user} light={this.light} breakLength={this.breakLength}/>}/>
+            <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
           </div>
         </div>
       </HashRouter>

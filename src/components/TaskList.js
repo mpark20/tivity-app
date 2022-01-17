@@ -15,6 +15,7 @@ const TaskList = (props) => {
             display: "none"
         }
     }
+    
         return (
             <>
             {props.tasks.map((task) =>(

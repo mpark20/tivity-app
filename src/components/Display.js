@@ -8,10 +8,10 @@ const Display = (props) => {
     const db = getDatabase();  
     const auth = getAuth(); 
     const body = document.querySelector("body");
-    //const user = props.user; 
     const [loading, setLoadingState] = useState(true);
     //const [theme, setTheme] = useState(props.light); 
     const [breakLength, setBreakLength] = useState(props.breakLength); 
+    const [user, setUser] = useState(auth.currentUser);
 
     var light = props.light; 
     var dark = !props.light; 
@@ -20,11 +20,14 @@ const Display = (props) => {
     useEffect(() => {
         setTimeout(()=> {
             setLoadingState(false);
+            readSettings(); 
             fillValues();
+            setUser(auth.currentUser)
         }, 1000); 
-    }, []); 
+        
+    }, [breakLength]); 
 
-    onAuthStateChanged(auth, (user) => {
+    /*onAuthStateChanged(auth, (user) => {
         if (user) { 
             var node = ref(db, "users/" + user.uid + "/settings");
             onValue(node, (snapshot) => {
@@ -33,8 +36,28 @@ const Display = (props) => {
         } else { 
             body.classList.remove("dark"); 
             console.log("light")
+            
         }
-    });
+    });*/
+
+    function readSettings() {
+        var settings = [];
+        if (user) { 
+            var node = ref(db, "users/" + user.uid + "/settings");
+            onValue(node, (snapshot) => {
+                snapshot.forEach(function(childSnapshot) {
+                    var option = childSnapshot.val();
+                    settings.push(option);
+                });
+            })
+            setBreakLength(settings[0]);
+            dark = settings[1]; 
+            light = settings[2]; 
+        }
+        
+        
+    }
+
     function snapshotToArray(snapshot) {
         var settings = [];
         snapshot.forEach(function(childSnapshot) {
@@ -84,38 +107,37 @@ const Display = (props) => {
     }
     
     function saveSettings() {
-        onAuthStateChanged(auth, (user) => {
+        //onAuthStateChanged(auth, (user) => {
             if (user) {
-                setBreakLength(document.getElementById("breakLength").value); 
-                var settings = {breakLength: breakLength, darkMode: dark, lightMode: light}
+                var bl = document.getElementById("breakLength").value;
+                console.log(bl) 
+                var settings = {breakLength: bl, darkMode: dark, lightMode: light}
                 var node = ref(db, 'users/' + user.uid + '/settings');
                 set(node, settings)
-                .then((result) => {
-                    document.getElementById("save-message").innerHTML = "saved";
-                    console.log(settings.breakLength+" "+settings.darkMode+" "+settings.lightMode);
-                })
-                .catch((error) => {
-                    console.log(error); 
-                }) 
+                document.getElementById("save-message").innerHTML = "saved";
+                console.log(settings.breakLength+" "+settings.darkMode+" "+settings.lightMode);
+                setBreakLength(bl);
             }
             else {
                 document.getElementById("save-message").innerHTML = "please log in to save settings."; 
             }
-        })
+        //})
         
     }
     function fillValues() { 
+        document.getElementById("breakLength").value = breakLength;  
         let lightBox = document.getElementById("lightMode");
         let darkBox = document.getElementById("darkMode");
         if (light===true) {
             lightBox.checked = true; 
             darkBox.checked = false; 
+            body.classList.remove("dark");
         }
         else {
             darkBox.checked = true;
             lightBox.checked = false; 
+            body.classList.add("dark");
         } 
-        
         
     }
     if (loading) {

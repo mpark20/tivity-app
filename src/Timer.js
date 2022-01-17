@@ -27,7 +27,7 @@ class Timer extends Component {
     this.changeBreakOption = this.changeBreakOption.bind(this);
     this.tick = this.tick.bind(this);
     this.formatted = this.formatted.bind(this);
-    this.adjustIDs = this.adjustIDs.bind(this);
+    //this.adjustIDs = this.adjustIDs.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
     this.pauses = 0; 
     this.resumeTimer = this.resumeTimer.bind(this);
@@ -64,7 +64,7 @@ class Timer extends Component {
   addTask() {
     var task = document.getElementById("task").value;
     var duration = document.getElementById("time").value;
-    var index = this.state.tasks.length+1;
+    var index = Date.now(); 
     if (task !== "" && duration !== "") {
       this.setState({
       tasks: [...this.state.tasks, {title: task, time: duration, id: index}],
@@ -101,7 +101,7 @@ class Timer extends Component {
     console.log("removed task id: "+id);
     
   }
-  adjustIDs(id) {
+  /*adjustIDs(id) {
     if (this.state.tasks.length > 0) {
       document.getElementById("save-list").classList.remove("inactive");
     }
@@ -119,7 +119,7 @@ class Timer extends Component {
       tasks: tasks,
       timeLeft: {...this.state.timeLeft},
     }, ()=>{console.log(this.state.tasks)})
-  }
+  }*/
   setTimer(minutes) {
     var hr = this.formatted(Math.floor(minutes / 60)); //# of whole hours
     var min = this.formatted(Math.floor(minutes % 60)); //# of leftover minutes once converted into hours
@@ -235,17 +235,13 @@ class Timer extends Component {
       this.listName.replace("_", " "); 
     }
     console.log(this.listName);
-    let tasks = this.state.tasks.length;
-    var list = [];  
-    for (let i=0; i<tasks; i++) {
-      list[i] = this.state.tasks[i].title; 
-    }
+    
     var dateTime = Date.now(); 
     var listId = dateTime + "_" + this.listName;
     
     if (this.user) {
       var node = ref(this.db, 'users/' + this.user.uid + '/savedLists/' + listId);
-      set(node, list); 
+      set(node, this.state.tasks); 
       document.getElementById("save-message").innerHTML = "list saved"
       document.getElementById("exit-save").innerHTML = "done"
     }

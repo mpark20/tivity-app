@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import { getDatabase, ref, set, onValue, push, remove } from "firebase/database";
+import { getDatabase, ref, set, onValue, remove } from "firebase/database";
 import './App.css';
 import TaskList from './components/TaskList';
 import Loading from './components/Loading';
@@ -8,57 +8,49 @@ import Loading from './components/Loading';
 const Planner = () => {
     const db = getDatabase(); 
     const auth = getAuth();
-    const user = auth.currentUser;
-    const [tasks, setTasks] = useState([])   
+    const [user, setUser] = useState(auth.currentUser);
+    const [tasks, setTasks] = useState(readTasks())   
     const [loading, setLoadingState] = useState(true);
-    var todos = []; 
 
-    if (user) {
-        var node = ref(db, "users/" + user.uid + "/todos"); 
-        onValue(node, (snapshot) => {
-            snapshotToArray(snapshot)
-        })
-    }
-    useEffect(() => {  
-        readTasks(); 
-        console.log(tasks);
-        setLoadingState(false);
-    }, [tasks]);
-    function readTasks() {
-        //var temp = [];
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                var node = ref(db, "users/" + user.uid + "/todos"); 
-                onValue(node, (snapshot) => {
-                    snapshotToArray(snapshot)
-                })
-            }
-        }) 
-        //setTimeout(()=>{return temp}, 500)
-    }
-    function snapshotToArray(snapshot) {
-        snapshot.forEach((childSnapshot) => { 
-            var item = childSnapshot.val();
-            item.key = childSnapshot.key;
-            todos.push(item);
-        });
-        
-    };
     
+    useEffect(() => { 
+        setTimeout(()=>{
+            setLoadingState(false);
+            setUser(auth.currentUser);
+        }, 1000)
+    }, [tasks, user]);
+    
+    function readTasks() {
+        var temp = [];
+        if (user) { 
+            var node = ref(db, "users/" + user.uid + "/todos"); 
+            onValue(node, (snapshot) => {
+                snapshot.forEach((childSnapshot) => { 
+                    var item = childSnapshot.val();
+                    //item.key = childSnapshot.key;
+                    temp.push(item);
+                });
+                
+            })
+            
+            return temp; 
+        }
+        else {
+            return temp; 
+        }
+    }
     
 
     function addTask() {
         var title = document.getElementById("task").value;
-        var index = Date.now(); 
-        var task = {title: title, id: index};
+        var task = {title: title, time: 25, id: Date.now()};
         if (task !== "") {
-            todos.push(task);
-            setTasks(todos);
+            setTasks([...tasks, task]);
             document.getElementById("save-list").classList.remove("inactive");
             document.getElementById("task").value = "";
             if (user) {
-                var node = ref(db, 'users/' + user.uid + '/todos');
-                push(node, task); 
+                var node = ref(db, 'users/' + user.uid + '/todos/task'+ task.id);
+                set(node, task); 
             }
         }
     }
@@ -71,6 +63,8 @@ const Planner = () => {
   function deleteTask(id) {
     if (tasks.length > 0) { 
       setTasks(tasks.filter((task) => task.id !== id))
+      var node = ref(db, "users/" + user.uid + "/todos/" + id); 
+      remove(node);
     }
     else {
         document.getElementById("save-list").classList.add("inactive");
@@ -85,16 +79,25 @@ const Planner = () => {
   }
   function saveList() {
     var listName = document.getElementById("list-name").value;
+    if (listName === "undefined") {
+        listName = ""; 
+    }
+    var ms = Date.now();    
+    var listId = ms + "_" + listName;       //create unique key
+    var date = (new Date(parseInt(ms))).toString(); 
+    date = date.substring(0, date.indexOf("G"));    //get date & time
+
     if (listName.indexOf("_")!== -1) {
       listName.replace("_", " "); 
     }
     console.log(listName);
-    var list = [];  
+
+    var list = []; 
+    var tempTasks = [] 
     for (let i=0; i<tasks.length; i++) {
-      list[i] = tasks[i].title; 
+      tempTasks[i] = tasks[i]; 
     }
-    var dateTime = Date.now(); 
-    var listId = dateTime + "_" + listName;
+    list = {tasks: tempTasks, date: date}
     
     if (user) {
       var node = ref(db, 'users/' + user.uid + '/savedLists/' + listId);
@@ -115,6 +118,13 @@ const Planner = () => {
     document.getElementById("name-list").style.display = "none";
     document.getElementById("exit-save").innerHTML = "cancel"
     document.getElementById("save-message").innerHTML = ""
+  }
+  function emptyList() {
+      if (tasks.length === 0) {
+          return(
+              <div style={{margin: "10px 0", fontSize: "14px"}}>all clear for now!</div>
+          )
+      }
   }
   if (loading) {
     return(
@@ -144,6 +154,7 @@ const Planner = () => {
       <div className="split">        
         <div id="task-list" style={{width: "80%", margin: "10px auto"}}>
           <h2>my to-do list</h2>
+          <>{emptyList()}</>
           <TaskList tasks={tasks} delete={deleteTask} origin="planner"/>
           <div className="btn-container">
               <button onClick={nameList} className="btn white" style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
@@ -152,7 +163,7 @@ const Planner = () => {
           
           <div id="name-list" style={{display:"none"}}>
             <form>
-              <input type="text" className="text-field" id="list-name" placeholder="enter list name..."/>
+              <input type="text" className="text-field" id="list-name" placeholder="add a note..."/>
             </form>
             <div className="btn-container">
               <button onClick={saveList} className="btn white">OK</button>
