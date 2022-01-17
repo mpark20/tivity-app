@@ -90,12 +90,14 @@ a {
   height: 100vh;
   padding: 0;
 }
-
+.task-entry {
+  animation: fadeIn 500ms;
+}
 #task, #time {
   font-family: nunito-l;
   float: left; 
   border: none; 
-  margin: 20px 2px;  
+  margin: 20px 2px;   
 }
   #time {
     width: 15%; 
@@ -152,7 +154,11 @@ button {
   display: block;
   float: left; 
   align-items: baseline; 
+  transition: color 100ms linear; 
 }
+  .x-btn:hover {
+    color: #ffa1a1; 
+  }
 input {
   color: inherit; 
   background-color: inherit;
@@ -300,11 +306,10 @@ input {
 p {
   margin: 0; 
 }
-.list-title {
-  display: inline; 
-  cursor: pointer; 
-  text-decoration: underline;
-  margin: 10px 0; 
+.list-title { 
+  display: block; 
+  text-decoration: none; 
+  color: gray; 
 }
   .list-title:hover {
     opacity: 0.5; 
@@ -312,9 +317,10 @@ p {
   }
 
 .list-date {
-  text-decoration: none;
-  margin-left: 10px; 
-  color: gray; 
+  display: block; 
+  cursor: pointer; 
+  text-decoration: underline;
+  margin: 10px 0;
 }
 .dark .list-date  {
   color: rgb(235, 235, 235); 
@@ -435,3 +441,7 @@ p {
 	}
 }
 
+@keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}

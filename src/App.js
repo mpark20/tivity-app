@@ -78,7 +78,7 @@ class App extends Component {
     this.dark = settings[1]; 
     this.light = settings[2];  
     
-    if (this.light===true) {
+    if (this.light==="true") {
         body.classList.remove("dark"); 
         console.log("light") 
     }
@@ -107,7 +107,7 @@ class App extends Component {
               <li><NavLink to="/planner">planner</NavLink></li>
               <li><NavLink to="/todo">todo list</NavLink></li>
           </ul>
-          <div className="logo"><Link to="/">tiviti</Link></div>
+          <div className="logo"><Link to="/">tivity</Link></div>
           <div className="content">
             <Route path="/todo" component={()=> <TodoList/>}/>
             <Route path="/planner" component={()=> <SavedLists2/>}/>

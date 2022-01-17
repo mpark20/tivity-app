@@ -77,7 +77,7 @@ class Timer extends Component {
       }); 
 
       document.getElementById("task").value = "";
-      document.getElementById("time").value = "";
+      document.getElementById("time").value = 25;
     }
     
   }
@@ -96,7 +96,7 @@ class Timer extends Component {
     if (tasks.length > 0) {
       this.setState({ 
         tasks: tasks.filter((task) => task.id !== id),
-      }, ()=>{this.adjustIDs(id)});
+      });
     }
     console.log("removed task id: "+id);
     
@@ -271,7 +271,7 @@ class Timer extends Component {
               </div>
               <form autoComplete="off" onLoad={this.enterToClick}> 
                   <input type="text" placeholder="task name..." id="task" required />
-                  <input type="number" step="15" placeholder="minutes" id="time" required/>
+                  <input type="number" step={5} placeholder="minutes" id="time" required defaultValue={25}/>
               </form>
               <br/><br/>
               <div className="btn-container">

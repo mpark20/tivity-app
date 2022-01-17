@@ -123,8 +123,8 @@ const SavedLists2 = () => {
                 {savedLists.map((list, index) => (
                     <div key={list.key}>
                         <button key={list.key + "_x"} className="x-btn" onClick={() => deleteList(list.key)}>x</button>
-                        <div key={list.key+"_title"} className="list-title" onClick={() => showList(index)}>{list.date}</div>
-                        <div key={list.key+"_date"} className="list-date" onClick={() => showList(index)}>{list.key.substring(list.key.indexOf("_")+1)}</div>
+                        <div key={list.key+"_title"} className="list-date" onClick={() => showList(index)}>{list.date}</div>
+                        <div key={list.key+"_date"} className="list-title" onClick={() => showList(index)}>{list.key.substring(list.key.indexOf("_")+1)}</div>
                         <div key={list.key+"_items"} className="list-contents">{listItems(list)}</div>
                     </div>
                 ))}
@@ -133,7 +133,10 @@ const SavedLists2 = () => {
     }  
     else {
         return (
-            <div><a href="/#/auth" style={{textDecoration:"underline"}}>log in</a> to view saved lists</div>
+            <div className="page-container">
+                <h2>saved lists</h2>
+                <a href="/#/auth" style={{textDecoration:"underline"}}>log in</a> to view saved lists
+            </div>
         )
     }
 }

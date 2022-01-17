@@ -128,7 +128,7 @@ const Display = (props) => {
         document.getElementById("breakLength").value = breakLength;  
         let lightBox = document.getElementById("lightMode");
         let darkBox = document.getElementById("darkMode");
-        if (light===true) {
+        if (light==="true") {
             lightBox.checked = true; 
             darkBox.checked = false; 
             body.classList.remove("dark");

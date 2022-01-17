@@ -17,9 +17,21 @@ const Planner = () => {
         setTimeout(()=>{
             setLoadingState(false);
             setUser(auth.currentUser);
+            if (!user) {
+                document.getElementById("user-message").innerHTML = "please log in to save lists to your planner."
+                document.getElementById("save-list").classList.add("inactive");
+            }
         }, 1000)
     }, [tasks, user]);
     
+    
+    const handleKeyPress = (e) => {
+      if (e.key === "Enter") {
+        addTask();  
+      }
+      console.log(e.key);
+    };
+
     function readTasks() {
         var temp = [];
         if (user) { 
@@ -36,6 +48,7 @@ const Planner = () => {
             return temp; 
         }
         else {
+            
             return temp; 
         }
     }
@@ -57,30 +70,42 @@ const Planner = () => {
   function clear() { 
     setTasks([]);
     document.getElementById("task").value = "";
-    var node = ref(db, "users/" + user.uid + "/todos/"); 
-    remove(node); 
+    if (user) {
+        var node = ref(db, "users/" + user.uid + "/todos/"); 
+        remove(node);
+    }
+     
   }
   function deleteTask(id) {
     if (tasks.length > 0) { 
       setTasks(tasks.filter((task) => task.id !== id))
-      var node = ref(db, "users/" + user.uid + "/todos/" + id); 
-      remove(node);
-    }
-    else {
+      if (user) {
+        var node = ref(db, "users/" + user.uid + "/todos/" + id); 
+        remove(node);
+      }
+      else {
         document.getElementById("save-list").classList.add("inactive");
+      }
     }
+    
     console.log(tasks);
   }
   function nameList() {
-    if (tasks.length > 0) {
-      document.getElementById("name-list").style.display = "block";
-      document.getElementById("exit-save").innerHTML = "cancel"
+    if (user) {
+      if (tasks.length > 0) {
+        document.getElementById("name-list").style.display = "block";
+        document.getElementById("exit-save").innerHTML = "cancel" 
+      }
     }
+    else {
+        document.getElementById("user-message").innerHTML = "please log in to save lists to your planner."
+        document.getElementById("save-list").classList.add("inactive");
+    } 
   }
   function saveList() {
     var listName = document.getElementById("list-name").value;
     if (listName === "undefined") {
-        listName = ""; 
+        listName = " "; 
     }
     var ms = Date.now();    
     var listId = ms + "_" + listName;       //create unique key
@@ -93,22 +118,20 @@ const Planner = () => {
     console.log(listName);
 
     var list = []; 
-    var tempTasks = [] 
-    for (let i=0; i<tasks.length; i++) {
-      tempTasks[i] = tasks[i]; 
-    }
-    list = {tasks: tempTasks, date: date}
+    list = {tasks: tasks, date: date}
     
     if (user) {
       var node = ref(db, 'users/' + user.uid + '/savedLists/' + listId);
       set(node, list); 
       document.getElementById("save-message").innerHTML = "list saved"
       document.getElementById("exit-save").innerHTML = "done"
+    
     }
     else {
-      console.log("please log in to save lists to your planner.")
+      document.getElementById("save-message").innerHTML = "please log in to save lists to your planner."
     } 
     cancelSaveList(); 
+    clear(); 
   }
   function cancelSaveList() {
     if (document.getElementById("exit-save").innerHTML ===  "done") {
@@ -122,7 +145,7 @@ const Planner = () => {
   function emptyList() {
       if (tasks.length === 0) {
           return(
-              <div style={{margin: "10px 0", fontSize: "14px"}}>all clear for now!</div>
+              <div style={{margin: "10px 0", fontSize: "14px", animation: "fadeIn 500ms"}}>all clear for now!</div>
           )
       }
   }
@@ -135,7 +158,7 @@ const Planner = () => {
   return (
     <>
       
-      <div className="split">
+      <div className="split" onKeyPress={handleKeyPress}>
         <div style={{width: "90%", margin: "10px auto"}}>
           <h2 style={{marginBottom: "2px"}}>add a task</h2>
           
@@ -157,11 +180,11 @@ const Planner = () => {
           <>{emptyList()}</>
           <TaskList tasks={tasks} delete={deleteTask} origin="planner"/>
           <div className="btn-container">
-              <button onClick={nameList} className="btn white" style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
+              <button onClick={nameList} className="btn white" style={{backgroundColor:"#ededed"}} id="save-list">export to planner</button>
               <button onClick={clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
           </div>
-          
-          <div id="name-list" style={{display:"none"}}>
+          <div className="message" id="user-message" style={{marginTop: "0"}}></div>
+          <div id="name-list" style={{display:"none", animation: "fadeIn 500ms"}}>
             <form>
               <input type="text" className="text-field" id="list-name" placeholder="add a note..."/>
             </form>

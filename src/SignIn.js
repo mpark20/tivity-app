@@ -92,7 +92,7 @@ const SignIn = () => {
           displayName: user.displayName,
           email: user.email,
           savedLists: "",
-          settings: {lightMode: "true", darkMode: "false", breakLength: "5"}
+          settings: {lightMode: true, darkMode: false, breakLength: "5"}
         });
       }
       
@@ -115,9 +115,10 @@ const SignIn = () => {
       console.log(error); 
     });  
   }
-  function welMess(message, user) {
+  function welMess(message, user) { 
     message.style.color = "black";
-    message.innerHTML = "hello "+user.displayName+"!";
+    if (user.displayName) {message.innerHTML = "hello "+user.displayName+"!"}
+    else {message.innerHTML = "hello "+document.getElementById("username").value+"!"}
     document.getElementById("password").value = ""; 
   }
   function errMess(message, error) {
@@ -138,7 +139,7 @@ const SignIn = () => {
         <button className="btn" onClick={signUp} style={{margin: "10px 5px 20px 0"}}>sign up</button> 
         <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>
       </div>
-      <div onClick={showLI} className=" "><button>log into an existing account</button></div>
+      <div onClick={showLI} className="message"><button>log into an existing account</button></div>
       <div className="message" id="register-message"></div>
     </div>
     <div className="signin" id="login">
