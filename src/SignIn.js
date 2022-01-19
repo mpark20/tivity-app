@@ -111,6 +111,7 @@ const SignIn = () => {
     signOut(auth).then(() => {
       logOut.style.display = "none";
       logIn.style.display = "block";
+      document.querySelector("body").classList.remove("dark");
     }).catch((error) => {
       console.log(error); 
     });  

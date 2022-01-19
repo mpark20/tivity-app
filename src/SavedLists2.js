@@ -3,7 +3,7 @@ import { getDatabase, ref, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
 import Loading from "./components/Loading";
 
-const SavedLists2 = () => {
+const SavedLists2 = (props) => {
     const auth = getAuth();  
     const db = getDatabase();  
     const [user, setUser] = useState(auth.currentUser);
@@ -29,7 +29,7 @@ const SavedLists2 = () => {
                 snapshot.forEach(function(childSnapshot) { 
                     var item = childSnapshot.val();
                     item.key = childSnapshot.key;
-                    lists.push(item);
+                    lists.push(item);       //.unshift() instead of .push()
                 });
             })
             /*for (let i=0; i<lists.length; i++) {
@@ -117,6 +117,20 @@ const SavedLists2 = () => {
                 </div>
             )
         }
+        /*if (props.origin === "timer") {
+            return(
+                <div className="pop-out">
+                    <h2>saved lists</h2>
+                    {savedLists.map((list, index) => (
+                        <div key={list.key}>
+                            <div key={list.key+"_title"} className="list-date" onClick={() => showList(index)}>{list.date}</div>
+                            <div key={list.key+"_date"} className="list-title" onClick={() => showList(index)}>{list.key.substring(list.key.indexOf("_")+1)}</div>
+                            <div key={list.key+"_items"} className="list-contents">{listItems(list)}</div>
+                        </div>
+                    ))}
+                </div>
+            )
+        }*/
         return(
             <div className="page-container">
                 <h2>saved lists</h2>

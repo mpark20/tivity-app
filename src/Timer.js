@@ -15,6 +15,7 @@ class Timer extends Component {
     } 
     this.totalTime = 0; 
     this.addTask = this.addTask.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.clear = this.clear.bind(this);
     this.deleteTask = this.deleteTask.bind(this);
     this.setTimer = this.setTimer.bind(this);
@@ -61,6 +62,11 @@ class Timer extends Component {
     var doubleDigit = ("0" + num).slice(-2);
     return doubleDigit; 
   }
+  handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      this.addTask();  
+    }
+  };
   addTask() {
     var task = document.getElementById("task").value;
     var duration = document.getElementById("time").value;
@@ -222,6 +228,7 @@ class Timer extends Component {
     this.insertBreaks = !this.insertBreaks;
     console.log(this.insertBreaks);
   }
+  
   nameList() {
     if (this.state.tasks.length > 0) {
       document.getElementById("name-list").style.display = "block";
@@ -263,13 +270,13 @@ class Timer extends Component {
       <div className="timer-container" > 
           
 
-          <div className="split">
+          <div className="split" onKeyPress={this.handleKeyPress} >
             <div style={{width: "80%", margin: "10px auto"}}>
               <h2>task list</h2>
               <div id="task-list">
                 <TaskList tasks={this.state.tasks} delete={this.deleteTask} origin="timer"/>
               </div>
-              <form autoComplete="off" onLoad={this.enterToClick}> 
+              <form autoComplete="off"> 
                   <input type="text" placeholder="task name..." id="task" required />
                   <input type="number" step={5} placeholder="minutes" id="time" required defaultValue={25}/>
               </form>

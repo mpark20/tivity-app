@@ -54,11 +54,15 @@ const Display = (props) => {
             dark = settings[1]; 
             light = settings[2]; 
         }
-        
+        else {
+            setBreakLength(5);
+            dark = "false";
+            light = "true"; 
+        }
         
     }
 
-    function snapshotToArray(snapshot) {
+    /*function snapshotToArray(snapshot) {
         var settings = [];
         snapshot.forEach(function(childSnapshot) {
             var option = childSnapshot.val();
@@ -77,7 +81,7 @@ const Display = (props) => {
             body.classList.add("dark");
             //console.log("dark"); 
         } 
-    }
+    }*/
     
     function darkMode() {
         dark = !dark

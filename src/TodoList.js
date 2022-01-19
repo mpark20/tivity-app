@@ -29,7 +29,6 @@ const Planner = () => {
       if (e.key === "Enter") {
         addTask();  
       }
-      console.log(e.key);
     };
 
     function readTasks() {
@@ -57,9 +56,9 @@ const Planner = () => {
     function addTask() {
         var title = document.getElementById("task").value;
         var task = {title: title, time: 25, id: Date.now()};
-        if (task !== "") {
+        if (title !== "") {
             setTasks([...tasks, task]);
-            document.getElementById("save-list").classList.remove("inactive");
+            if (user) {document.getElementById("save-list").classList.remove("inactive")}
             document.getElementById("task").value = "";
             if (user) {
                 var node = ref(db, 'users/' + user.uid + '/todos/task'+ task.id);
@@ -102,19 +101,20 @@ const Planner = () => {
         document.getElementById("save-list").classList.add("inactive");
     } 
   }
-  function saveList() {
+  function saveList() { 
     var listName = document.getElementById("list-name").value;
     if (listName === "undefined") {
         listName = " "; 
     }
+    if (listName.indexOf("_")!== -1) {
+      listName.replace("_", " "); 
+    }
+
     var ms = Date.now();    
     var listId = ms + "_" + listName;       //create unique key
     var date = (new Date(parseInt(ms))).toString(); 
     date = date.substring(0, date.indexOf("G"));    //get date & time
 
-    if (listName.indexOf("_")!== -1) {
-      listName.replace("_", " "); 
-    }
     console.log(listName);
 
     var list = []; 
@@ -125,7 +125,6 @@ const Planner = () => {
       set(node, list); 
       document.getElementById("save-message").innerHTML = "list saved"
       document.getElementById("exit-save").innerHTML = "done"
-    
     }
     else {
       document.getElementById("save-message").innerHTML = "please log in to save lists to your planner."
@@ -162,8 +161,8 @@ const Planner = () => {
         <div style={{width: "90%", margin: "10px auto"}}>
           <h2 style={{marginBottom: "2px"}}>add a task</h2>
           
-          <form autoComplete="off"> 
-              <input type="text" placeholder="task name..." id="task" required />
+          <form autoComplete="off" noValidate> 
+              <input type="text" placeholder="task name..." id="task"  required />
           </form>
           <br/><br/>
           <div className="btn-container">
