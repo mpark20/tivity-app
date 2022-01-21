@@ -76,8 +76,8 @@ class Timer extends Component {
     var index = Date.now(); 
     if (task !== "" && duration !== "") {
       this.setState({
-      tasks: [...this.state.tasks, {title: task, time: duration, id: index}],
-      timeLeft: {...this.state.timeLeft}
+        tasks: [...this.state.tasks, {title: task, time: duration, id: index}],
+        timeLeft: {...this.state.timeLeft}
       }, () => {
         console.log(this.state.tasks); 
         this.setTimer(this.state.tasks[0].time); 
@@ -140,7 +140,7 @@ class Timer extends Component {
     
   }
   startTimer() {
-    //this.setTimer(parseInt(this.state.tasks[this.intervals].time));
+    //this.setTimer(parseInt(this.state.tasks[this.intervals].time)); 
     if ((parseInt(this.state.timeLeft.h) > 0 || parseInt(this.state.timeLeft.m) > 0)) {
       document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
@@ -215,17 +215,21 @@ class Timer extends Component {
     document.getElementById("resume").style.display = "none";
     document.getElementById("pause").style.display = "block";
   }
-  clearTimer() {
+  clearTimer() { 
     this.setState({
       tasks: [...this.state.tasks],
-      timeLeft: {h: "00", m: "00", s: "00"}
+      timeLeft: {...this.state.timeLeft}
     });
+    this.setTimer(this.state.tasks[0].time);
+    this.intervals = 0;
+    document.getElementById("task-label").innerHTML = this.state.tasks[0].title;
     clearInterval(this.timer); 
     document.getElementById("pause").style.display = "";
     document.getElementById("resume").style.display = "none";
     document.getElementsByClassName("timer-container")[0].removeAttribute("id");
     this.totalTime = 0;
-    this.pauses = 0;   
+    this.pauses = 0; 
+     
   }
   changeBreakOption() {
     this.insertBreaks = !this.insertBreaks;
@@ -277,7 +281,14 @@ class Timer extends Component {
     }
   }
   importTasks(t) {
-    this.state.tasks = t; 
+    this.setState({
+      tasks: t,
+      timeLeft: {...this.state.timeLeft}
+    }, () => {
+      document.getElementById("import-list").style.display = "none"
+      this.setTimer(this.state.tasks[0].time); 
+    }
+    )
   }
   render() {
     
