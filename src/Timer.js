@@ -5,6 +5,7 @@ import Countdown from "./components/Countdown"
 //import AddToCalendar from "./components/AddToCalendar"
 import { getDatabase, set, ref, onValue } from "firebase/database"; 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import SavedLists2 from "./SavedLists2";
 
 class Timer extends Component {
   constructor(props) {
@@ -41,6 +42,8 @@ class Timer extends Component {
     this.auth = getAuth(); 
     this.db = getDatabase(); 
     this.user = this.auth.currentUser;
+    this.toggleImportList = this.toggleImportList.bind(this);
+    this.importTasks = this.importTasks.bind(this);
 
     onAuthStateChanged(this.auth, (user) => {
       if (this.user) {
@@ -264,6 +267,18 @@ class Timer extends Component {
     document.getElementById("exit-save").innerHTML = "cancel"
     document.getElementById("save-message").innerHTML = ""
   }
+  toggleImportList() {
+    const planner = document.getElementById("import-list")
+    if (planner.style.display === "none") {
+      planner.style.display = "block"
+    }
+    else {
+      planner.style.display = "none";
+    }
+  }
+  importTasks(t) {
+    this.state.tasks = t; 
+  }
   render() {
     
     return (
@@ -285,8 +300,10 @@ class Timer extends Component {
                 <button onClick={this.addTask} className="btn" id="add-task">enter</button>
                 <button onClick={this.clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
                 <button onClick={this.nameList} className="btn white inactive" style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
+                <button onClick={this.toggleImportList} className="btn white" id="show-import">import todo list</button>
                 {/*<AddToCalendar tasks={this.state.tasks}/>*/}
               </div>
+              
               <div id="name-list" style={{display:"none"}}>
                 <form>
                   <input type="text" className="text-field" id="list-name" placeholder="enter list name..."/>
@@ -309,6 +326,10 @@ class Timer extends Component {
                 <p># of tasks: {this.state.tasks.length}</p>
               </div>
             </div>
+          </div>
+          <div id="import-list">
+            <button onClick={this.toggleImportList} className="btn white" style={{margin: "10px", display: "block"}}>close</button>
+            <SavedLists2 origin="timer" import={this.importTasks}/>
           </div>
           <div className="divide"/>
           <div className="split" >  

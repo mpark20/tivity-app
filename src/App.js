@@ -9,7 +9,7 @@ import {
 import Timer from "./Timer";
 import SavedLists2 from "./SavedLists2";
 import TodoList from "./TodoList";
-import Dashboard from "./Dashboard";
+//import Dashboard from "./Dashboard";
 import Settings from "./Settings";
 import SignIn from "./SignIn";
 import Loading from "./components/Loading"
@@ -78,7 +78,7 @@ class App extends Component {
     this.dark = settings[1]; 
     this.light = settings[2];  
     
-    if (this.light==="true") {
+    if (this.light===true) {
         body.classList.remove("dark"); 
         console.log("light") 
     }
@@ -102,7 +102,7 @@ class App extends Component {
           <ul className="nav">
               <li><NavLink to="/auth">{this.login}</NavLink></li>
               <li><NavLink to="/settings">settings</NavLink></li>
-              <li><NavLink to="/dashboard">dashboard</NavLink></li>
+              {/*}<li><NavLink to="/dashboard">dashboard</NavLink></li>{*/}
               <li><NavLink to="/focus-timer">focus timer</NavLink></li>
               <li><NavLink to="/planner">planner</NavLink></li>
               <li><NavLink to="/todo">todo list</NavLink></li>
@@ -111,9 +111,9 @@ class App extends Component {
           <div className="content">
             <Route path="/todo" component={()=> <TodoList/>}/>
             <Route path="/planner" component={()=> <SavedLists2/>}/>
-            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.breakLength}/>}/>
+            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.breakLength} />}/>
             
-            <Route path="/dashboard" component={()=> <Dashboard user={this.state.user} light={this.light}/>}/>
+            {/*}<Route path="/dashboard" component={()=> <Dashboard user={this.state.user} light={this.light}/>}/>{*/}
             <Route path="/settings" component={()=> <Settings user={this.state.user} light={this.light} breakLength={this.breakLength}/>}/>
             <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
           </div>

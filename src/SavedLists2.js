@@ -10,7 +10,7 @@ const SavedLists2 = (props) => {
     const [savedLists, setSavedLists] = useState(readSavedLists());
     const [loading, setLoadingState] = useState(true); 
     
-    
+   
 
     useEffect(() => {
         setTimeout(()=>{
@@ -101,6 +101,13 @@ const SavedLists2 = (props) => {
         var node = ref(db, "users/" + user.uid + "/savedLists/" + key); 
         remove(node);
     }
+    if (props.origin === "timer") {
+        /*const btns = document.querySelectorAll("impt-btn"); 
+        for (let i=0; i<btns.length; i++) {
+            btns[i].style.display = "block"; 
+        }*/
+        document.querySelector("impt-btn").style.display = "block";
+    }
 
     if (loading) {
         return(
@@ -132,13 +139,14 @@ const SavedLists2 = (props) => {
             )
         }*/
         return(
-            <div className="page-container">
+            <div className="page-container" >
                 <h2>saved lists</h2>
                 {savedLists.map((list, index) => (
                     <div key={list.key}>
                         <button key={list.key + "_x"} className="x-btn" onClick={() => deleteList(list.key)}>x</button>
                         <div key={list.key+"_title"} className="list-date" onClick={() => showList(index)}>{list.date}</div>
                         <div key={list.key+"_date"} className="list-title" onClick={() => showList(index)}>{list.key.substring(list.key.indexOf("_")+1)}</div>
+                        <div key={list.key+"_import"} className="impt-btn" onClick={() => props.import(list.tasks)} style={{display:"none"}}></div>
                         <div key={list.key+"_items"} className="list-contents">{listItems(list)}</div>
                     </div>
                 ))}

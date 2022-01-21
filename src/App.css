@@ -310,6 +310,7 @@ p {
   display: block; 
   text-decoration: none; 
   color: gray; 
+  margin: 0 18px; 
 }
   .list-title:hover {
     opacity: 0.5; 
@@ -377,7 +378,16 @@ p {
     display: block; 
   }
 }
-
+#import-list {
+  display: none;
+  width: 80%;
+  min-height: 50vh; 
+  margin: auto 10vh; 
+  background-color: white; 
+  z-index: 1;
+  position: absolute; 
+  box-shadow: 0px 0px 5px 0px grey;
+}
 
 /*LOADING ANIMATION*/
 .lds-ring {
