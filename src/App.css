@@ -359,24 +359,7 @@ p {
   margin: 0; 
 }
 #new-entry {
-  width: 77.68px; 
-  transition:cubic-bezier(0.6, -0.28, 0.735, 0.045); 
-}
-
-
-@media screen and (max-width: 700px) {
-
-  .split {
-    width: 100%;
-    float: none; 
-  }
-
-  .divide {
-    display: none; 
-  }
-  .timer-container {
-    display: block; 
-  }
+  width: 77.68px;  
 }
 #import-list {
   display: none;
@@ -391,6 +374,33 @@ p {
 .impt-btn {
   display: none; 
   float: right; 
+}
+#reauthenticate {
+  display: none;  
+  position: absolute;
+  padding: 20px 10px; 
+  margin: auto; 
+  width: 50%; 
+  background-color: white; 
+  z-index: 1;
+  border-radius: 5px; 
+  box-shadow: 0px 0px 5px 0px grey;
+  animation: fadeIn 500ms;
+}
+
+@media screen and (max-width: 700px) {
+
+  .split {
+    width: 100%;
+    float: none; 
+  }
+
+  .divide {
+    display: none; 
+  }
+  .timer-container {
+    display: block; 
+  }
 }
 
 /*LOADING ANIMATION*/

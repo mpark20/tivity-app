@@ -136,7 +136,7 @@ const SignIn = () => {
       <div>
         <input type="text" className="text-field" id="new-email" placeholder="e-mail address"/>
         <input type="text" className="text-field" id="username" placeholder="username"/>
-        <input type="password" className="text-field" id="new-password" placeholder="password"/>
+        <input type="password" className="text-field" id="new-password" placeholder="password (6+ characters)"/>
         <button className="btn" onClick={signUp} style={{margin: "10px 5px 20px 0"}}>sign up</button> 
         <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>
       </div>
