@@ -74,11 +74,11 @@ class App extends Component {
         var option = childSnapshot.val();
         settings.push(option); 
     });
-    this.breakLength = settings[0];
+    this.breakLength = parseInt(settings[0]);
     this.dark = settings[1]; 
     this.light = settings[2];  
     
-    if (this.light===true) {
+    if (this.light===true || this.light === "true") {
         body.classList.remove("dark"); 
         console.log("light") 
     }

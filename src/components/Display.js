@@ -50,7 +50,7 @@ const Display = (props) => {
                     settings.push(option);
                 });
             })
-            setBreakLength(settings[0]);
+            setBreakLength(parseInt(settings[0]));
             dark = settings[1]; 
             light = settings[2]; 
         }

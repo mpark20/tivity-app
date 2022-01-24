@@ -4,6 +4,7 @@ import { getDatabase, ref, set, onValue, remove } from "firebase/database";
 import './App.css';
 import TaskList from './components/TaskList';
 import Loading from './components/Loading';
+import GoogleCal from './components/GoogleCal';
 
 const Planner = () => {
     const db = getDatabase(); 
@@ -18,7 +19,6 @@ const Planner = () => {
             setLoadingState(false);
             setUser(auth.currentUser);
             if (!user) {
-                document.getElementById("user-message").innerHTML = "please log in to save lists to your planner."
                 document.getElementById("save-list").classList.add("inactive");
             }
         }, 1000)
@@ -98,7 +98,7 @@ const Planner = () => {
     }
     else {
         document.getElementById("user-message").innerHTML = "please log in to save lists to your planner."
-        document.getElementById("save-list").classList.add("inactive");
+        
     } 
   }
   function saveList() { 
@@ -144,7 +144,7 @@ const Planner = () => {
   function emptyList() {
       if (tasks.length === 0) {
           return(
-              <div style={{margin: "10px 0", fontSize: "14px", animation: "fadeIn 500ms"}}>all clear for now!</div>
+              <div style={{margin: "10px 0", fontSize: "14px", animation: "fadeIn 500ms"}}>your todo list is empty</div>
           )
       }
   }
@@ -156,33 +156,16 @@ const Planner = () => {
 
   return (
     <>
-      
-      <div className="split" onKeyPress={handleKeyPress}>
-        <div style={{width: "90%", margin: "10px auto"}}>
-          <h2 style={{marginBottom: "2px"}}>add a task</h2>
-          
-          <form autoComplete="off" noValidate> 
-              <input type="text" placeholder="task name..." id="task"  required />
-          </form>
-          <br/><br/>
-          <div className="btn-container">
-            <button onClick={addTask} className="btn" id="add-task">enter</button>
-            {/*<AddToCalendar tasks={tasks}/>*/}
-          </div>
-          
-        </div>
-      </div>
-      <div className="divide"></div>
       <div className="split">        
-        <div id="task-list" style={{width: "80%", margin: "10px auto"}}>
+        <div id="task-list" style={{width: "90%", margin: "10px auto"}}>
           <h2>my to-do list</h2>
           <>{emptyList()}</>
           <TaskList tasks={tasks} delete={deleteTask} origin="planner"/>
           <div className="btn-container">
-              <button onClick={nameList} className="btn white" style={{backgroundColor:"#ededed"}} id="save-list">export to planner</button>
+              <button onClick={nameList} className="btn white" style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
               <button onClick={clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
           </div>
-          <div className="message" id="user-message" style={{marginTop: "0"}}></div>
+          <div className="message" id="user-message" style={{marginTop: "0", fontSize: "12px", fontStyle: "italic"}}></div>
           <div id="name-list" style={{display:"none", animation: "fadeIn 500ms"}}>
             <form>
               <input type="text" className="text-field" id="list-name" placeholder="add a note..."/>
@@ -193,8 +176,25 @@ const Planner = () => {
             </div>
             <div className="message" id="save-message" style={{marginTop: "0"}}></div>
           </div>
+          
         </div>
-        
+      </div>
+
+      <div className="divide"></div>
+
+      <div className="split" onKeyPress={handleKeyPress}>
+        <div style={{width: "90%", margin: "10px auto"}}>
+          <h2 style={{marginBottom: "2px"}}>add a task</h2>
+          
+          <form autoComplete="off" noValidate> 
+              <input type="text" placeholder="task name..." id="task"  required />
+          </form>
+          <br/><br/>
+          <div className="btn-container">
+            <button onClick={addTask} className="btn" id="add-task">enter</button>
+          </div>
+          <GoogleCal/>
+        </div>
       </div>
     </>
   );

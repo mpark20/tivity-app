@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import './App.css';
 import TaskList from "./components/TaskList"
 import Countdown from "./components/Countdown"
-//import AddToCalendar from "./components/AddToCalendar"
 import { getDatabase, set, ref, onValue } from "firebase/database"; 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import SavedLists2 from "./SavedLists2";
@@ -237,7 +236,7 @@ class Timer extends Component {
   }
   
   nameList() {
-    if (this.state.tasks.length > 0) {
+    if (this.user && this.state.tasks.length > 0) {
       document.getElementById("name-list").style.display = "block";
       document.getElementById("exit-save").innerHTML = "cancel"
     }
@@ -294,7 +293,11 @@ class Timer extends Component {
     
     return (
       <div className="timer-container" > 
-          
+          <div className="split" >  
+            <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
+          </div>
+
+          <div className="divide"/>
 
           <div className="split" onKeyPress={this.handleKeyPress} >
             <div style={{width: "80%", margin: "10px auto"}}>
@@ -311,13 +314,13 @@ class Timer extends Component {
                 <button onClick={this.addTask} className="btn" id="add-task">enter</button>
                 <button onClick={this.clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
                 <button onClick={this.nameList} className="btn white inactive" style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
-                <button onClick={this.toggleImportList} className="btn white" id="show-import">import todo list</button>
-                {/*<AddToCalendar tasks={this.state.tasks}/>*/}
+                <button onClick={this.toggleImportList} className="btn white" id="show-import">import from planner</button>
+               
               </div>
               
               <div id="name-list" style={{display:"none"}}>
                 <form>
-                  <input type="text" className="text-field" id="list-name" placeholder="enter list name..."/>
+                  <input type="text" className="text-field" id="list-name" placeholder="enter note..."/>
                 </form>
                 <div className="btn-container">
                   <button onClick={this.saveList} className="btn white">OK</button>
@@ -342,11 +345,6 @@ class Timer extends Component {
             <button onClick={this.toggleImportList} className="btn white" style={{margin: "10px", display: "block"}}>close</button>
             <SavedLists2 origin="timer" import={this.importTasks}/>
           </div>
-          <div className="divide"/>
-          <div className="split" >  
-            <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
-          </div>
-
           
         </div>
     );
