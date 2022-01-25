@@ -5,6 +5,7 @@ import Countdown from "./components/Countdown"
 import { getDatabase, set, ref, onValue } from "firebase/database"; 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import SavedLists2 from "./SavedLists2";
+import alarm from "./components/alarm2.mp3"
 
 class Timer extends Component {
   constructor(props) {
@@ -43,6 +44,7 @@ class Timer extends Component {
     this.user = this.auth.currentUser;
     this.toggleImportList = this.toggleImportList.bind(this);
     this.importTasks = this.importTasks.bind(this);
+    this.audio = new Audio(alarm); 
 
     onAuthStateChanged(this.auth, (user) => {
       if (this.user) {
@@ -152,6 +154,7 @@ class Timer extends Component {
     if (parseInt(this.state.timeLeft.h) === 0 && parseInt(this.state.timeLeft.m) === 0 && parseInt(this.state.timeLeft.s) === 0) { 
       console.log(this.state.timeLeft)
       if (!this.isBreak) {  //if the interval that just finished was not a break, the next one will be.
+        this.audio.play(); 
         alert(this.state.tasks[this.intervals].title + ": time's up")
         this.intervals += 1;
         if (this.insertBreaks && this.intervals < this.state.tasks.length) {
@@ -159,7 +162,8 @@ class Timer extends Component {
         }
       }
       else {  //if the interval that just finished was a break, the next one will not be.
-        alert(this.breakLength + "min break has finished")
+        this.audio.play(); 
+        alert(this.breakLength + " min break has finished")
         this.isBreak = false;
       }
       if (this.intervals < this.state.tasks.length) {
@@ -294,6 +298,7 @@ class Timer extends Component {
     return (
       <div className="timer-container" > 
           <div className="split" >  
+            
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
           </div>
 

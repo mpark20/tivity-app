@@ -79,7 +79,7 @@ const Planner = () => {
     if (tasks.length > 0) { 
       setTasks(tasks.filter((task) => task.id !== id))
       if (user) {
-        var node = ref(db, "users/" + user.uid + "/todos/" + id); 
+        var node = ref(db, "users/" + user.uid + "/todos/task" + id); 
         remove(node);
       }
       else {
@@ -193,7 +193,7 @@ const Planner = () => {
           <div className="btn-container">
             <button onClick={addTask} className="btn" id="add-task">enter</button>
           </div>
-          <GoogleCal/>
+          <GoogleCal tasks={tasks}/>
         </div>
       </div>
     </>

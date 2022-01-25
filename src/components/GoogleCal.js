@@ -1,12 +1,10 @@
 
-const GoogleCal = () => {
+const GoogleCal = ( props ) => {
     var gapi = window.gapi; 
     const CLIENT_ID = '491755087343-0a222r4k7rdonk6pd2vpg5pl57lqoub3.apps.googleusercontent.com';
     const API_KEY = 'AIzaSyCLcOEJmZwBrnz6b4z39qMJ-M54rhg241g';
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
     const SCOPES = "https://www.googleapis.com/auth/calendar";
-
-    //var eventList = ""; 
 
     function handleClientLoad() {
         gapi.load('client:auth2', initClient);
@@ -22,13 +20,36 @@ const GoogleCal = () => {
         gapi.client.load('calendar', 'v3', () => console.log('done'));
         gapi.auth2.getAuthInstance().signIn() 
         .then(() => {
-            //addEvent(); 
+            //addEvents(); 
             listUpcomingEvents(); 
         })
     }
-    function addEvent() {
-        var today = new Date(); 
+    function addEvents() {
+        var today = new Date()
+        var tmrw = new Date(today)
+        tmrw.setDate(tmrw.getDate() + 1)
+        
+        var events = ""; 
+        var tasks = props.tasks; 
+
+        //today = today.toString(); 
+        //tmrw = tmrw.toString(); 
+        for (let i=0; i<tasks.length; i++) {
+            events += tasks[i].title + " \n"
+        }
         var event = {
+            'summary': "Today's Tasks",
+            'description': events,
+            'start': {
+              'date': today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(),
+              //'timeZone': 'America/Los_Angeles'
+            },
+            'end': {
+                'date': tmrw.getFullYear()+'-'+(tmrw.getMonth()+1)+'-'+tmrw.getDate(),
+            },
+            
+        }
+        /*var event = {
             'summary': 'Google I/O 2015',
             'location': '800 Howard St., San Francisco, CA 94103',
             'description': 'A chance to hear more about Google\'s developer products.',
@@ -48,7 +69,7 @@ const GoogleCal = () => {
                 {'method': 'popup', 'minutes': 10}
               ]
             }
-        };
+        };*/
           
         var request = gapi.client.calendar.events.insert({
             'calendarId': 'primary',
@@ -120,9 +141,10 @@ const GoogleCal = () => {
             <h2 style={{marginBottom: "2px"}}>upcoming events</h2>
             <div id="cal-message"></div>
             <div className="btn-container">
-            <button onClick={handleClientLoad} className="btn red" id="gcal">load from Google Calendar</button>
-            <button onClick={hideEvents} style={{display:"none"}} className="btn white" id="hide">hide</button>
+                <button onClick={handleClientLoad} className="btn red" id="gcal">load from Google Calendar</button>
+                <button onClick={hideEvents} style={{display:"none"}} className="btn white" id="hide">hide</button>
             </div>
+            <a id="event-link"></a>
         </>
     )
 }
