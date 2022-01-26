@@ -1,8 +1,9 @@
 
 const GoogleCal = ( props ) => {
+    require('dotenv').config({ path: '../../.env'}); 
     var gapi = window.gapi; 
-    const CLIENT_ID = '491755087343-0a222r4k7rdonk6pd2vpg5pl57lqoub3.apps.googleusercontent.com';
-    const API_KEY = 'AIzaSyCLcOEJmZwBrnz6b4z39qMJ-M54rhg241g';
+    const CLIENT_ID = process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID;
+    const API_KEY = process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY; 
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
     const SCOPES = "https://www.googleapis.com/auth/calendar";
 

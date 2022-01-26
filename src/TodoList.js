@@ -7,65 +7,64 @@ import Loading from './components/Loading';
 import GoogleCal from './components/GoogleCal';
 
 const Planner = () => {
-    const db = getDatabase(); 
-    const auth = getAuth();
-    const [user, setUser] = useState(auth.currentUser);
-    const [tasks, setTasks] = useState(readTasks())   
-    const [loading, setLoadingState] = useState(true);
+  const db = getDatabase(); 
+  const auth = getAuth();
+  const [user, setUser] = useState(auth.currentUser);
+  const [tasks, setTasks] = useState(readTasks())   
+  const [loading, setLoadingState] = useState(true);
 
-    
-    useEffect(() => { 
-        setTimeout(()=>{
-            setLoadingState(false);
-            setUser(auth.currentUser);
-            if (!user) {
-                document.getElementById("save-list").classList.add("inactive");
-            }
-        }, 1000)
-    }, [tasks, user]);
-    
-    
-    const handleKeyPress = (e) => {
-      if (e.key === "Enter") {
-        addTask();  
+  
+  useEffect(() => { 
+      setTimeout(()=>{
+          setLoadingState(false);
+          setUser(auth.currentUser);
+          if (!user) {
+              document.getElementById("save-list").classList.add("inactive");
+          }
+      }, 1000)
+  }, [tasks, user]);
+  
+  
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      addTask();  
+    }
+  };
+
+  function readTasks() {
+      var temp = [];
+      if (user) { 
+          var node = ref(db, "users/" + user.uid + "/todos"); 
+          onValue(node, (snapshot) => {
+              snapshot.forEach((childSnapshot) => { 
+                  var item = childSnapshot.val();
+                  temp.push(item);
+              });
+              
+          })
+          
+          return temp; 
       }
-    };
+      else {
+          
+          return temp; 
+      }
+  }
+  
 
-    function readTasks() {
-        var temp = [];
-        if (user) { 
-            var node = ref(db, "users/" + user.uid + "/todos"); 
-            onValue(node, (snapshot) => {
-                snapshot.forEach((childSnapshot) => { 
-                    var item = childSnapshot.val();
-                    //item.key = childSnapshot.key;
-                    temp.push(item);
-                });
-                
-            })
-            
-            return temp; 
-        }
-        else {
-            
-            return temp; 
-        }
-    }
-    
-
-    function addTask() {
-        var title = document.getElementById("task").value;
-        var task = {title: title, time: 25, id: Date.now()};
-        if (title !== "") {
-            setTasks([...tasks, task]);
-            if (user) {document.getElementById("save-list").classList.remove("inactive")}
-            document.getElementById("task").value = "";
-            if (user) {
-                var node = ref(db, 'users/' + user.uid + '/todos/task'+ task.id);
-                set(node, task); 
-            }
-        }
-    }
+  function addTask() {
+      var title = document.getElementById("task").value;
+      var task = {title: title, time: 25, id: Date.now()};
+      if (title !== "") {
+          setTasks([...tasks, task]);
+          if (user) {document.getElementById("save-list").classList.remove("inactive")}
+          document.getElementById("task").value = "";
+          if (user) {
+              var node = ref(db, 'users/' + user.uid + '/todos/task'+ task.id);
+              set(node, task); 
+          }
+      }
+  }
   function clear() { 
     setTasks([]);
     document.getElementById("task").value = "";
