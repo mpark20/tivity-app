@@ -10,12 +10,13 @@ import {
 } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 import "./firebase"
-//someone@example.com, 000000 
+ 
 const SignIn = () => {  
   const auth = getAuth();
   const db = getDatabase();
   const provider = new GoogleAuthProvider();
-  onAuthStateChanged(auth, (user) => {
+
+  onAuthStateChanged(auth, (user) => {    // checks if user is logged in
     var login = document.getElementById("login-btn");
     var logout = document.getElementById("logout-btn");
     if (user) {
@@ -39,7 +40,7 @@ const SignIn = () => {
     su.style.display = "none";
     li.style.display = "block";
   }
-  function signUp() {
+  function signUp() {   //runs when signup button is clicked
     var email = document.getElementById("new-email").value;
     var password = document.getElementById("new-password").value;
     var uname = document.getElementById("username").value;
@@ -63,7 +64,7 @@ const SignIn = () => {
       errMess(message, error);
     });
   }
-  function logIn() {
+  function logIn() {    //runs when login button is clicked
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
     var message = document.getElementById("login-message");
@@ -77,7 +78,7 @@ const SignIn = () => {
       errMess(message, error)
     });
   }
-  function signUpGoogle() {
+  function signUpGoogle() {   //runs when 'continue with google' is clicked
     signInWithPopup(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -88,7 +89,7 @@ const SignIn = () => {
       document.getElementById("login-message").innerHTML = "hello "+user.displayName+"!";
       var userNode = ref(db, 'users/' + user.uid); 
       if (!userNode) {
-        set(ref(userNode), {
+        set(userNode, {
           displayName: user.displayName,
           email: user.email,
           savedLists: "",
@@ -98,16 +99,13 @@ const SignIn = () => {
       
     })
     .catch((error) => {
-      // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
-      // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
       console.log(errorCode + "\n" + errorMessage + "\n" + credential); 
     });
   }
-  function logOut() {
+  function logOut() {   //runs when logout button is clicked
     signOut(auth).then(() => {
       logOut.style.display = "none";
       logIn.style.display = "block";

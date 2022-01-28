@@ -145,7 +145,7 @@ class Timer extends Component {
     if ((parseInt(this.state.timeLeft.h) > 0 || parseInt(this.state.timeLeft.m) > 0)) {
       document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
-      this.timer = setInterval(this.tick, 10);
+      this.timer = setInterval(this.tick, 1000);
     } 
   }
   tick() {
@@ -214,7 +214,7 @@ class Timer extends Component {
     document.getElementById("resume").style.display = "block";
   }
   resumeTimer() {
-    this.timer = setInterval(this.tick, 10);
+    this.timer = setInterval(this.tick, 1000);
     document.getElementById("resume").style.display = "none";
     document.getElementById("pause").style.display = "block";
   }

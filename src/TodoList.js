@@ -10,7 +10,7 @@ const Planner = () => {
   const db = getDatabase(); 
   const auth = getAuth();
   const [user, setUser] = useState(auth.currentUser);
-  const [tasks, setTasks] = useState(readTasks())   
+  const [tasks, setTasks] = useState(readTasks())   // user's tasks on their todo list
   const [loading, setLoadingState] = useState(true);
 
   
