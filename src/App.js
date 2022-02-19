@@ -9,6 +9,7 @@ import {
 import Timer from "./Timer";
 import SavedLists2 from "./SavedLists2";
 import TodoList from "./TodoList";
+import Calendar from "./Calendar"
 //import Dashboard from "./Dashboard";
 import Settings from "./Settings";
 import SignIn from "./SignIn";
@@ -104,6 +105,7 @@ class App extends Component {
               <li><NavLink to="/settings">settings</NavLink></li>
               {/*}<li><NavLink to="/dashboard">dashboard</NavLink></li>{*/}
               <li><NavLink to="/focus-timer">focus timer</NavLink></li>
+              <li><NavLink to="/calendar">calendar</NavLink></li>
               <li><NavLink to="/planner">planner</NavLink></li>
               <li><NavLink to="/todo">todo list</NavLink></li>
           </ul>
@@ -111,8 +113,8 @@ class App extends Component {
           <div className="content">
             <Route path="/todo" component={()=> <TodoList/>}/>
             <Route path="/planner" component={()=> <SavedLists2/>}/>
+            <Route path="/calendar" component={()=> <Calendar/>}/>
             <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.breakLength} />}/>
-            
             {/*}<Route path="/dashboard" component={()=> <Dashboard user={this.state.user} light={this.light}/>}/>{*/}
             <Route path="/settings" component={()=> <Settings user={this.state.user} light={this.light} breakLength={this.breakLength}/>}/>
             <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>

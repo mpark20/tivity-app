@@ -134,7 +134,7 @@ const SavedLists2 = (props) => {
         }
         
         return(
-            <div className="page-container" >
+            <div>
                 <h2>saved lists</h2>
                 {savedLists.map((list, index) => (
                     <div key={list.key}>
