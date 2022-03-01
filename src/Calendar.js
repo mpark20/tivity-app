@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Day from './components/Day'
 
 const Calendar = () => {
     const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
@@ -34,7 +35,7 @@ const Calendar = () => {
         for (let d=1; d<=daysInMonth; d++) {
             let date = new Date(year, month-1, d)
             let doW = date.getDay()
-            let day = {dayOfWk: doW, count: d, key: date}
+            let day = {dayOfWk: doW, count: d, key: date, events: []}
             days.push(day)
         }
         var firstDoW = days[0].dayOfWk; 
@@ -43,7 +44,7 @@ const Calendar = () => {
         for (let i=0; i<firstDoW; i++) {
             let daysInPrevMonth = new Date(year, month-1, 0).getDate();
             let date = new Date(year, month-2, daysInPrevMonth-i);
-            days.unshift({dayOfWk: firstDoW-i, count: daysInPrevMonth-i, key: date})
+            days.unshift({dayOfWk: firstDoW-i, count: daysInPrevMonth-i, key: date, events: []})
         }
     }
 
@@ -55,11 +56,25 @@ const Calendar = () => {
         setMonth(month-1);
     }
 
-    function addEvent() {
-        document.getElementById('add-event').style.display = 'block';
+    function showAddEvent(index) {
+        //document.getElementById('add-event').style.display = 'block';
+        document.getElementsByClassName('add-event')[index].style.display = 'block';
     }
-    function closeAddEvent() {
-        document.getElementById('add-event').style.display = 'none';
+    function closeAddEvent(index) {
+        document.getElementsByClassName('add-event')[index].style.display = 'none';
+    }
+    function addEvent(day, item) {
+        day.events.push(item); 
+        console.log(day.events)
+    }
+    function showEvents(day) {
+        return(
+            <>
+            {day.events.map((event, i)=>(
+                <div key={day.key+"_"+i}>{event}</div>
+            ))}
+            </>
+        )
     }
     return(
         <>
@@ -79,20 +94,19 @@ const Calendar = () => {
             <div className="weekday">fri</div>
             <div className="weekday">sat</div>
             
-            {days.map((day) => (
-                <div key={day.key} onClick={addEvent} className="cal-box">{day.count}</div>
+            {days.map((day, index) => (
+                <>
+                <div key={day.key+'box'} className="cal-box">
+                    {day.count}
+                    <button key={day.key+'btn'} className='x-btn add-event-btn' onClick={() => showAddEvent(index)}>+</button>
+                </div>
+                <Day day={day} close={() => closeAddEvent(index)} add={addEvent}/>
+                </>
             ))}
             </div>
             
         </div>
-        <div id="add-event">
-            <div style={{margin: '18px'}}>
-            <form>
-                <input type="text" className="text-field" placeholder="event name..."/>
-            </form>
-            <button onClick={closeAddEvent} className="btn white">close</button>
-            </div>
-        </div>
+        
         </>
     )
 }
