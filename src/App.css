@@ -406,9 +406,18 @@ p {
   margin: 0; 
   position: absolute;
 }
+.view-event-btn {
+  display: none; 
+  float: left;
+  background-color: #ededed; 
+  padding: 2px 6px;
+  margin: 0; 
+  position: absolute;
+}
 .cal-box:hover .add-event-btn {
   display: block; 
 }
+
 .weekday {
   float: left; 
   font-size: 12px; 
@@ -417,6 +426,17 @@ p {
   text-align: center; 
 }
 .add-event {
+  animation: fadeIn 500ms; 
+  display: none;
+  width: 40%;
+  min-height: 30vh; 
+  margin: auto 15%;
+  background-color: white; 
+  z-index: 1;
+  position: absolute; 
+  box-shadow: 0px 0px 5px 0px grey;
+}
+.events-list {
   animation: fadeIn 500ms; 
   display: none;
   width: 40%;

@@ -45,6 +45,7 @@ class Timer extends Component {
     this.toggleImportList = this.toggleImportList.bind(this);
     this.importTasks = this.importTasks.bind(this);
     this.audio = new Audio(alarm); 
+    
 
     onAuthStateChanged(this.auth, (user) => {
       if (this.user) {
@@ -72,6 +73,7 @@ class Timer extends Component {
     }
   };
   addTask() {
+    this.audio.preload = 'auto';
     var task = document.getElementById("task").value;
     var duration = document.getElementById("time").value;
     var index = Date.now(); 
@@ -145,7 +147,7 @@ class Timer extends Component {
     if ((parseInt(this.state.timeLeft.h) > 0 || parseInt(this.state.timeLeft.m) > 0)) {
       document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
-      this.timer = setInterval(this.tick, 1000);
+      this.timer = setInterval(this.tick, 100);
     } 
   }
   tick() {
@@ -154,8 +156,8 @@ class Timer extends Component {
     if (parseInt(this.state.timeLeft.h) === 0 && parseInt(this.state.timeLeft.m) === 0 && parseInt(this.state.timeLeft.s) === 0) { 
       console.log(this.state.timeLeft)
       if (!this.isBreak) {  //if the interval that just finished was not a break, the next one will be.
-        this.audio.play(); 
-        alert(this.state.tasks[this.intervals].title + ": time's up")
+        this.audio.play();  
+        alert(this.state.tasks[this.intervals].title + ": time's up");
         this.intervals += 1;
         if (this.insertBreaks && this.intervals < this.state.tasks.length) {
           this.isBreak = true; 
@@ -214,7 +216,7 @@ class Timer extends Component {
     document.getElementById("resume").style.display = "block";
   }
   resumeTimer() {
-    this.timer = setInterval(this.tick, 1000);
+    this.timer = setInterval(this.tick, 100);
     document.getElementById("resume").style.display = "none";
     document.getElementById("pause").style.display = "block";
   }
