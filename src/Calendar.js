@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react'
 import Day from './components/Day'
+import { getAuth } from "firebase/auth";
+import { getDatabase, ref, onValue, set, remove } from "firebase/database";
 
 const Calendar = () => {
+    const auth = getAuth();  
+    const db = getDatabase();  
+    const [user, setUser] = useState(auth.currentUser);
+
     const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
     const dt = new Date();
     const [year, setYear] = useState(dt.getFullYear()); 
-    //var month = dt.getMonth()+1; 
-    //var daysInMonth = new Date(year, month, 0).getDate();
     var days = []
     const [month, setMonth] = useState(dt.getMonth()+1);
     const [daysInMonth, setDaysInMonth] = useState(new Date(year, month, 0).getDate());
     const [currMonth, setCurrMonth] = useState(monthNames[(month-1)%12]);
-    const [NECount, setNECount] = useState(0);
+    const [events, setEvents] = useState(readSavedEvents());
 
     useEffect(() => {
         if (month > 12) {
@@ -30,13 +34,27 @@ const Calendar = () => {
         setCurrMonth(monthNames[(month-1)%12]);
         var y = date.getFullYear();
         console.log(y);
-    }, [month, NECount])
+    }, [month])
     
     shiftDays(()=>{
         checkEvents();
     }); 
      
-    
+    function readSavedEvents() {
+        var savedEvents = []; 
+        if (user) {
+            var node = ref(db, "users/" + user.uid + "/events"); 
+            onValue(node, (snapshot) => {
+                snapshot.forEach((childSnapshot)=> { 
+                    var item = childSnapshot.val();
+                    item.key = childSnapshot.key;
+                    savedEvents.push(item);       //.unshift() instead of .push()
+                });
+            })
+            return savedEvents; 
+        }
+        return savedEvents; 
+    }
     function shiftDays() {
         for (let d=1; d<=daysInMonth; d++) {
             let date = new Date(year, month-1, d);
@@ -90,9 +108,14 @@ const Calendar = () => {
         document.getElementsByClassName('events-list')[index].style.display = 'none';
     }
     function addEvent(day, item) {
-        day.events.push(item); 
-        //setNECount(NECount+1);
+        var ev = {name: item, time: day.key.toLocaleTimeString()}
+        day.events.push(ev); 
         console.log(day.events)
+        //add a time of day property
+        if (user) {
+            var node = ref(db, 'users/' + user.uid + '/events/'+day.key+'/'+Date.now());
+            set(node, ev)
+        }
         var fields = document.getElementsByClassName('event-name');
         for (let i=0; i<fields.length; i++) {
             fields[i].value = ""; 

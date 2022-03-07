@@ -45,8 +45,7 @@ class Timer extends Component {
     this.toggleImportList = this.toggleImportList.bind(this);
     this.importTasks = this.importTasks.bind(this);
     this.audio = new Audio(alarm); 
-    
-
+    this.audio.preload = 'auto';
     onAuthStateChanged(this.auth, (user) => {
       if (this.user) {
         console.log("user!!");
@@ -73,7 +72,7 @@ class Timer extends Component {
     }
   };
   addTask() {
-    this.audio.preload = 'auto';
+    
     var task = document.getElementById("task").value;
     var duration = document.getElementById("time").value;
     var index = Date.now(); 
