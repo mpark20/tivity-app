@@ -57,6 +57,9 @@ ul {
   text-align: left;
   padding: 14px 16px;
 }
+.red .nav li a {
+  color: #ffa1a1;
+}
 
 a {
   text-decoration: none;
@@ -96,6 +99,7 @@ a {
   float: left; 
   border: none; 
   margin: 20px 2px;   
+  color: black; 
 }
   #time {
     width: 15%; 
@@ -122,7 +126,9 @@ button {
   margin: 10px 5px 0 0;
   float: left; 
 }
-
+.blue {
+  background-color: #9cbfd6
+}
 .btn:hover {
   opacity: 0.7;
 }
@@ -135,7 +141,11 @@ button {
   
 }
 .red  {
-  background-color: #ffa1a1;
+  color: #ffa1a1;
+}
+.red .btn{
+  color: black; 
+  background-color: #ededed;
 }
 .btn-container {
   overflow: hidden; 
@@ -181,6 +191,9 @@ input {
   font-size: 12px;
   font-weight: normal;
   padding: 3px 0;
+}
+.red #task-title, .red #task-time {
+  color: black; 
 }
 #timer {
   font-size: 3em;
@@ -315,7 +328,9 @@ p {
     opacity: 0.5; 
     transition: opacity 100ms linear;
   }
-
+.red .list-title, .red .list-date {
+  color: black; 
+}
 .list-date {
   display: block; 
   cursor: pointer; 
@@ -388,6 +403,7 @@ p {
 }
 .cal-box {
   color: gray; 
+  background-color: white; 
   float: left; 
   min-width: 12.5%;
   max-width: 12.6%;
@@ -429,7 +445,7 @@ p {
   animation: fadeIn 500ms; 
   display: none;
   width: 40%;
-  min-height: 30vh; 
+  min-height: 40vh; 
   margin: auto 15%;
   background-color: white; 
   z-index: 1;
@@ -446,6 +462,11 @@ p {
   z-index: 1;
   position: absolute; 
   box-shadow: 0px 0px 5px 0px grey;
+  padding: 1% 2%;
+}
+.event-title {
+  display: block; 
+  margin: 10px 0;
 }
 @media screen and (max-width: 700px) {
 
@@ -517,7 +538,11 @@ p {
   background-size: 400% 400%;
 	animation: gradient 10s ease infinite;
 }
-
+.red #myDIV {
+  background: linear-gradient(-45deg, #ffffff, #fa9696, #ff9191, #f75252);
+  background-size: 400% 400%;
+	animation: gradient 10s ease infinite;
+}
 @keyframes gradient {
 	0% {
 		background-position: 100% 100%;

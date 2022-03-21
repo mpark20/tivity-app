@@ -43,40 +43,13 @@ const SavedLists2 = (props) => {
                     lists.push(item);       //.unshift() instead of .push()
                 });
             })
-            /*for (let i=0; i<lists.length; i++) {
-                var key = lists[i].key; 
-                var ms = key.substring(0, key.indexOf("_")); //remove user title from key
-                //var title = key.substring(key.indexOf("_")+1); 
-                var d = new Date(parseInt(ms)); //convert number portion of key to date time 
-                var ds = d.toString()
-                lists[i].date = ds.substring(0, ds.indexOf("G")); //removes time zone 
-                lists[i].title = title; 
-            }*/
+            
             return lists; 
         }
         return lists; 
         
     }
     
-    /*function snapshotToArray(snapshot) {
-        snapshot.forEach(function(childSnapshot) { 
-            var item = childSnapshot.val();
-            item.key = childSnapshot.key;
-            lists.push(item);
-        });
-        for (let i=0; i<lists.length; i++) {
-            var key = lists[i].key; 
-            var ms = key.substring(0, key.indexOf("_")); //remove user title from key
-            var title = key.substring(key.indexOf("_")+1); 
-            var d = new Date(parseInt(ms)); //convert number portion of key to date time 
-            var ds = d.toString()
-            lists[i].date = ds.substring(0, ds.indexOf("G")); //removes time zone 
-            lists[i].title = title; 
-        }
-        
-        //setSavedLists(lists);
-        
-    }*/
     
     function showList(index) {
         var item = document.getElementsByClassName("list-contents")[index]
@@ -134,7 +107,7 @@ const SavedLists2 = (props) => {
         }
         
         return(
-            <div>
+            <div className="page-container">
                 <h2>saved lists</h2>
                 {savedLists.map((list, index) => (
                     <div key={list.key}>

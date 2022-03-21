@@ -8,14 +8,34 @@ const Display = (props) => {
     const db = getDatabase();  
     const auth = getAuth(); 
     const body = document.querySelector("body");
+    const btns = document.querySelectorAll('.btn'); 
     const [loading, setLoadingState] = useState(true);
-    //const [theme, setTheme] = useState(props.light); 
+    const [theme, setTheme] = useState(props.theme); 
     const [breakLength, setBreakLength] = useState(props.breakLength); 
     const [user, setUser] = useState(auth.currentUser);
+   
+    var blue = false; 
+    var red = false; 
+    var dark = false; 
 
-    var light = props.light; 
-    var dark = !props.light; 
-    console.log(light+" "+dark+" "+breakLength);
+    if (theme == 'blue') {
+        blue = true;
+        red = false; 
+        dark = false; 
+    }
+    if (theme == 'red') {
+        red = true;
+        blue = false; 
+        dark = false; 
+    }
+    if (theme == 'dark') {
+        dark = true;
+        blue = false; 
+        red = false; 
+    }
+      
+    //fillValues(); 
+    console.log(theme+" "+breakLength);
      
     useEffect(() => {
         setTimeout(()=> {
@@ -25,7 +45,7 @@ const Display = (props) => {
             setUser(auth.currentUser)
         }, 1000); 
         
-    }, [breakLength]); 
+    }, [breakLength, theme]); 
 
     /*onAuthStateChanged(auth, (user) => {
         if (user) { 
@@ -51,13 +71,16 @@ const Display = (props) => {
                 });
             })
             setBreakLength(parseInt(settings[0]));
-            dark = settings[1]; 
-            light = settings[2]; 
+            setTheme(settings[1]); 
+            //dark = settings[1]; 
+            //light = settings[2]; 
         }
         else {
             setBreakLength(5);
-            dark = false;
-            light = true; 
+            //dark = false;
+            //light = true; 
+            setTheme('blue')
+            
         }
         
     }
@@ -82,8 +105,39 @@ const Display = (props) => {
             //console.log("dark"); 
         } 
     }*/
-    
+    function blueMode() {
+        //setTheme('blue');
+        blue = true;  
+        red = false; 
+        dark = false; 
+        body.classList.remove('dark');
+        body.classList.remove('red')
+        document.getElementById('redMode').checked = false;
+        document.getElementById('darkMode').checked = false; 
+    }
+    function redMode() {
+        //setTheme('red');
+        blue = false;  
+        red = true; 
+        dark = false; 
+        body.classList.remove("dark");
+        body.classList.add("red");
+        console.log('red!!!')
+        document.getElementById('blueMode').checked = false;
+        document.getElementById('darkMode').checked = false; 
+    }
     function darkMode() {
+        //setTheme('dark');
+        blue = false;  
+        red = false; 
+        dark = true; 
+        body.classList.remove("red");
+        body.classList.add("dark");
+        document.getElementById('redMode').checked = false;
+        document.getElementById('blueMode').checked = false; 
+    }
+    
+    /*function darkMode() {
         dark = !dark
         if (dark === true) {
            
@@ -108,10 +162,9 @@ const Display = (props) => {
         else {
             darkMode(); 
         }
-    }
+    }*/
     
-    function saveSettings() {
-        //onAuthStateChanged(auth, (user) => {
+    /*function saveSettings() {
             if (user) {
                 var bl = document.getElementById("breakLength").value;
                 console.log(bl) 
@@ -125,12 +178,72 @@ const Display = (props) => {
             else {
                 document.getElementById("save-message").innerHTML = "please log in to save settings."; 
             }
-        //})
+    }*/
+    function saveSettings() {
         
+        if (user) {
+            var bl = document.getElementById("breakLength").value;
+            var th = '';
+            let blueBox = document.getElementById("blueMode");
+            let redBox = document.getElementById('redMode');
+            let darkBox = document.getElementById("darkMode");
+
+            if (blueBox.checked == true) {
+                th = 'blue'
+            }
+            else if (redBox.checked == true) {
+                th = 'red'
+            }
+            if (darkBox.checked == true) {
+                th = 'dark'
+            }
+            var settings = {breakLength: bl, theme: th}
+            var node = ref(db, 'users/' + user.uid + '/settings');
+            set(node, settings)
+            document.getElementById("save-message").innerHTML = "saved";
+            console.log(settings.breakLength+" "+settings.theme);
+            setBreakLength(bl);
+        }
+        else {
+            document.getElementById("save-message").innerHTML = "please log in to save settings."; 
+        }
+    
     }
     function fillValues() { 
-        document.getElementById("breakLength").value = breakLength;  
-        let lightBox = document.getElementById("lightMode");
+        //console.log('fillValues()' +blue+red+dark)
+        document.getElementById("breakLength").value = breakLength;
+        let blueBox = document.getElementById("blueMode");
+        let redBox = document.getElementById('redMode');
+        let darkBox = document.getElementById("darkMode");
+        if (blue === true) {
+            console.log('test')
+            blueBox.checked = true;
+            redBox.checked = false;  
+            darkBox.checked = false; 
+            body.classList.remove("dark");
+            body.classList.remove('red');
+        }  
+        if (red === true) {
+            blueBox.checked = false;
+            redBox.checked = true;  
+            darkBox.checked = false; 
+            body.classList.remove("dark");
+            body.classList.add('red');
+            
+            
+            
+        } 
+        if (dark === true) {
+            blueBox.checked = false;
+            redBox.checked = false;  
+            darkBox.checked = true; 
+            body.classList.remove('red');
+            body.classList.add("dark");
+           
+            
+        }  
+         
+        /*let lightBox = document.getElementById("lightMode");
         let darkBox = document.getElementById("darkMode");
         if (light==="true" || light === true) {
             lightBox.checked = true; 
@@ -141,7 +254,7 @@ const Display = (props) => {
             darkBox.checked = true;
             lightBox.checked = false; 
             body.classList.add("dark");
-        } 
+        } */
         
     }
     if (loading) {
@@ -155,11 +268,15 @@ const Display = (props) => {
             <p style={{marginBottom: "5px"}}>color theme:</p>
             <form style={{marginBottom: "20px"}}>
                 <div className="checklist">
-                <input type="checkbox" placeholder="light" onChange={lightMode} className="checklist" id="lightMode" defaultChecked={light}/>
-                <label htmlFor="light" style={{fontSize: "14px"}}>light</label>
+                <input type="checkbox" placeholder="blue" onChange={blueMode} className="checklist" id="blueMode" />
+                <label htmlFor="light" style={{fontSize: "14px"}}>blue</label>
                 </div>
                 <div className="checklist">
-                <input type="checkbox" placeholder="dark" onChange={darkMode} id="darkMode"className="checklist" defaultChecked={dark}/>
+                <input type="checkbox" placeholder="red" onChange={redMode} id="redMode"className="checklist" />
+                <label htmlFor="red" style={{fontSize: "14px"}}>red</label>
+                </div>
+                <div className="checklist">
+                <input type="checkbox" placeholder="dark" onChange={darkMode} id="darkMode"className="checklist" />
                 <label htmlFor="dark" style={{fontSize: "14px"}}>dark</label>
                 </div>
             </form>

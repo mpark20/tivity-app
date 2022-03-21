@@ -50,7 +50,7 @@ class App extends Component {
     this.loading = false*/
   }
   componentDidMount() {
-    setTimeout(this.updateUser, 1000);
+    setTimeout(this.updateUser, 500);
   }
   updateUser() {
     this.setState({
@@ -76,8 +76,9 @@ class App extends Component {
         settings.push(option); 
     });
     this.breakLength = parseInt(settings[0]);
-    this.dark = settings[1]; 
-    this.light = settings[2];  
+    this.theme = settings[1]
+    //this.dark = settings[1]; 
+    //this.light = settings[2];  
     
     if (this.light===true || this.light === "true") {
         body.classList.remove("dark"); 
@@ -116,7 +117,7 @@ class App extends Component {
             <Route path="/calendar" component={()=> <Calendar/>}/>
             <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.breakLength} />}/>
             {/*}<Route path="/dashboard" component={()=> <Dashboard user={this.state.user} light={this.light}/>}/>{*/}
-            <Route path="/settings" component={()=> <Settings user={this.state.user} light={this.light} breakLength={this.breakLength}/>}/>
+            <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.theme} breakLength={this.breakLength}/>}/>
             <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
           </div>
         </div>

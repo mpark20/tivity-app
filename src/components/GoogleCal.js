@@ -142,7 +142,7 @@ const GoogleCal = ( props ) => {
             <h2 style={{marginBottom: "2px"}}>upcoming events</h2>
             <div id="cal-message"></div>
             <div className="btn-container">
-                <button onClick={handleClientLoad} className="btn red" id="gcal">load from Google Calendar</button>
+                <button onClick={handleClientLoad} className="btn" style={{backgroundColor: '#ffa1a1'}} id="gcal">load from Google Calendar</button>
                 <button onClick={hideEvents} style={{display:"none"}} className="btn white" id="hide">hide</button>
             </div>
             <a id="event-link"></a>
