@@ -22,17 +22,19 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.snapshotToArray = this.snapshotToArray.bind(this);
-    this.dark = false; 
-    this.light = true; 
-    this.breakLength = 5;
+    //this.theme = 'blue';
+    //this.dark = false; 
+    //this.light = true; 
+    //this.breakLength = 5;
     this.auth = getAuth(); 
-    this.db = getDatabase();
+    this.db = getDatabase(); 
     this.updateUser = this.updateUser.bind(this); 
     this.loading = true; 
     this.login = "login";
     this.state = {
       loading: true,
-      user: this.auth.currentUser 
+      user: this.auth.currentUser,
+      theme: 'blue',
     }
     /*
     onAuthStateChanged(this.auth, (user) => {
@@ -50,13 +52,18 @@ class App extends Component {
     this.loading = false*/
   }
   componentDidMount() {
-    setTimeout(this.updateUser, 500);
+    this.timer = setTimeout(this.updateUser, 1000);
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer); 
   }
   updateUser() {
     this.setState({
       loading: false,
-      user: this.auth.currentUser
+      user: this.auth.currentUser, 
+      theme: this.state.theme,
     })
+    
     if (this.state.user) { 
       var node = ref(this.db, "users/" + this.state.user.uid + "/settings");
       onValue(node, (snapshot) => {
@@ -64,7 +71,7 @@ class App extends Component {
       })
     } else { 
         document.querySelector('body').classList.remove("dark"); 
-        console.log("light")
+        document.querySelector('body').classList.remove("red");
     }
 
   }
@@ -75,20 +82,41 @@ class App extends Component {
         var option = childSnapshot.val();
         settings.push(option); 
     });
-    this.breakLength = parseInt(settings[0]);
-    this.theme = settings[1]
+    //this.breakLength = parseInt(settings[0]);
+    //this.theme = settings[1];
+    this.setState({
+      loading: false,
+      user: this.auth.currentUser,
+      theme: settings[1],
+      breakLength: parseInt(settings[0]),
+    })
+    
     //this.dark = settings[1]; 
     //this.light = settings[2];  
     
-    if (this.light===true || this.light === "true") {
+    /*if (this.light===true || this.light === "true") {
         body.classList.remove("dark"); 
         console.log("light") 
     }
     else {
         body.classList.add("dark");
         console.log("dark"); 
-    } 
-  
+    } */
+    if (this.state.theme === 'blue') {
+      body.classList.remove("dark");
+      body.classList.remove('red');
+      console.log('b')
+    }
+    else if (this.state.theme === 'red') {
+      body.classList.add('red');
+      body.classList.remove("dark");
+      console.log('r')
+    }
+    else if (this.state.theme === 'dark') {
+      body.classList.add("dark");
+      body.classList.remove('red');
+    }
+    
   }
   render() {
     if (this.state.loading === true) {
@@ -115,9 +143,9 @@ class App extends Component {
             <Route path="/todo" component={()=> <TodoList/>}/>
             <Route path="/planner" component={()=> <SavedLists2/>}/>
             <Route path="/calendar" component={()=> <Calendar/>}/>
-            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.breakLength} />}/>
+            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
             {/*}<Route path="/dashboard" component={()=> <Dashboard user={this.state.user} light={this.light}/>}/>{*/}
-            <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.theme} breakLength={this.breakLength}/>}/>
+            <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
             <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
           </div>
         </div>

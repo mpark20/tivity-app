@@ -28,7 +28,7 @@ const Calendar = () => {
             setLoadingState(false);
             setUser(auth.currentUser);
             checkEvents(); 
-        }, 700)
+        }, 1000)
         
     }, [month, events])
 
@@ -75,26 +75,21 @@ const Calendar = () => {
     function checkEvents() {
         var tempDays = countDays(); 
         var boxes = document.getElementsByClassName('day-count'); 
-        //console.log(boxes.length);
         for (let i=0; i<tempDays.length; i++) {
             tempDays[i].events = [];
             for (let j=0; j<events.length; j++) {
                 if (tempDays[i]==null || boxes[i]==null) {
                     //return null; 
                 }
-                /*
-                else if (days[i].key == events[j].key) {
-                    boxes[i].style.color = '#ffa1a1';
-                    days[i].events = events[j]
-                    console.log(days[i].events);
-                }*/
                 else if (tempDays[i].key == events[j].date) {
                     document.getElementsByClassName('day-count')[i].style.color = '#ffa1a1';
                     tempDays[i].events.push(events[j]); 
                     //console.log(tempDays[i].events);
                 }
-                
-                setDays(tempDays);
+                //setDays(tempDays);
+            }
+            if (tempDays[i].events.length == 0) {
+                document.getElementsByClassName('day-count')[i].style.color = 'gray';
             }
         }
         
@@ -118,8 +113,8 @@ const Calendar = () => {
 
     function showAddEvent(index) {
         document.getElementsByClassName('add-event')[index].style.display = 'block';
-
     }
+
     function closeAddEvent(index) {
         document.getElementsByClassName('add-event')[index].style.display = 'none';
         document.getElementsByClassName('events-list')[index].style.display = 'none';
@@ -149,7 +144,7 @@ const Calendar = () => {
         
     }
     function deleteEvent(key) {
-        console.log(key);
+        console.log('remove ' + key);
         setEvents(events.filter((item) => item.key !== key));
         var node = ref(db, "users/" + user.uid + "/events/" + key); 
         remove(node);

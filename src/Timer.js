@@ -5,6 +5,7 @@ import Countdown from "./components/Countdown"
 import { getDatabase, set, ref, onValue } from "firebase/database"; 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import SavedLists2 from "./SavedLists2";
+import SpotifyPlayer from "./components/SpotifyPlayer";
 import alarm from "./components/alarm2.mp3"
 
 class Timer extends Component {
@@ -299,8 +300,8 @@ class Timer extends Component {
     return (
       <div className="timer-container" > 
           <div className="split" >  
-            
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
+            <SpotifyPlayer/>
           </div>
 
           <div className="divide"/>

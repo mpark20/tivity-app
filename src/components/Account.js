@@ -13,10 +13,13 @@ const Account = ( props ) => {
     const [loading, setLoadingState] = useState(true);
     //add user as a state variable?
     useEffect(()=> {
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             setFields(); 
             setLoadingState(false);
-        }, 1000)
+        }, 500)
+        return() => {
+            clearTimeout(timer); 
+        }
     }, []);
 
     onAuthStateChanged(auth, (user) => {

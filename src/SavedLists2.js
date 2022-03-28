@@ -13,7 +13,8 @@ const SavedLists2 = (props) => {
    
 
     useEffect(() => {
-        setTimeout(()=>{
+        
+        const timer = setTimeout(()=>{
            setUser(auth.currentUser); 
            setLoadingState(false); 
            //showImptBtn(); 
@@ -27,7 +28,7 @@ const SavedLists2 = (props) => {
     
             }
         }, 500)
-        
+        return() => {clearTimeout(timer)}
     }, [savedLists, user]); 
     
     

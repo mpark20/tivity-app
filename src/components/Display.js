@@ -38,13 +38,15 @@ const Display = (props) => {
     console.log(theme+" "+breakLength);
      
     useEffect(() => {
-        setTimeout(()=> {
-            setLoadingState(false);
-            readSettings(); 
-            fillValues();
-            setUser(auth.currentUser)
-        }, 1000); 
-        
+        const timer = setTimeout(()=> {
+                        setLoadingState(false);
+                        readSettings(); 
+                        fillValues();
+                        setUser(auth.currentUser)
+                    }, 1000); 
+        return() => {
+            clearTimeout(timer)
+        }
     }, [breakLength, theme]); 
 
     /*onAuthStateChanged(auth, (user) => {
@@ -210,8 +212,9 @@ const Display = (props) => {
     
     }
     function fillValues() { 
-        //console.log('fillValues()' +blue+red+dark)
-        document.getElementById("breakLength").value = breakLength;
+        if (breakLength) {
+            document.getElementById("breakLength").value = breakLength;
+        }
         let blueBox = document.getElementById("blueMode");
         let redBox = document.getElementById('redMode');
         let darkBox = document.getElementById("darkMode");
@@ -243,18 +246,6 @@ const Display = (props) => {
             
         }  
          
-        /*let lightBox = document.getElementById("lightMode");
-        let darkBox = document.getElementById("darkMode");
-        if (light==="true" || light === true) {
-            lightBox.checked = true; 
-            darkBox.checked = false; 
-            body.classList.remove("dark");
-        }
-        else {
-            darkBox.checked = true;
-            lightBox.checked = false; 
-            body.classList.add("dark");
-        } */
         
     }
     if (loading) {

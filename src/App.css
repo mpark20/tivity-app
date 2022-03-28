@@ -126,6 +126,11 @@ button {
   margin: 10px 5px 0 0;
   float: left; 
 }
+.red .btn {
+  background-color: #ffa1a1;
+  color: white;
+}
+
 .blue {
   background-color: #9cbfd6
 }
@@ -143,10 +148,14 @@ button {
 .red  {
   color: #ffa1a1;
 }
-.red .btn{
+.red .white {
+  background-color: #ededed;
+  color: black; 
+}
+/*.red .btn{
   color: black; 
   background-color: #ededed;
-}
+}*/
 .btn-container {
   overflow: hidden; 
   width: 100%; 
