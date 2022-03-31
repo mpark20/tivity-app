@@ -4,13 +4,13 @@ import {
   Route,
   Link,
   NavLink,
+  Switch,
   HashRouter
 } from "react-router-dom";
 import Timer from "./Timer";
 import SavedLists2 from "./SavedLists2";
 import TodoList from "./TodoList";
 import Calendar from "./Calendar"
-//import Dashboard from "./Dashboard";
 import Settings from "./Settings";
 import SignIn from "./SignIn";
 import Loading from "./components/Loading"
@@ -133,20 +133,21 @@ class App extends Component {
               <li><NavLink to="/auth">{this.login}</NavLink></li>
               <li><NavLink to="/settings">settings</NavLink></li>
               {/*}<li><NavLink to="/dashboard">dashboard</NavLink></li>{*/}
-              <li><NavLink to="/focus-timer">focus timer</NavLink></li>
+              <li><NavLink to="">focus timer</NavLink></li>
               <li><NavLink to="/calendar">calendar</NavLink></li>
               <li><NavLink to="/planner">planner</NavLink></li>
               <li><NavLink to="/todo">todo list</NavLink></li>
           </ul>
           <div className="logo"><Link to="/">tivity</Link></div>
           <div className="content">
+            <Switch>
             <Route path="/todo" component={()=> <TodoList/>}/>
             <Route path="/planner" component={()=> <SavedLists2/>}/>
             <Route path="/calendar" component={()=> <Calendar/>}/>
-            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
-            {/*}<Route path="/dashboard" component={()=> <Dashboard user={this.state.user} light={this.light}/>}/>{*/}
             <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
             <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
+            <Route path="/" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
+            </Switch>
           </div>
         </div>
       </HashRouter>
