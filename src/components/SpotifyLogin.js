@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import WebPlayback from './WebPlayback';
+import WebPlayer from './WebPlayer';
 
 const SpotifyLogin = () => {
-    const [token, setToken] = useState('');
+    /*const [token, setToken] = useState('');
 
     useEffect(() => {
 
@@ -18,11 +18,11 @@ const SpotifyLogin = () => {
 
     return (
         <>
-            { (token === '') ? <button className='btn'><a href='/auth/login'>Login with Spotify</a></button> : <WebPlayback token={token} /> }
+            { (token === '') ? <button className='btn'><a href='/auth/login'>Login with Spotify</a></button> : <WebPlayer token={token} /> }
         </>
-    );
+    );*/
 
-    /*require('dotenv').config({ path: '../../.env'}); 
+    require('dotenv').config({ path: '../../.env'}); 
 
     const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID; 
     const REDIRECT_URI = "http://localhost:3000/callback"
@@ -38,13 +38,14 @@ const SpotifyLogin = () => {
         let token = window.localStorage.getItem("token")
         
         if (!token && hash) {
-            token = hash.substring(hash.indexOf('='), hash.indexOf('&'));
+            token = hash.substring(hash.indexOf('=')+1, hash.indexOf('&')); 
 
             window.location.hash = ""
             window.localStorage.setItem("token", token)
       
         }
         setToken(token)
+        console.log(token);
     }, [])
 
     const logout = () => {
@@ -53,14 +54,13 @@ const SpotifyLogin = () => {
     }
 
     return(
-        <div style={{marginLeft: '10%'}}>
         <div className='btn-container'>
             {!token ?
             <button className='btn'><a href={url}>Login to Spotify</a></button>
-            : <button className='btn' onClick={logout}>Logout of Spotify</button>}
+            : <><WebPlayer token={token}/>
+              <button className='btn' onClick={logout}>Logout</button></>}
         </div>
         
-        </div>
-    )*/
+    )
 }
 export default SpotifyLogin;

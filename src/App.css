@@ -477,6 +477,14 @@ p {
   display: block; 
   margin: 10px 0;
 }
+.web-player {
+  margin: 5% 1%; 
+  padding: 10px; 
+  border: 2px black;
+  border-radius: 2px;  
+  box-shadow: 1px 1px 4px 1px grey; 
+  width: 50%; 
+}
 @media screen and (max-width: 700px) {
 
   .split {
