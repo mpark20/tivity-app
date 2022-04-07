@@ -37,17 +37,19 @@ const SpotifyLogin = () => {
         const hash = window.location.hash
         let token = window.localStorage.getItem("token")
         
+
         if (!token && hash) {
             token = hash.substring(hash.indexOf('=')+1, hash.indexOf('&')); 
 
             window.location.hash = ""
-            window.localStorage.setItem("token", token)
-      
+            window.localStorage.setItem("token", token) 
         }
         setToken(token)
         console.log(token);
     }, [])
-
+    const startSession = () => {
+        setTimeout(()=>{logout()}, 3600000);
+    }
     const logout = () => {
         setToken("")
         window.localStorage.removeItem("token")
@@ -56,7 +58,7 @@ const SpotifyLogin = () => {
     return(
         <div className='btn-container'>
             {!token ?
-            <button className='btn'><a href={url}>Login to Spotify</a></button>
+            <button className='btn' onClick={startSession}><a href={url}>Login to Spotify</a></button>
             : <><WebPlayer token={token}/>
               <button className='btn' onClick={logout}>Logout</button></>}
         </div>

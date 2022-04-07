@@ -11,7 +11,6 @@ const SongTitle = () => {
   }
   var title = playbackState.track_window.current_track.name; 
   var artist = playbackState.track_window.current_track.artists[0].name; 
-  console.log(artist);
 
   return (
   <p>Current song: {title}, {artist}</p>
