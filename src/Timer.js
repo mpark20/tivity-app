@@ -303,7 +303,7 @@ class Timer extends Component {
           <div className="split" >
           <div style={{width: "80%", margin: "10px auto"}}>
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
-            <WebPlayer/>
+            <SpotifyLogin/>
           </div>  
             
           </div>

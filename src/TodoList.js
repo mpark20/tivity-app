@@ -4,7 +4,6 @@ import { getDatabase, ref, set, onValue, remove } from "firebase/database";
 import './App.css';
 import TaskList from './components/TaskList';
 import Loading from './components/Loading';
-import GoogleCal from './components/GoogleCal';
 
 const Planner = () => {
   const db = getDatabase(); 
@@ -12,6 +11,7 @@ const Planner = () => {
   const [user, setUser] = useState(auth.currentUser);
   const [tasks, setTasks] = useState(readTasks())   // user's tasks on their todo list
   const [loading, setLoadingState] = useState(true);
+  const [recentEvents, setRecentEvents] = useState(upcomingEvents()); 
 
   
   useEffect(() => { 
@@ -34,16 +34,16 @@ const Planner = () => {
   function readTasks() {
       var temp = [];
       if (user) { 
-          var node = ref(db, "users/" + user.uid + "/todos"); 
-          onValue(node, (snapshot) => {
-              snapshot.forEach((childSnapshot) => { 
-                  var item = childSnapshot.val();
-                  temp.push(item);
-              });
-              
-          })
-          
-          return temp; 
+        var node = ref(db, "users/" + user.uid + "/todos"); 
+        onValue(node, (snapshot) => {
+            snapshot.forEach((childSnapshot) => { 
+                var item = childSnapshot.val();
+                temp.push(item);
+            });
+            
+        })
+        
+        return temp; 
       }
       else {
           
@@ -147,6 +147,26 @@ const Planner = () => {
           )
       }
   }
+  function upcomingEvents() {
+    var all = [];
+    var recents = []; 
+      if (user) { 
+        var node = ref(db, "users/" + user.uid + "/events"); 
+        onValue(node, (snapshot) => {
+            snapshot.forEach((childSnapshot) => { 
+                var item = childSnapshot.val();
+                all.push(item);
+            });
+            
+        })
+        //filter recents to only events within the next week. 
+        return recents; 
+      }
+      else {
+          
+          return recents; 
+      }
+  }
   if (loading) {
     return(
       <Loading/>
@@ -192,7 +212,7 @@ const Planner = () => {
           <div className="btn-container">
             <button onClick={addTask} className="btn" id="add-task">enter</button>
           </div>
-          <GoogleCal tasks={tasks}/>
+          {/*<GoogleCal tasks={tasks}/>*/}
         </div>
       </div>
     </>

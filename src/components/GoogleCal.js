@@ -1,12 +1,30 @@
+import { useState, useEffect } from 'react'
+import { getAuth } from "@firebase/auth";
+//import { getDatabase, ref, set, onValue, remove } from "firebase/database";
+import Loading from './Loading';
 
 const GoogleCal = ( props ) => {
     require('dotenv').config({ path: '../../.env'}); 
     var gapi = window.gapi; 
+
+    //const db = getDatabase(); 
+    const auth = getAuth();
+    const [user, setUser] = useState(auth.currentUser);
+
     const CLIENT_ID = process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID;
     const API_KEY = process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY; 
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
     const SCOPES = "https://www.googleapis.com/auth/calendar";
+    const [loading, setLoadingState] = useState(true); 
 
+    useEffect(() => { 
+        setTimeout(()=>{
+            setLoadingState(false);
+            setUser(auth.currentUser);
+        }, 1000)
+    }, [user]);
+
+    
     function handleClientLoad() {
         gapi.load('client:auth2', initClient);
     }
@@ -21,11 +39,12 @@ const GoogleCal = ( props ) => {
         gapi.client.load('calendar', 'v3', () => console.log('done'));
         gapi.auth2.getAuthInstance().signIn() 
         .then(() => {
-            //addEvents(); 
             listUpcomingEvents(); 
+            //setTimeout(() => {logout()}, 3000000) // auto logout after 50 minutes
         })
     }
-    function addEvents() {
+    
+    /*function addEvents() {
         var today = new Date()
         var tmrw = new Date(today)
         tmrw.setDate(tmrw.getDate() + 1)
@@ -33,8 +52,6 @@ const GoogleCal = ( props ) => {
         var events = ""; 
         var tasks = props.tasks; 
 
-        //today = today.toString(); 
-        //tmrw = tmrw.toString(); 
         for (let i=0; i<tasks.length; i++) {
             events += tasks[i].title + " \n"
         }
@@ -50,27 +67,7 @@ const GoogleCal = ( props ) => {
             },
             
         }
-        /*var event = {
-            'summary': 'Google I/O 2015',
-            'location': '800 Howard St., San Francisco, CA 94103',
-            'description': 'A chance to hear more about Google\'s developer products.',
-            'start': {
-              'dateTime': today,
-              'timeZone': 'America/Los_Angeles'
-            },
-            'end': {
-              'dateTime': today,
-              'timeZone': 'America/Los_Angeles'
-            },
-            
-            'reminders': {
-              'useDefault': false,
-              'overrides': [
-                {'method': 'email', 'minutes': 24 * 60},
-                {'method': 'popup', 'minutes': 10}
-              ]
-            }
-        };*/
+        
           
         var request = gapi.client.calendar.events.insert({
             'calendarId': 'primary',
@@ -81,7 +78,7 @@ const GoogleCal = ( props ) => {
             document.getElementById("event-link").setAttribute('href', event.htmlLink)
             document.getElementById("event-link").innerHTML = "event added to calendar"; 
         });
-    }
+    }*/
     function listUpcomingEvents() {
         gapi.client.calendar.events.list({
           'calendarId': 'primary',
@@ -93,6 +90,7 @@ const GoogleCal = ( props ) => {
         })
         .then(function(response) {
             var events = response.result.items;
+            var recents = []; 
             document.getElementById('cal-message').innerHTML = "";
 
             if (events.length > 0) {
@@ -105,29 +103,47 @@ const GoogleCal = ( props ) => {
                     if (dateTime) {
                         var date = dateTime.substring(0, dateTime.indexOf("T")); 
                         var time = dateTime.substring(dateTime.indexOf("T")+1, dateTime.indexOf("T")+6);
-                        if (ms-now <= 604800000) { //only get events in the next week
-                            appendPre("<li>"+event.summary + ' (' + date +', '+time + ')'+"</li>")
-                            //eventList.push(event.summary + ' (' + date +', '+time + ')');
-                        }
+                        //console.log(new Date(date+"T00:00:00").toString())
+                        //if (ms-now <= 604800000) { //only get events in the next week
+                            //appendPre("<li>"+event.summary + ' (' + date +', '+time + ')'+"</li>")
+                            //recents.push(event.summary + ' (' + date +', '+time + ')');
+                            //console.log(new Date(date) + " " + time + " " + i)
+                            props.addEvent(new Date(date+"T00:00:00").toString(), event.summary, time)
+                        //}
                     }
                     else {
                         var date = event.start.date;
                         ms = new Date(date+" 00:00:00").getTime(); 
-                        if (ms-now <= 604800000) {
-                            appendPre("<li>"+event.summary + ' (' + date + ')'+"</li>")
-                            //eventList.push(event.summary + ' (' + date + ')');
-                        }
+                        //if (ms-now <= 604800000) {
+                            //appendPre("<li>"+event.summary + ' (' + date + ')'+"</li>")
+                            //recents.push(event.summary + ' (' + date + ')'); 
+                        //}
+                        props.addEvent(new Date(date+"T00:00:00").toString(), event.summary, '(all day)')
                     }
-                    document.getElementById("cal-message").style.display = "block";
+                    
+                    if (recents.length == 0) {
+                        document.getElementById("cal-message").innerHTML = 'no events scheduled this week.';
+                    }
+                    //tempSave(recents);
+                    /*document.getElementById("cal-message").style.display = "block";
                     document.getElementById("hide").style.display = "block";
-                    document.getElementById("gcal").style.display = "none";
+                    document.getElementById("gcal").style.display = "none";*/
                 }
                 //eventList = document.getElementById("cal-message").innerHTML; 
             } else {
-                appendPre('No events scheduled this week.');
+                appendPre('no events scheduled.');
+                
             }
         });
+        
     }
+    /*function tempSave(events) {
+        if (user) {
+            var node = ref(db, 'users/' + user.uid + '/gcalEvents');
+            set(node, events); 
+        }
+        setTimeout(() => {remove(node)}, 3000000) // clear info after 50 minutes
+    }*/
     function hideEvents() {
         document.getElementById("cal-message").style.display = "none";
         document.getElementById("hide").style.display = "none";
@@ -137,16 +153,21 @@ const GoogleCal = ( props ) => {
     function appendPre(message) {
         document.getElementById('cal-message').innerHTML += message;
     }
+    if (loading) {
+        return(
+          <Loading/>
+        )
+    }
     return(
         <>
-            <h2 style={{marginBottom: "2px"}}>upcoming events</h2>
             <div id="cal-message"></div>
             <div className="btn-container">
-                <button onClick={handleClientLoad} className="btn" style={{backgroundColor: '#ffa1a1'}} id="gcal">load from Google Calendar</button>
-                <button onClick={hideEvents} style={{display:"none"}} className="btn white" id="hide">hide</button>
+                <button onClick={handleClientLoad} className="btn" style={{backgroundColor: '#ffa1a1'}} id="gcal">sync with Google Calendar</button>
+                
             </div>
             <a id="event-link"></a>
         </>
     )
+    
 }
 export default GoogleCal; 

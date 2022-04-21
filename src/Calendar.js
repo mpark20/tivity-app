@@ -3,6 +3,7 @@ import Day from './components/Day'
 import Loading from './components/Loading'
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref, onValue, set, remove } from "firebase/database";
+import GoogleCal from './components/GoogleCal';
 
 const Calendar = () => {
     const auth = getAuth();  
@@ -124,14 +125,17 @@ const Calendar = () => {
         document.getElementsByClassName('events-list')[index].style.display = 'none';
     }
     function addEvent(day, n, t) {
-        var d = day.key; 
-        console.log(d.toString()); //fixed: date object must be converted to string
+        //var d = day.key; 
+        //console.log(d.toString()); fixed: date object must be converted to string
         if (t == '') {
             t = '(all day)'
         }
-        var ev = {date: d.toString(), time: t}
+        //var ev = {date: d.toString(), time: t}
+        var ev = {date: day, time: t}
         if (user) {
-            var node = ref(db, 'users/' + user.uid + '/events/'+n+'_'+Date.now()) 
+            var dt = day.split('00:00:00')[0] + ' ' + t + ':00' + ' GMT-0700'; 
+            console.log(dt);
+            var node = ref(db, 'users/' + user.uid + '/events/'+n+'_'+new Date(dt).getTime()) 
             set(node, ev)
             setEvents(readSavedEvents()) //rereads events since the database has been updated
         }
@@ -196,7 +200,9 @@ const Calendar = () => {
     return(
         <>
         <div className="page-container">
+            
             <h2>{currMonth} {year}</h2>
+            <GoogleCal addEvent={addEvent}/>
             <div className='btn-container'>
                 <button className='btn white' onClick={prevMonth}>prev</button>
                 <button className='btn white' onClick={nextMonth}>next</button>

@@ -10,7 +10,7 @@ const Day = (props) => {
             <form key={props.day.key+'events_d'}>
                 <input type="time" className="text-field event-time" placeholder="time..." key={props.day.key+'events_d1'}/>
             </form>
-            <button onClick={() => props.add(props.day, document.getElementsByClassName('event-name')[props.index].value, document.getElementsByClassName('event-time')[props.index].value)} className="btn" key={props.day.key+'events_e'}>enter</button>
+            <button onClick={() => props.add(props.day.key.toString(), document.getElementsByClassName('event-name')[props.index].value, document.getElementsByClassName('event-time')[props.index].value)} className="btn" key={props.day.key+'events_e'}>enter</button>
             <button onClick={props.close} className="btn white" key={props.day.key+'events_f'}>close</button>
             </div>
         </div>
