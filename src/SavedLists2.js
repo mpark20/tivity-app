@@ -108,6 +108,7 @@ const SavedLists2 = (props) => {
         }
         
         return(
+            <div className="flex-container" > 
             <div className="page-container">
                 <h2>saved lists</h2>
                 {savedLists.map((list, index) => (
@@ -120,6 +121,7 @@ const SavedLists2 = (props) => {
                         
                     </div>
                 ))}
+            </div>
             </div>
         )
     }  

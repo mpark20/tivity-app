@@ -128,17 +128,19 @@ class App extends Component {
     
     return (
       <HashRouter>
-        <div >
-          <ul className="nav">
-              <li><NavLink to="/auth">{this.login}</NavLink></li>
-              <li><NavLink to="/settings">settings</NavLink></li>
-              {/*}<li><NavLink to="/dashboard">dashboard</NavLink></li>{*/}
-              <li><NavLink to="">focus timer</NavLink></li>
-              <li><NavLink to="/calendar">calendar</NavLink></li>
-              <li><NavLink to="/planner">planner</NavLink></li>
-              <li><NavLink to="/todo">todo list</NavLink></li>
-          </ul>
-          <div className="logo"><Link to="/">tivity</Link></div>
+        <div>
+          <div className='navbar'>
+            <div className="logo"><Link to="/">tivity</Link></div>
+            <ul className="nav">
+                <li><NavLink to="/todo">todo list</NavLink></li>
+                <li><NavLink to="/planner">planner</NavLink></li>
+                <li><NavLink to="/calendar">calendar</NavLink></li>
+                <li><NavLink exact to="">focus timer</NavLink></li>
+                {/*}<li><NavLink to="/dashboard">dashboard</NavLink></li>{*/}
+                <li><NavLink to="/settings">settings</NavLink></li>
+                <li><NavLink to="/auth">{this.login}</NavLink></li>
+            </ul>
+          </div>
           <div className="content">
             <Switch>
             <Route path="/todo" component={()=> <TodoList/>}/>
@@ -146,7 +148,7 @@ class App extends Component {
             <Route path="/calendar" component={()=> <Calendar/>}/>
             <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
             <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
-            <Route path="/" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
+            <Route exact path="/" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
             </Switch>
           </div>
         </div>

@@ -9,20 +9,20 @@ const GoogleCal = ( props ) => {
 
     //const db = getDatabase(); 
     const auth = getAuth();
-    const [user, setUser] = useState(auth.currentUser);
+    //const [user, setUser] = useState(auth.currentUser);
 
     const CLIENT_ID = process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID;
     const API_KEY = process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY; 
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
     const SCOPES = "https://www.googleapis.com/auth/calendar";
-    const [loading, setLoadingState] = useState(true); 
+    //const [loading, setLoadingState] = useState(true); 
 
-    useEffect(() => { 
+    /*useEffect(() => { 
         setTimeout(()=>{
             setLoadingState(false);
             setUser(auth.currentUser);
         }, 1000)
-    }, [user]);
+    }, [user]);*/
 
     
     function handleClientLoad() {
@@ -101,8 +101,8 @@ const GoogleCal = ( props ) => {
                     var now = Date.now(); 
 
                     if (dateTime) {
-                        var date = dateTime.substring(0, dateTime.indexOf("T")); 
-                        var time = dateTime.substring(dateTime.indexOf("T")+1, dateTime.indexOf("T")+6);
+                        var date = dateTime.split('T')[0]; 
+                        var time = dateTime.split('T')[1].substring(0,5);
                         //console.log(new Date(date+"T00:00:00").toString())
                         //if (ms-now <= 604800000) { //only get events in the next week
                             //appendPre("<li>"+event.summary + ' (' + date +', '+time + ')'+"</li>")
@@ -113,7 +113,7 @@ const GoogleCal = ( props ) => {
                     }
                     else {
                         var date = event.start.date;
-                        ms = new Date(date+" 00:00:00").getTime(); 
+                        //ms = new Date(date+" 00:00:00").getTime(); 
                         //if (ms-now <= 604800000) {
                             //appendPre("<li>"+event.summary + ' (' + date + ')'+"</li>")
                             //recents.push(event.summary + ' (' + date + ')'); 
@@ -153,11 +153,11 @@ const GoogleCal = ( props ) => {
     function appendPre(message) {
         document.getElementById('cal-message').innerHTML += message;
     }
-    if (loading) {
+    /*if (loading) {
         return(
           <Loading/>
         )
-    }
+    }*/
     return(
         <>
             <div id="cal-message"></div>

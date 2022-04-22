@@ -128,7 +128,7 @@ const SignIn = () => {
     document.getElementById("password").value = ""; 
   }
   return (
-    <>
+    <div className="flex-container" > 
     <div className="signin" id="signup">
       <h3>sign up</h3>
       <div>
@@ -153,7 +153,7 @@ const SignIn = () => {
       <div onClick={showSU} className="message"><button>create a new account</button></div>
       <div className="message" id="login-message"></div>
     </div>
-    </>
+    </div>
   );
 }
 export default SignIn;

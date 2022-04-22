@@ -30,36 +30,39 @@ ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  text-align: right;
-  display: inline;
+  
+}
+.navbar {
+  width: 20%; 
+  min-height: 100vh;
+  float: left; 
+  background-color: #f7f7f7;
+  border-bottom: solid 1px;
+  border-color: #d9d9d9;
+  box-shadow: 0px 0px 5px 0px grey;
 }
 .logo {
   display: block;
   font-size: 25px;
   list-style-type: none;
-  padding: 10px 18px;
+  padding: 10px 16px;
   font-size: 30px;
   color: black;
-  background-color: #f7f7f7;
-  border-bottom: solid 1px;
-  border-color: #d9d9d9;
-  box-shadow: 0px 0px 5px 0px grey;
   font-family: nunito-sb;
 }
 
 .nav li {
-  float: right;
+  float: none;
 }
 
 .nav li a {
   display: block;
-  color: #9cbfd6;
+  /*color: #9cbfd6;*/
+  color: #b0b0b0; 
   text-align: left;
-  padding: 14px 16px;
+  padding: 4px 16px;
 }
-.red .nav li a {
-  color: #ffa1a1;
-}
+
 
 a {
   text-decoration: none;
@@ -73,7 +76,7 @@ a {
   margin-left: 1px;
   z-index: -1;   
 }
-.timer-container {
+.flex-container {
   display: flex; 
   /*background-image: url(./images/spirited-away1.jpg)*/
 }
@@ -256,6 +259,7 @@ input {
 }
 .active {
   font-weight: bold;  
+  background-color: #ededed;
 }
 .message {
   width: 80%; 
@@ -486,9 +490,15 @@ p {
   width: 50%; 
 }
 @media screen and (max-width: 700px) {
-
+  .navbar {
+    display: none; 
+  }
+  .flex-container {
+    display: block; 
+  }
   .split {
     width: 100%;
+    height: auto; 
     float: none; 
   }
   .divide {

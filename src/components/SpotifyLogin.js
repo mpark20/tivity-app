@@ -58,9 +58,9 @@ const SpotifyLogin = () => {
     return(
         <div className='btn-container'>
             {!token ?
-            <button className='btn' onClick={startSession}><a href={url}>Login to Spotify</a></button>
+            <button className='btn' onClick={startSession}><a href={url}>connect to Spotify</a></button>
             : <><WebPlayer token={token}/>
-              <button className='btn' onClick={logout}>Logout</button></>}
+              <button className='btn' onClick={logout}>disconnect</button></>}
         </div>
         
     )

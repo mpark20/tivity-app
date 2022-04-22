@@ -143,7 +143,7 @@ const Planner = () => {
   function emptyList() {
       if (tasks.length === 0) {
           return(
-              <div style={{margin: "10px 0", fontSize: "14px", animation: "fadeIn 500ms"}}>your todo list is empty</div>
+              <div style={{margin: "10px 0", fontSize: "14px", animation: "fadeIn 500ms"}}>your todo list is empty: add tasks using the textbox.</div>
           )
       }
   }
@@ -159,7 +159,7 @@ const Planner = () => {
             });
             
         })
-        //filter recents to only events within the next week. 
+        //filter recents to only events within the next week.   
         return recents; 
       }
       else {
@@ -174,7 +174,7 @@ const Planner = () => {
   }
 
   return (
-    <>
+    <div className='flex-container'>
       <div className="split">        
         <div id="task-list" style={{width: "90%", margin: "10px auto"}}>
           <h2>my to-do list</h2>
@@ -215,7 +215,11 @@ const Planner = () => {
           {/*<GoogleCal tasks={tasks}/>*/}
         </div>
       </div>
-    </>
+      
+      
+
+
+    </div>
   );
 }
  

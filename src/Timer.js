@@ -299,7 +299,7 @@ class Timer extends Component {
   render() {
     
     return (
-      <div className="timer-container" > 
+      <div className="flex-container" > 
           <div className="split" >
           <div style={{width: "80%", margin: "10px auto"}}>
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>

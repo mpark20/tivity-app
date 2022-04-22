@@ -89,7 +89,7 @@ const Calendar = () => {
                 }
                 //setDays(tempDays);
             }
-            if (tempDays[i].events.length == 0) {
+            if (tempDays[i].events.length == 0 && document.getElementsByClassName('day-count')[i]) {
                 document.getElementsByClassName('day-count')[i].style.color = 'gray';
             }
         }
@@ -133,7 +133,12 @@ const Calendar = () => {
         //var ev = {date: d.toString(), time: t}
         var ev = {date: day, time: t}
         if (user) {
-            var dt = day.split('00:00:00')[0] + ' ' + t + ':00' + ' GMT-0700'; 
+            if (t === '(all day)') {
+                var dt = day.split('00:00:00')[0] + ' ' + t + ':00' + ' GMT-0700'; 
+            }
+            else {
+                var dt = day;
+            }
             console.log(dt);
             var node = ref(db, 'users/' + user.uid + '/events/'+n+'_'+new Date(dt).getTime()) 
             set(node, ev)
@@ -198,7 +203,7 @@ const Calendar = () => {
         )
     }
     return(
-        <>
+        <div className='flex-container'>
         <div className="page-container">
             
             <h2>{currMonth} {year}</h2>
@@ -236,7 +241,7 @@ const Calendar = () => {
             
         </div>
         
-        </>
+        </div>
     )
 }
 export default Calendar
