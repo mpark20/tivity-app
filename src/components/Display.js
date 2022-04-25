@@ -248,11 +248,7 @@ const Display = (props) => {
          
         
     }
-    if (loading) {
-        return(
-            <Loading/>
-        )
-    }
+
     return(
         <div id="display" className="indented">
             <h2>display</h2>

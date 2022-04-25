@@ -167,11 +167,7 @@ const Planner = () => {
           return recents; 
       }
   }
-  if (loading) {
-    return(
-      <Loading/>
-    )
-  }
+
 
   return (
     <div className='flex-container'>

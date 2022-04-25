@@ -79,11 +79,7 @@ const Account = ( props ) => {
           console.log(error); 
         });
     }
-    if (loading) {
-        return(
-            <Loading/>
-        )
-    }
+   
     return(
         <div id="acct" className="indented">
             

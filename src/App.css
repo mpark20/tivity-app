@@ -32,7 +32,8 @@ ul {
   padding: 0;
   
 }
-.navbar {
+#navbar {
+  top: 0; 
   width: 20%; 
   min-height: 100vh;
   float: left; 
@@ -40,6 +41,12 @@ ul {
   border-bottom: solid 1px;
   border-color: #d9d9d9;
   box-shadow: 0px 0px 5px 0px grey;
+  z-index: 1; 
+  animation: fadeIn 500ms;
+  transition: width linear 200ms; 
+}
+.nav-container {
+  width: 20%
 }
 .logo {
   display: block;
@@ -55,7 +62,7 @@ ul {
   float: none;
 }
 
-.nav li a {
+.nav li a, .nav li p {
   display: block;
   /*color: #9cbfd6;*/
   color: #b0b0b0; 
@@ -73,7 +80,7 @@ a {
     transition: opacity linear 100ms;
   }
 .content {
-  margin-left: 1px;
+  margin: 0 1px 0 0 ;
   z-index: -1;   
 }
 .flex-container {
@@ -290,8 +297,16 @@ input {
 .message button:hover {
   opacity: 0.7; 
 }
-#signup, #logout {
+#signup {
   display: none; 
+}
+#logout-btn {
+  float: right;  
+  margin: 6px; 
+  opacity: 0.9; 
+}
+#logout-btn:hover {
+  opacity: 0.5; 
 }
 .page-container {
   width: 70%; 
@@ -489,10 +504,38 @@ p {
   box-shadow: 1px 1px 4px 1px grey; 
   width: 50%; 
 }
+.x-icon {
+  color: #b0b0b0; 
+  float: right; 
+  font-size: 30px;
+  font-weight: lighter;
+  display: block;   
+}
+.x-icon:hover, .menu-icon:hover {
+  opacity: 0.5; 
+  cursor: pointer; 
+  transition: opacity linear 100ms;
+}
+.menu-icon { 
+  color: #777777; 
+  font-size: 30px;
+  font-weight: lighter;
+  margin-left: 10px; 
+  display: block;  
+  top: 0;   
+}
+.navBar2 {
+  width: 100%; 
+  background-color: #f7f7f7;
+}
 @media screen and (max-width: 700px) {
-  .navbar {
-    display: none; 
+  .nav-container {
+    width: 70%
   }
+  #navbar {  
+    position: absolute; 
+  }
+  
   .flex-container {
     display: block; 
   }

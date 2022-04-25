@@ -8,25 +8,37 @@ import {
   updateProfile, 
   signOut 
 } from "firebase/auth";
+import { useState, useEffect } from 'react';
 import { getDatabase, ref, set } from "firebase/database";
-import "./firebase"
+import "./firebase";
+import { Redirect } from "react-router-dom";
  
-const SignIn = () => {  
+const SignIn = (props) => {  
   const auth = getAuth();
   const db = getDatabase();
   const provider = new GoogleAuthProvider();
+  const [user, setUser] = useState(auth.currentUser);
+  const [status, setStatus] = useState(props.status);
 
-  onAuthStateChanged(auth, (user) => {    // checks if user is logged in
+ 
+  /*onAuthStateChanged(auth, (user) => {    // checks if user is logged in
+    setUser(auth.currentUser);
     var login = document.getElementById("login-btn");
     var logout = document.getElementById("logout-btn");
+    var email = document.getElementById("email");
+    var password = document.getElementById("password");
     if (user) {
       login.style.display = "none";
       logout.style.display = "block";
+      email.style.display = "none";
+      password.style.display = "none";
     } else {
       login.style.display = "block";
       logout.style.display = "none";
+      email.style.display = "block";
+      password.style.display = "block";
     }
-  });
+  });*/
   
   function showSU() {
     var su = document.getElementById("signup");
@@ -58,7 +70,7 @@ const SignIn = () => {
       updateProfile(auth.currentUser, {
         displayName: uname, email: email
       }, welMess(message, user));
-      
+      setTimeout(() => logOut, 3600000);
     })
     .catch((error) => {
       errMess(message, error);
@@ -72,7 +84,10 @@ const SignIn = () => {
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
-      welMess(message, user);  
+      welMess(message, user);
+      setUser(auth.currentUser);
+      setStatus('success'); 
+      setTimeout(() => logOut, 3600000);
     })
     .catch((error) => {
       errMess(message, error)
@@ -86,8 +101,10 @@ const SignIn = () => {
       //const token = credential.accessToken;
       // The signed-in user info.
       const user = result.user;
+      setUser(auth.currentUser);
       document.getElementById("login-message").innerHTML = "hello "+user.displayName+"!";
       var userNode = ref(db, 'users/' + user.uid); 
+      setTimeout(() => {logOut()}, 3600000);
       if (!userNode) {
         set(userNode, {
           displayName: user.displayName,
@@ -96,7 +113,7 @@ const SignIn = () => {
           settings: {lightMode: true, darkMode: false, breakLength: "5"}
         });
       }
-      
+      setStatus('success'); 
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -107,8 +124,10 @@ const SignIn = () => {
   }
   function logOut() {   //runs when logout button is clicked
     signOut(auth).then(() => {
-      logOut.style.display = "none";
-      logIn.style.display = "block";
+      setUser(null);
+      //logOut.style.display = "none";
+      //logIn.style.display = "block";
+      setStatus(null)
       document.querySelector("body").classList.remove("dark");
     }).catch((error) => {
       console.log(error); 
@@ -127,6 +146,7 @@ const SignIn = () => {
     message.style.color = "red";
     document.getElementById("password").value = ""; 
   }
+ 
   return (
     <div className="flex-container" > 
     <div className="signin" id="signup">
@@ -142,16 +162,17 @@ const SignIn = () => {
       <div className="message" id="register-message"></div>
     </div>
     <div className="signin" id="login">
-      <h3>log in</h3>
+      {user ? <></> : <h3>log in</h3>}
       <div>
-        <input type="text" className="text-field" id="email" placeholder="e-mail address"/>
-        <input type="password" className="text-field" id="password" placeholder="password"/>
-        <button className="btn" onClick={logIn} id="login-btn" style={{margin: "10px 5px 20px 0"}}>log in</button>
-        <button className="btn" onClick={logOut} id="logout-btn" style={{margin: "10px 5px 20px 0"}}>log out</button>
-        <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>
+        <input type="text" className="text-field" id="email" placeholder="e-mail address" style={{display: user ? 'none': 'block'}}/>
+        <input type="password" className="text-field" id="password" placeholder="password" style={{display: user ? 'none': 'block'}}/>
+        <button className="btn" onClick={logIn} id="login-btn" style={{margin: "10px 5px 20px 0", display: user ? 'none': 'block'}}>log in</button>
+        
+        {user ? <></> : <button className="btn" onClick={signUpGoogle} style={{backgroundColor: "#ffa1a1", margin: "10px 5px 20px 0"}}>continue with Google</button>}
       </div>
       <div onClick={showSU} className="message"><button>create a new account</button></div>
       <div className="message" id="login-message"></div>
+      {/*<div id='redirect' style={{display: !status ? <></>: 'block'}}><Redirect to='/'/></div>*/}
     </div>
     </div>
   );

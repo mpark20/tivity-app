@@ -91,11 +91,7 @@ const SavedLists2 = (props) => {
     
    // }
     
-    if (loading) {
-        return(
-            <Loading/>
-        )
-    }
+
     if (user) {   
         
         if (savedLists.length === 0) {

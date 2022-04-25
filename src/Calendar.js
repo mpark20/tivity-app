@@ -197,11 +197,7 @@ const Calendar = () => {
             </div>
         )
     }
-    if (loading) {
-        return(
-            <Loading/>
-        )
-    }
+    
     return(
         <div className='flex-container'>
         <div className="page-container">

@@ -15,41 +15,29 @@ import Settings from "./Settings";
 import SignIn from "./SignIn";
 import Loading from "./components/Loading"
 import { getDatabase, ref, onValue } from "firebase/database";
-import { getAuth } from "firebase/auth";
-
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import Logout from "./components/Logout";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.snapshotToArray = this.snapshotToArray.bind(this);
-    //this.theme = 'blue';
-    //this.dark = false; 
-    //this.light = true; 
-    //this.breakLength = 5;
     this.auth = getAuth(); 
     this.db = getDatabase(); 
-    this.updateUser = this.updateUser.bind(this); 
-    this.loading = true; 
-    this.login = "login";
+    this.updateUser = this.updateUser.bind(this);
+    this.logout = this.logout.bind(this); 
+    this.toggleNav = this.toggleNav.bind(this); 
+    this.status = null; 
     this.state = {
       loading: true,
       user: this.auth.currentUser,
       theme: 'blue',
+      navOpen: true,
     }
-    /*
+    
     onAuthStateChanged(this.auth, (user) => {
-      if (this.user) { 
-        var node = ref(this.db, "users/" + this.user.uid + "/settings");
-        onValue(node, (snapshot) => {
-            this.snapshotToArray(snapshot);
-        })
-      } else { 
-          document.querySelector('body').classList.remove("dark"); 
-          console.log("light")
-      }
+      this.updateUser(); 
     })
-     
-    this.loading = false*/
   }
   componentDidMount() {
     this.timer = setTimeout(this.updateUser, 1000);
@@ -62,6 +50,7 @@ class App extends Component {
       loading: false,
       user: this.auth.currentUser, 
       theme: this.state.theme,
+      navOpen: this.state.navOpen,
     })
     
     if (this.state.user) { 
@@ -89,19 +78,9 @@ class App extends Component {
       user: this.auth.currentUser,
       theme: settings[1],
       breakLength: parseInt(settings[0]),
+      navOpen: this.state.navOpen,
     })
     
-    //this.dark = settings[1]; 
-    //this.light = settings[2];  
-    
-    /*if (this.light===true || this.light === "true") {
-        body.classList.remove("dark"); 
-        console.log("light") 
-    }
-    else {
-        body.classList.add("dark");
-        console.log("dark"); 
-    } */
     if (this.state.theme === 'blue') {
       body.classList.remove("dark");
       body.classList.remove('red');
@@ -118,6 +97,42 @@ class App extends Component {
     }
     
   }
+  logout() {
+    signOut(this.auth).then(() => {
+      this.setState({
+        loading: this.state.loading,
+        user: null,
+        theme: this.state.theme,
+        breakLength: this.state.breakLength,
+        navOpen: this.state.navOpen,
+        status: null,
+      })
+      document.querySelector("body").classList.remove("dark");
+      document.querySelector("body").classList.remove("red");
+    }).catch((error) => {
+        console.log(error); 
+    });   
+  }
+  toggleNav() {
+    if (this.state.navOpen) {
+      this.setState({
+        loading: this.state.loading,
+        user: this.auth.currentUser,
+        theme: this.state.theme,
+        breakLength: this.state.breakLength,
+        navOpen: false,
+      })
+    }
+    else {
+      this.setState({
+        loading: this.state.loading,
+        user: this.auth.currentUser,
+        theme: this.state.theme,
+        breakLength: this.state.breakLength,
+        navOpen: true,
+      })
+    }
+  }
   render() {
     if (this.state.loading === true) {
       
@@ -129,25 +144,42 @@ class App extends Component {
     return (
       <HashRouter>
         <div>
-          <div className='navbar'>
-            <div className="logo"><Link to="/">tivity</Link></div>
-            <ul className="nav">
-                <li><NavLink to="/todo">todo list</NavLink></li>
-                <li><NavLink to="/planner">planner</NavLink></li>
-                <li><NavLink to="/calendar">calendar</NavLink></li>
-                <li><NavLink exact to="">focus timer</NavLink></li>
-                {/*}<li><NavLink to="/dashboard">dashboard</NavLink></li>{*/}
-                <li><NavLink to="/settings">settings</NavLink></li>
-                <li><NavLink to="/auth">{this.login}</NavLink></li>
-            </ul>
+          <div className='nav-container'>
+            <div id='navbar' style={{width: this.state.navOpen ? '100%' : '0'}}>
+              
+              <div className="logo" style={{display: this.state.navOpen ? 'block' : 'none'}}>
+                <p style={{display:'inline'}}>tivity</p>
+                <div className='x-icon' onClick={this.toggleNav} style={{display: this.state.navOpen ? 'block' : 'none'}}>&#xab;</div>
+              </div>
+              
+              <ul className="nav" style={{display: this.state.navOpen ? 'block' : 'none'}}>
+                  {this.state.user ? <li><p style={{color: 'black'}}>hello, {this.state.user.displayName}!</p></li> : <></>}
+    
+                  <li><NavLink to="/todo">todo list</NavLink></li>
+                  <li><NavLink to="/planner">planner</NavLink></li>
+                  <li><NavLink to="/calendar">calendar</NavLink></li>
+                  <li><NavLink exact to="/">focus timer</NavLink></li>
+                  {/*}<li><NavLink to="/dashboard">dashboard</NavLink></li>{*/}
+                  <li><br/></li>
+                  <li><NavLink to="/settings">settings</NavLink></li>
+                  <li>{this.state.user ? <></> : <NavLink to="/auth">log in</NavLink>}</li>
+                  
+              </ul>
+            </div>
+          </div>
+          <div className='navBar2' >
+            <Logout logout={this.logout}/>
+            <div className='menu-icon' onClick={this.toggleNav} style={{visibility: this.state.navOpen ? 'hidden' : 'visible'}}>&#9776;</div>
+            
           </div>
           <div className="content">
+          
             <Switch>
             <Route path="/todo" component={()=> <TodoList/>}/>
             <Route path="/planner" component={()=> <SavedLists2/>}/>
             <Route path="/calendar" component={()=> <Calendar/>}/>
             <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
-            <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
+            <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>} status={this.state.status}/>
             <Route exact path="/" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
             </Switch>
           </div>

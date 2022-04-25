@@ -90,6 +90,7 @@ const GoogleCal = ( props ) => {
         })
         .then(function(response) {
             var events = response.result.items;
+            console.log(events[0])
             var recents = []; 
             document.getElementById('cal-message').innerHTML = "";
 
