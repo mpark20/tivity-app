@@ -8,11 +8,12 @@ import {
   HashRouter
 } from "react-router-dom";
 import Timer from "./Timer";
-import SavedLists2 from "./SavedLists2";
+import Planner from "./Planner";
 import TodoList from "./TodoList";
 import Calendar from "./Calendar"
 import Settings from "./Settings";
 import SignIn from "./SignIn";
+import Dashboard from "./Dashboard";
 import Loading from "./components/Loading"
 import { getDatabase, ref, onValue } from "firebase/database";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -27,7 +28,6 @@ class App extends Component {
     this.updateUser = this.updateUser.bind(this);
     this.logout = this.logout.bind(this); 
     this.toggleNav = this.toggleNav.bind(this); 
-    this.status = null; 
     this.state = {
       loading: true,
       user: this.auth.currentUser,
@@ -105,10 +105,10 @@ class App extends Component {
         theme: this.state.theme,
         breakLength: this.state.breakLength,
         navOpen: this.state.navOpen,
-        status: null,
       })
       document.querySelector("body").classList.remove("dark");
       document.querySelector("body").classList.remove("red");
+      window.location.href = "#/login";
     }).catch((error) => {
         console.log(error); 
     });   
@@ -155,14 +155,13 @@ class App extends Component {
               <ul className="nav" style={{display: this.state.navOpen ? 'block' : 'none'}}>
                   {this.state.user ? <li><p style={{color: 'black'}}>hello, {this.state.user.displayName}!</p></li> : <></>}
     
-                  <li><NavLink to="/todo">todo list</NavLink></li>
-                  <li><NavLink to="/planner">planner</NavLink></li>
-                  <li><NavLink to="/calendar">calendar</NavLink></li>
+                  <li>{this.state.user ? <NavLink to="/todo">todo list</NavLink>: <></>}</li>
+                  <li>{this.state.user ? <NavLink to="/planner">planner</NavLink>: <></>}</li>
+                  <li>{this.state.user ? <NavLink to="/calendar">calendar</NavLink>: <></>}</li>
                   <li><NavLink exact to="/">focus timer</NavLink></li>
-                  {/*}<li><NavLink to="/dashboard">dashboard</NavLink></li>{*/}
-                  <li><br/></li>
-                  <li><NavLink to="/settings">settings</NavLink></li>
-                  <li>{this.state.user ? <></> : <NavLink to="/auth">log in</NavLink>}</li>
+                  <li>{this.state.user ? <NavLink to="/dashboard">dashboard</NavLink>: <></>}</li>
+                  <li>{this.state.user ? <NavLink to="/settings">settings</NavLink>: <></>}</li>
+                  <li>{this.state.user ? <></> : <NavLink to="/login">log in</NavLink>}</li>
                   
               </ul>
             </div>
@@ -176,10 +175,11 @@ class App extends Component {
           
             <Switch>
             <Route path="/todo" component={()=> <TodoList/>}/>
-            <Route path="/planner" component={()=> <SavedLists2/>}/>
+            <Route path="/planner" component={()=> <Planner user={this.state.user}/>}/>
             <Route path="/calendar" component={()=> <Calendar/>}/>
+            <Route path="/dashboard" component={()=> <Dashboard/>}/>
             <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
-            <Route path="/auth" component={()=> <SignIn user={this.state.user} light={this.light}/>} status={this.state.status}/>
+            <Route path="/login" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
             <Route exact path="/" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
             </Switch>
           </div>

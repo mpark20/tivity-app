@@ -1,138 +1,132 @@
-import { useState, useEffect } from 'react'
-import SavedLists2 from "./SavedLists2";
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import { getDatabase, ref, set, onValue } from "firebase/database";
-import './App.css';
-import TaskList from './components/TaskList';
-import Loading from './components/Loading';
+import { getAuth } from "firebase/auth";
+import { getDatabase, ref, onValue, remove } from "firebase/database";
+import { useEffect, useState } from "react";
+import Loading from "./components/Loading";
 
-const Planner = () => {
-  const db = getDatabase(); 
-  const auth = getAuth();
-  const [tasks, setTasks] = useState([]) 
-  const [user, setUser] = useState(auth.currentUser); 
-  const [loading, setLoadingState] = useState(true);
-  //var todos = []; 
-  useEffect(() => {   
-    console.log(tasks);
-    setLoadingState(false);
-  }, [tasks]); 
+const Planner = (props) => {
+    const auth = getAuth();  
+    const db = getDatabase();  
+    const [user, setUser] = useState(auth.currentUser);
+    const [savedLists, setSavedLists] = useState(readSavedLists()); 
+    const [loading, setLoadingState] = useState(true);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setUser(auth.currentUser);
+    useEffect(() => {
+        
+        const timer = setTimeout(()=>{
+            setUser(auth.currentUser); 
+            setLoadingState(false); 
+        }, 1000)
+        return() => {clearTimeout(timer)}
+    }, [savedLists, user]); 
+    
+    
+
+    function readSavedLists() {
+        var lists = []; 
+        if (user) {
+            var node = ref(db, "users/" + user.uid + "/savedLists"); 
+            onValue(node, (snapshot) => {
+                snapshot.forEach(function(childSnapshot) { 
+                    var item = childSnapshot.val();
+                    item.key = childSnapshot.key;
+                    lists.push(item);       //.unshift() instead of .push()
+                });
+            })
+            
+            return lists; 
+        }
+        return lists; 
+        
+    }
+    
+    
+    function showList(index) {
+        var item = document.getElementsByClassName("list-contents")[index]
+        if (item.style.display === "none") {
+            item.style.display = "block";
+        }
+        else {
+            item.style.display = "none"
+        }
     } 
-  })
+    function listItems(list) { 
+        var temp = []; 
+        for (let i=0; i<list.tasks.length; i++) {
+            temp[i] = list.tasks[i].title; 
+        }
+        var tasks = JSON.stringify(temp );
+        tasks = tasks.replace(/"/g, '')
+        tasks = tasks.replace('[', '')
+        tasks = tasks.replace(']', '')
+        var tasksArr = tasks.split(","); 
+        return (
+            <>
+            {tasksArr.map((task, index)=>(
+                <div key={list.key+"_"+index}>{task}</div>
+            ))}
+            </>
+        );  
+         
+    }
+    
+    function deleteList(key) {
+        setSavedLists(savedLists.filter((list) => list.key !== key));
+        var node = ref(db, "users/" + user.uid + "/savedLists/" + key); 
+        remove(node);
+    }
+   // function showImptBtn() {
+        
+    
+   // }
+    
+        if (loading) {
+            return(
+                <Loading/>
+            )
+        }
+        
+        if (user) {
 
-  function addTask() {
-    var task = document.getElementById("task").value;
-    //var duration = document.getElementById("time").value;
-    var index = Date.now(); 
-    if (task !== "") {
-      setTasks([...tasks, {title: task, id: index}]);
-      //todos.push({title: task, id: index}); 
-      document.getElementById("save-list").classList.remove("inactive");
-      document.getElementById("task").value = "";
-      //console.log(tasks);
-    }
-    
-  }
-  function clear() { 
-    setTasks([]);
-    document.getElementById("task").value = ""; 
-  }
-  function deleteTask(id) {
-    if (tasks.length > 0) { 
-      setTasks(tasks.filter((task) => task.id !== id))
-    }
-    console.log(tasks);
-    
-  }
-  function nameList() {
-    if (tasks.length > 0) {
-      document.getElementById("name-list").style.display = "block";
-      document.getElementById("exit-save").innerHTML = "cancel"
-    }
-  }
-  function saveList() {
-    var listName = document.getElementById("list-name").value;
-    if (listName.indexOf("_")!== -1) {
-      listName.replace("_", " "); 
-    }
-    console.log(listName);
-    var list = [];  
-    for (let i=0; i<tasks.length; i++) {
-      list[i] = tasks[i].title; 
-    }
-    var dateTime = Date.now(); 
-    var listId = dateTime + "_" + listName;
-    
-    if (user) {
-      var node = ref(db, 'users/' + user.uid + '/savedLists/' + listId);
-      set(node, list); 
-      document.getElementById("save-message").innerHTML = "list saved"
-      document.getElementById("exit-save").innerHTML = "done"
+        
+        if (savedLists.length === 0) {
+            return(
+                <div className='flex-container'>
+                <div className="page-container">
+                    <h2>saved lists</h2>
+                    <div>you currently don't have any lists saved.</div>
+                </div>
+                </div>
+            )
+        }
+        
+        return(
+            <div className="flex-container" > 
+            <div className="page-container">
+                <h2>saved lists</h2>
+                {savedLists.map((list, index) => (
+                    <div key={list.key}>
+                        <button key={list.key + "_x"} className="x-btn" onClick={() => deleteList(list.key)}>x</button>
+                        <button key={list.key+"_import"} className="btn impt-btn" style={{display: props.origin==='timer' ? 'block':'none'}} onClick={() => props.import(list.tasks)}>import</button>
+                        <div key={list.key+"_title"} className="list-date" onClick={() => showList(index)}>{list.date}</div>
+                        <div key={list.key+"_date"} className="list-title" onClick={() => showList(index)}>{list.key.substring(list.key.indexOf("_")+1)}</div>
+                        <div key={list.key+"_items"} className="list-contents" style={{display: props.origin==='timer' ? 'block':'none'}}>{listItems(list)}</div>
+                        
+                    </div>
+                ))}
+            </div>
+            </div>
+        )
     }
     else {
-      console.log("please log in to save lists to your planner.")
-    } 
-    cancelSaveList(); 
-  }
-  function cancelSaveList() {
-    if (document.getElementById("exit-save").innerHTML ===  "done") {
-      setTasks([]);
-    }
-    document.getElementById("list-name").value = ""; 
-    document.getElementById("name-list").style.display = "none";
-    document.getElementById("exit-save").innerHTML = "cancel"
-    document.getElementById("save-message").innerHTML = ""
-  }
-  if (loading) {
-    return(
-      <Loading/>
-    )
-  }
-
-  return (
-    <div>
-      
-      <div className="split">
-        <div style={{width: "90%", margin: "10px auto"}}>
-          <h2 style={{marginBottom: "2px"}}>task list</h2>
-          
-          <form autoComplete="off"> 
-              <input type="text" placeholder="task name..." id="task" required />
-          </form>
-          <br/><br/>
-          <div className="btn-container">
-            <button onClick={addTask} className="btn" id="add-task">enter</button>
-            <button onClick={clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
-            
-            {/*<AddToCalendar tasks={tasks}/>*/}
-          </div>
-          <div id="name-list" style={{display:"none"}}>
-            <form>
-              <input type="text" className="text-field" id="list-name" placeholder="enter list name..."/>
-            </form>
-            <div className="btn-container">
-              <button onClick={saveList} className="btn white">OK</button>
-              <button onClick={cancelSaveList} className="btn white" id="exit-save">cancel</button>
+        return(
+            <div className='flex-container'>
+                <div className="page-container">
+                    <h2>saved lists</h2>
+                    <div>please log in to access your planner.</div>
+                </div>
             </div>
-            <div className="message" id="save-message" style={{marginTop: "0"}}></div>
-          </div>
-        </div>
-      </div>
-      <div className="divide"></div>
-      <div className="split">
-        <h2>my to-do list</h2>
-        <div id="task-list">
-          <TaskList tasks={tasks} delete={deleteTask} origin="planner"/>
-          <div className="btn-container"><button onClick={nameList} className="btn white inactive" style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button></div>
-        </div>
-        <SavedLists2/>
-      </div>
-    </div>
-  );
+        )
+    }
+    
 }
- 
-export default Planner;
+export default Planner; 

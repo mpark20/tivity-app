@@ -4,9 +4,8 @@ import TaskList from "./components/TaskList"
 import Countdown from "./components/Countdown"
 import { getDatabase, set, ref, onValue } from "firebase/database"; 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import SavedLists2 from "./SavedLists2";
+import Planner from "./Planner";
 import SpotifyLogin from "./components/SpotifyLogin";
-import WebPlayer from "./components/WebPlayer";
 import alarm from "./components/alarm2.mp3"
 
 class Timer extends Component {
@@ -17,6 +16,8 @@ class Timer extends Component {
       timeLeft: {h:"00", m:"00", s:"00"},
     } 
     this.totalTime = 0; 
+    this.updateStats = this.updateStats.bind(this); 
+    this.sessions = 0; 
     this.addTask = this.addTask.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.clear = this.clear.bind(this);
@@ -31,7 +32,6 @@ class Timer extends Component {
     this.changeBreakOption = this.changeBreakOption.bind(this);
     this.tick = this.tick.bind(this);
     this.formatted = this.formatted.bind(this);
-    //this.adjustIDs = this.adjustIDs.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
     this.pauses = 0; 
     this.resumeTimer = this.resumeTimer.bind(this);
@@ -53,7 +53,7 @@ class Timer extends Component {
         console.log("user!!");
         var node = ref(this.db, "users/" + this.user.uid + "/settings/breakLength");
         onValue(node, (snapshot) => {
-            this.setBreakLength(snapshot.val());  
+            this.setBreakLength(snapshot.val());
         })
       }
     })
@@ -114,25 +114,13 @@ class Timer extends Component {
     console.log("removed task id: "+id);
     
   }
-  /*adjustIDs(id) {
-    if (this.state.tasks.length > 0) {
-      document.getElementById("save-list").classList.remove("inactive");
+  updateStats(t) {
+    if (this.user) {
+      var node1 = ref(this.db, "users/" + this.user.uid + "/stats/minutes");
+      set(node1, t/60.0); 
+      
     }
-    var tasks = this.state.tasks;
-    tasks = tasks.slice(0, id);
-    var newTasks = [];
-    for (let i=id; i<this.state.tasks.length; i++) { // for tasks that had IDs greater than the removed task...
-      var task = this.state.tasks[i].title;
-      var duration = this.state.tasks[i].time;
-      var newId = this.state.tasks[i].id - 1;
-      newTasks.push({title: task, time: duration, id: newId});
-    }
-    tasks.concat(newTasks);
-    this.setState({ 
-      tasks: tasks,
-      timeLeft: {...this.state.timeLeft},
-    }, ()=>{console.log(this.state.tasks)})
-  }*/
+  }
   setTimer(minutes) {
     var hr = this.formatted(Math.floor(minutes / 60)); //# of whole hours
     var min = this.formatted(Math.floor(minutes % 60)); //# of leftover minutes once converted into hours
@@ -146,7 +134,7 @@ class Timer extends Component {
   startTimer() {
     //this.setTimer(parseInt(this.state.tasks[this.intervals].time)); 
     if ((parseInt(this.state.timeLeft.h) > 0 || parseInt(this.state.timeLeft.m) > 0)) {
-      document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
+      //document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
       this.timer = setInterval(this.tick, 100);
     } 
@@ -185,7 +173,15 @@ class Timer extends Component {
         this.intervals = 0; 
         document.getElementById("task-label").innerHTML = "";
         document.getElementsByClassName("timer-container")[0].removeAttribute("id"); 
-        document.getElementById("summary").style.opacity = "1";;
+        document.getElementById("summary").style.opacity = "1";
+        if (this.user) {
+          var node2 = ref(this.db, "users/" + this.user.uid + "/stats/sessions");
+          var ns = 1; 
+          onValue(node2, (snapshot) => {
+            if (snapshot.val()) {ns = snapshot.val()+1}
+          })
+          set(node2, ns); 
+        }
       }
     }
     else {
@@ -215,6 +211,8 @@ class Timer extends Component {
     console.log("paused")
     document.getElementById("pause").style.display = "none";
     document.getElementById("resume").style.display = "block";
+    //console.log(this.totalTime)
+    this.updateStats(this.totalTime); 
   }
   resumeTimer() {
     this.timer = setInterval(this.tick, 100);
@@ -227,6 +225,7 @@ class Timer extends Component {
       timeLeft: {...this.state.timeLeft}
     });
     this.setTimer(this.state.tasks[0].time);
+    this.updateStats(this.totalTime); 
     this.intervals = 0;
     document.getElementById("task-label").innerHTML = this.state.tasks[0].title;
     clearInterval(this.timer); 
@@ -302,8 +301,10 @@ class Timer extends Component {
       <div className="flex-container" > 
           <div className="split" >
           <div style={{width: "80%", margin: "10px auto"}}>
+            <div className='timer-container' id={this.state.timeLeft.h > 0 ? 'myDIV' : ''}>
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
             <SpotifyLogin/>
+            </div>
           </div>  
             
           </div>
@@ -354,7 +355,7 @@ class Timer extends Component {
           </div>
           <div id="import-list">
             <button onClick={this.toggleImportList} className="btn white" style={{margin: "10px", display: "block"}}>close</button>
-            <SavedLists2 origin="timer" import={this.importTasks}/>
+            <Planner origin="timer" import={this.importTasks}/>
           </div>
           
         </div>

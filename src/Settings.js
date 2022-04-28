@@ -7,7 +7,7 @@ import { useEffect } from "react";
 const Settings = (props) => {
   const auth = getAuth();
   //const user = props.user; 
-  useEffect(() => {
+  /*useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) { 
         document.getElementById("not-logged-in").style.display = "none";
@@ -15,13 +15,13 @@ const Settings = (props) => {
         document.getElementById("not-logged-in").style.display = "block"; 
       }
     });
-  }, []);
+  }, []);*/
 
   return (
     <div className="flex-container" > 
     <div className="page-container">  
       <h1>settings</h1>
-      <div id="not-logged-in" ><p><a href="/#/auth" style={{textDecoration: "underline"}}>log in</a> to view adjust settings</p></div>
+      {/*<div id="not-logged-in" ><p><a href="/#/auth" style={{textDecoration: "underline"}}>log in</a> to view adjust settings</p></div>*/}
       <Account/>
       <Display light={props.light} breakLength={props.breakLength}/>
     </div>

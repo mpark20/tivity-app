@@ -320,12 +320,12 @@ input {
   margin-top: 0; 
 }
 .dash {
+  display: flex; 
   background-color: #f7f7f7;
   color: black; 
   /*border: solid 0.1px #ced9e0; */
   border-radius: 5px; 
   box-shadow: 2px 2px 2px 2px #ebebeb;
-  overflow: hidden; 
   float: left; 
   width: 30%; 
   margin-right: 3%;
@@ -334,9 +334,7 @@ input {
 .dark .dash {
   box-shadow: none;
 }
-.dash h4 {
-  margin: 5%
-}
+
 .indented {
   margin: 0 18px; 
   display: block; 
@@ -405,7 +403,7 @@ p {
 }
 #import-list {
   display: none;
-  width: 80%;
+  width: 60%;
   min-height: 50vh; 
   margin: auto 10vh; 
   background-color: white; 
@@ -556,7 +554,12 @@ p {
   .list-contents {
     width: 90%; 
   }
-  
+  .dash {
+    width: 80%; 
+    float: none; 
+    margin: auto;
+    margin-bottom: 8px;  
+  }
 }
 
 /*LOADING ANIMATION*/

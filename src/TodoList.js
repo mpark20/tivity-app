@@ -15,16 +15,19 @@ const Planner = () => {
 
   
   useEffect(() => { 
-      setTimeout(()=>{
+      const timer = setTimeout(() => {
           setLoadingState(false);
           setUser(auth.currentUser);
-          if (!user) {
-              document.getElementById("save-list").classList.add("inactive");
-          }
+          
       }, 1000)
+      return() => {clearTimeout(timer)}
   }, [tasks, user]);
   
-  
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      document.getElementById("save-list").classList.add("inactive");
+    }
+  })
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       addTask();  
@@ -168,7 +171,11 @@ const Planner = () => {
       }
   }
 
-
+  if (loading) {
+    return(
+      <Loading/>
+    )
+  }
   return (
     <div className='flex-container'>
       <div className="split">        
