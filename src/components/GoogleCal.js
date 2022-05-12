@@ -122,9 +122,6 @@ const GoogleCal = ( props ) => {
                         props.addEvent(new Date(date+"T00:00:00").toString(), event.summary, '(all day)')
                     }
                     
-                    if (recents.length == 0) {
-                        document.getElementById("cal-message").innerHTML = 'no events scheduled this week.';
-                    }
                     //tempSave(recents);
                     /*document.getElementById("cal-message").style.display = "block";
                     document.getElementById("hide").style.display = "block";

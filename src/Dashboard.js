@@ -70,7 +70,7 @@ const Dashboard = () => {
         <h4>number of sessions: <br/>{sessions}</h4>
       </div>
       <div className="dash">
-        <h4>average minutes per session: </h4>
+        <h4>average minutes per session: <br/>{mins/sessions}</h4>
       </div>
       
     </div>

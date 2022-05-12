@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import { getDatabase, ref, set, onValue, remove } from "firebase/database";
+import { getDatabase, ref, set, onValue, remove, child } from "firebase/database";
 import './App.css';
 import TaskList from './components/TaskList';
 import Loading from './components/Loading';
+import Upcoming from './components/Upcoming';
 
 const Planner = () => {
   const db = getDatabase(); 
@@ -21,7 +22,7 @@ const Planner = () => {
           
       }, 1000)
       return() => {clearTimeout(timer)}
-  }, [tasks, user]);
+  }, [tasks, recentEvents, user]);
   
   onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -151,18 +152,21 @@ const Planner = () => {
       }
   }
   function upcomingEvents() {
-    var all = [];
+    var now = Date.now(); 
     var recents = []; 
       if (user) { 
         var node = ref(db, "users/" + user.uid + "/events"); 
         onValue(node, (snapshot) => {
             snapshot.forEach((childSnapshot) => { 
                 var item = childSnapshot.val();
-                all.push(item);
-            });
-            
-        })
-        //filter recents to only events within the next week.   
+                item.key = childSnapshot.key; 
+                var ms = new Date(item.date).getTime(); 
+                if ((ms-now) >= 0 && (ms-now) < 1209600000) {
+                  recents.push(item); 
+                }
+            })
+        })  
+        
         return recents; 
       }
       else {
@@ -198,8 +202,10 @@ const Planner = () => {
             </div>
             <div className="message" id="save-message" style={{marginTop: "0"}}></div>
           </div>
-          
+          <h2>upcoming events</h2>
+          <Upcoming events={recentEvents}/>
         </div>
+        
       </div>
 
       <div className="divide"></div>
@@ -215,7 +221,7 @@ const Planner = () => {
           <div className="btn-container">
             <button onClick={addTask} className="btn" id="add-task">enter</button>
           </div>
-          {/*<GoogleCal tasks={tasks}/>*/}
+          
         </div>
       </div>
       

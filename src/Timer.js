@@ -117,7 +117,11 @@ class Timer extends Component {
   updateStats(t) {
     if (this.user) {
       var node1 = ref(this.db, "users/" + this.user.uid + "/stats/minutes");
-      set(node1, t/60.0); 
+      var min = t; 
+      onValue(node1, (snapshot) => {
+        if (snapshot.val()) {min = snapshot.val()+t/60.0}
+      })
+      set(node1, min); 
       
     }
   }
@@ -144,8 +148,10 @@ class Timer extends Component {
     // Check if we're at zero.
     if (parseInt(this.state.timeLeft.h) === 0 && parseInt(this.state.timeLeft.m) === 0 && parseInt(this.state.timeLeft.s) === 0) { 
       console.log(this.state.timeLeft)
+      this.audio.play(); 
+      this.updateStats(this.totalTime)
       if (!this.isBreak) {  //if the interval that just finished was not a break, the next one will be.
-        this.audio.play();  
+        
         alert(this.state.tasks[this.intervals].title + ": time's up");
         this.intervals += 1;
         if (this.insertBreaks && this.intervals < this.state.tasks.length) {
@@ -153,7 +159,6 @@ class Timer extends Component {
         }
       }
       else {  //if the interval that just finished was a break, the next one will not be.
-        this.audio.play(); 
         alert(this.breakLength + " min break has finished")
         this.isBreak = false;
       }

@@ -6,7 +6,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup, 
   updateProfile, 
-  signOut 
+  setPersistence,
+  signOut, 
+  browserSessionPersistence
 } from "firebase/auth";
 import { useState } from 'react';
 import { getDatabase, ref, set } from "firebase/database";
@@ -63,51 +65,59 @@ const SignIn = (props) => {
     });
   }
   function logIn() {    //runs when login button is clicked
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value;
-    var message = document.getElementById("login-message");
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in 
-      const user = userCredential.user;
-      welMess(message, user);
-      setUser(auth.currentUser);
-      window.location.href = '#/todo';
+    setPersistence(auth, browserSessionPersistence)
+    .then(() => {
+      var email = document.getElementById("email").value;
+      var password = document.getElementById("password").value;
+      var message = document.getElementById("login-message");
+      signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        welMess(message, user);
+        setUser(auth.currentUser);
+        window.location.href = '#/todo';
+      })
+      .catch((error) => {errMess(message, error)});
     })
-    .catch((error) => {
-      errMess(message, error)
-    });
+    .catch((error) => {console.log(error)});
+    
   }
   function signUpGoogle() {   //runs when 'continue with google' is clicked
-    signInWithPopup(auth, provider)
-    .then((result) => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      //const credential = GoogleAuthProvider.credentialFromResult(result);
-      //const token = credential.accessToken;
-      // The signed-in user info.
-      const user = result.user;
-      setUser(auth.currentUser);
-      document.getElementById("login-message").innerHTML = "hello "+user.displayName+"!";
-      var userNode = ref(db, 'users/' + user.uid); 
-      if (!userNode) {
-        set(userNode, {
-          displayName: user.displayName,
-          email: user.email,
-          savedLists: "",
-          settings: {lightMode: true, darkMode: false, breakLength: "5"}
-        });
-      }
-      
-      window.location.href = '#/todo';
+    setPersistence(auth, browserSessionPersistence)
+    .then(() => {
+      signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        //const credential = GoogleAuthProvider.credentialFromResult(result);
+        //const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        setUser(auth.currentUser);
+        document.getElementById("login-message").innerHTML = "hello "+user.displayName+"!";
+        var userNode = ref(db, 'users/' + user.uid); 
+        if (!userNode) {
+          set(userNode, {
+            displayName: user.displayName,
+            email: user.email,
+            savedLists: "",
+            settings: {lightMode: true, darkMode: false, breakLength: "5"}
+          });
+        }
+        window.location.href = '#/todo';
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        console.log(errorCode + "\n" + errorMessage + "\n" + credential); 
+      });
     })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(errorCode + "\n" + errorMessage + "\n" + credential); 
-    });
   }
-  function logOut() {   //runs when logout button is clicked
+
+  
+
+  /*function logOut() {   //runs when logout button is clicked
     signOut(auth).then(() => {
       setUser(null);
       //logOut.style.display = "none";
@@ -116,7 +126,7 @@ const SignIn = (props) => {
     }).catch((error) => {
       console.log(error); 
     });  
-  }
+  }*/
   function welMess(message, user) { 
     message.style.color = "black";
     if (user.displayName) {message.innerHTML = "hello "+user.displayName+"!"}
