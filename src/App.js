@@ -40,10 +40,11 @@ class App extends Component {
     })
   }
   componentDidMount() {
-    this.timer = setTimeout(this.updateUser, 1000);
+    //this.timer = setTimeout(this.updateUser, 1000);
+    this.updateUser(); 
   }
   componentWillUnmount() {
-    clearTimeout(this.timer); 
+    //clearTimeout(this.timer); 
   }
   updateUser() {
     this.setState({
@@ -134,12 +135,7 @@ class App extends Component {
     }
   }
   render() {
-    if (this.state.loading === true) {
-      
-      return(
-        <Loading/>
-      )
-    }
+    
     
     return (
       <HashRouter>

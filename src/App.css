@@ -323,13 +323,12 @@ input {
   display: flex; 
   background-color: #f7f7f7;
   color: black; 
-  /*border: solid 0.1px #ced9e0; */
   border-radius: 5px; 
   box-shadow: 2px 2px 2px 2px #ebebeb;
-  float: left; 
-  width: 30%; 
-  margin-right: 3%;
-  min-height: 100px;  
+  width: 60%; 
+  margin-bottom: 3%;
+  font-size: 14px;
+  padding: 2%;
 }
 .dark .dash {
   box-shadow: none;
@@ -558,7 +557,8 @@ p {
     width: 80%; 
     float: none; 
     margin: auto;
-    margin-bottom: 8px;  
+    margin-bottom: 8px;
+       
   }
 }
 

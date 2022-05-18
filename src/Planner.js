@@ -1,41 +1,80 @@
-import { getAuth } from "firebase/auth";
+
+import { getAuth, indexedDBLocalPersistence, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, onValue, remove } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Loading from "./components/Loading";
 
 const Planner = (props) => {
     const auth = getAuth();  
     const db = getDatabase();  
     const [user, setUser] = useState(auth.currentUser);
-    const [savedLists, setSavedLists] = useState(readSavedLists()); 
+    const [savedLists, setSavedLists] = useState([]); 
     const [loading, setLoadingState] = useState(true);
+    const firstRender = useRef(true);
 
+    
     useEffect(() => {
+        readSavedLists()
+        .then((data) => {
+            console.log(data)
+            setSavedLists(data);
+        })
+    }, [])
+    useEffect(() => {
+        setLoadingState(false); 
+        /*console.log(firstRender.current)
+        if (firstRender.current) {
+            readSavedLists()
+            firstRender.current = false
+        }
+        else {
+            setLoadingState(false); 
+            console.log(savedLists); 
+        }*/
         
-        const timer = setTimeout(()=>{
+
+        /*const timer = setTimeout(()=>{
             setUser(auth.currentUser); 
             setLoadingState(false); 
         }, 1000)
-        return() => {clearTimeout(timer)}
+        return() => {clearTimeout(timer)}*/
     }, [savedLists, user]); 
     
     
-
     function readSavedLists() {
+        return new Promise((resolve, reject) => {
+            if (user) {
+                var node = ref(db, "users/" + user.uid + "/savedLists"); 
+                onValue(node, (snapshot) => {
+                    var lists = []
+                    snapshot.forEach(function(childSnapshot) { 
+                        var item = childSnapshot.val();
+                        item.key = childSnapshot.key;
+                        lists.push(item);       //.unshift() instead of .push()
+                        console.log('getting saved lists')
+                    })
+                    resolve(lists);
+                })
+            }
+             
+        })
+        /*console.log('reading saved lists...')
         var lists = []; 
         if (user) {
             var node = ref(db, "users/" + user.uid + "/savedLists"); 
             onValue(node, (snapshot) => {
+                console.log(snapshot.val())
                 snapshot.forEach(function(childSnapshot) { 
                     var item = childSnapshot.val();
                     item.key = childSnapshot.key;
                     lists.push(item);       //.unshift() instead of .push()
+                    console.log('getting saved lists')
                 });
             })
-            
-            return lists; 
+            console.log('finished getting lists');
         }
-        return lists; 
+        setSavedLists(lists);
+        //return lists; */
         
     }
     
@@ -73,19 +112,20 @@ const Planner = (props) => {
         setSavedLists(savedLists.filter((list) => list.key !== key));
         var node = ref(db, "users/" + user.uid + "/savedLists/" + key); 
         remove(node);
+        
     }
    // function showImptBtn() {
         
     
    // }
     
-        if (loading) {
-            return(
-                <Loading/>
-            )
-        }
+    if (loading) {
+        return(
+            <Loading/>
+        )
+    } 
         
-        if (user) {
+    if (user) {
 
         
         if (savedLists.length === 0) {

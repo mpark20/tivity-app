@@ -24,7 +24,7 @@ const Calendar = () => {
         setDaysInMonth(new Date(year, month, 0).getDate());
         setCurrMonth(monthNames[(month-1)%12]);
         setDays(countDays())
-       
+        console.log(month, currMonth)
         setTimeout(() => {
             setLoadingState(false);
             setUser(auth.currentUser);

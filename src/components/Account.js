@@ -13,13 +13,17 @@ const Account = ( props ) => {
     const [loading, setLoadingState] = useState(true);
     //add user as a state variable?
     useEffect(()=> {
-        const timer = setTimeout(() => {
+        setFields()
+        .then(() => {
+            setLoadingState(false);
+        })
+        /*const timer = setTimeout(() => {
             setFields(); 
             setLoadingState(false);
-        }, 500)
+        }, 1000)
         return() => {
             clearTimeout(timer); 
-        }
+        }*/
     }, []);
 
     onAuthStateChanged(auth, (user) => {
@@ -33,7 +37,10 @@ const Account = ( props ) => {
     });
     
     function setFields() {   
-        setUserInfo(tempUserInfo);
+        return new Promise((resolve, reject) => {
+            setUserInfo(tempUserInfo);
+            resolve(); 
+        })
        
     }
     function toggleShowReauth() {

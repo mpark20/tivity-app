@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import './App.css';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -11,19 +11,29 @@ const Dashboard = () => {
   const [user, setUser] = useState(auth.currentUser); 
   const db = getDatabase();
   var headingContent = "hello user";
-  const [mins, setMins] = useState(readStats()[0])
-  const [sessions, setSessions] = useState(readStats()[1]); 
+  const [mins, setMins] = useState(0)
+  const [sessions, setSessions] = useState(0); 
   const [loading, setLoadingState] = useState(true);
 
+  useEffect(() => {
+    readStats()
+    .then((data) => {
+      setMins(data[0])
+      setSessions(data[1]);
+    })
+  }, [])
+
   useEffect(() => { 
-    const timer = setTimeout(()=>{
+    setLoadingState(false);
+    
+    /*const timer = setTimeout(()=>{
         setUser(auth.currentUser); 
         setMins(readStats()[0])
         setSessions(readStats()[1])
         setLoadingState(false); 
     }, 1000)
-    return() => {clearTimeout(timer)}
-}, [user]);
+    return() => {clearTimeout(timer)}*/
+}, [sessions]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -31,27 +41,46 @@ const Dashboard = () => {
     } 
   })
 
-  
-  
   function readStats() {
-    var m = '0'; 
-    var s = '0'; 
+    return new Promise((resolve, reject) => {
+      
       if (user) {
-          var node1 = ref(db, "users/" + user.uid + "/stats/minutes"); 
-          onValue(node1, (snapshot) => {
-              m = snapshot.val()+''; 
-          })
-          var node2 = ref(db, "users/" + user.uid + "/stats/sessions"); 
-          onValue(node2, (snapshot) => {
-              s = snapshot.val()+''; 
-          })
-         
-          return [m.substring(0,3), s];
+        var node1 = ref(db, "users/" + user.uid + "/stats"); 
+        var stats = [];
+        onValue(node1, (snapshot) => {
+            snapshot.forEach(function(childSnapshot) {
+              var item = childSnapshot.val(); 
+              stats.push(item);
+            })
+            resolve(stats);
+        })
       }
-      return ['0', '0'];
+      else {
+        setMins(0);
+        setSessions(0);
+      }
+    })
+    
+    /*var m = '0'
+    var s = '0'
+    if (user) {
+        var node1 = ref(db, "users/" + user.uid + "/stats/minutes"); 
+        onValue(node1, (snapshot) => {
+            m = (snapshot.val()+'').substring(0,3);
+            var item = snapshot.val(); 
+        })
+        var node2 = ref(db, "users/" + user.uid + "/stats/sessions"); 
+        onValue(node2, (snapshot) => {
+            s = snapshot.val()+''; 
+        })
+        console.log(m, s)
+        return [m, s];
+      }
+      return [0, 0];*/
+      
   }
+
  
-  
   if (loading) {
     return(
       <Loading/>
@@ -64,13 +93,13 @@ const Dashboard = () => {
       <h1 id="dash-heading" style={{marginBottom: '30px'}}>{user ? user.displayName+"'s dashboard" : "hello user"}</h1>
       <p id="unlogged" style={{display: user ? 'none' : 'block'}}><NavLink to="/auth" style={{textDecoration: "underline"}}>log in </NavLink>to view your stats</p>
       <div className="dash">
-        <h4>total minutes: <br/>{mins}</h4>
+        <p>total minutes: {mins ? mins.toFixed(1): '--'}</p>
       </div>
       <div className="dash">
-        <h4>number of sessions: <br/>{sessions}</h4>
+        <p>number of sessions: {sessions ? sessions: '--'}</p>
       </div>
       <div className="dash">
-        <h4>average minutes per session: <br/>{mins/sessions}</h4>
+        <p>average minutes per session: {mins && sessions && mins!=0 ? (mins/sessions).toFixed(1): '--'}</p>
       </div>
       
     </div>

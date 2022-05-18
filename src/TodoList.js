@@ -10,12 +10,17 @@ const Planner = () => {
   const db = getDatabase(); 
   const auth = getAuth();
   const [user, setUser] = useState(auth.currentUser);
-  const [tasks, setTasks] = useState(readTasks())   // user's tasks on their todo list
+  const [tasks, setTasks] = useState(readTasks());  // user's tasks on their todo list
   const [loading, setLoadingState] = useState(true);
   const [recentEvents, setRecentEvents] = useState(upcomingEvents()); 
 
   
   useEffect(() => { 
+      setUser(auth.currentUser);
+      /*readTasks()
+      .then(() => {
+        setLoadingState(false); 
+      }).catch(() => {console.log('error')})*/
       const timer = setTimeout(() => {
           setLoadingState(false);
           setUser(auth.currentUser);
@@ -36,6 +41,19 @@ const Planner = () => {
   };
 
   function readTasks() {
+    var temp = [];
+    if (user) { 
+      var node = ref(db, "users/" + user.uid + "/todos"); 
+      onValue(node, (snapshot) => {
+          snapshot.forEach((childSnapshot) => { 
+              var item = childSnapshot.val();
+              temp.push(item);
+          });
+          
+      }) 
+    }
+    return temp; 
+    /*return new Promise((resolve, reject) => {
       var temp = [];
       if (user) { 
         var node = ref(db, "users/" + user.uid + "/todos"); 
@@ -45,14 +63,12 @@ const Planner = () => {
                 temp.push(item);
             });
             
-        })
-        
-        return temp; 
+        }) 
       }
-      else {
-          
-          return temp; 
-      }
+      setTasks(temp);
+      resolve(); 
+    })*/
+
   }
   
 
@@ -166,13 +182,8 @@ const Planner = () => {
                 }
             })
         })  
-        
-        return recents; 
       }
-      else {
-          
-          return recents; 
-      }
+      return recents; 
   }
 
   if (loading) {

@@ -119,7 +119,8 @@ class Timer extends Component {
       var node1 = ref(this.db, "users/" + this.user.uid + "/stats/minutes");
       var min = t; 
       onValue(node1, (snapshot) => {
-        if (snapshot.val()) {min = snapshot.val()+t/60.0}
+        if (snapshot.val()) {min = snapshot.val()+(t/60.0)}
+        console.log(min);
       })
       set(node1, min); 
       
