@@ -1,7 +1,7 @@
 
-import { getAuth, indexedDBLocalPersistence, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, onValue, remove } from "firebase/database";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Loading from "./components/Loading";
 
 const Planner = (props) => {
@@ -10,15 +10,18 @@ const Planner = (props) => {
     const [user, setUser] = useState(auth.currentUser);
     const [savedLists, setSavedLists] = useState([]); 
     const [loading, setLoadingState] = useState(true);
-    const firstRender = useRef(true);
 
     
     useEffect(() => {
+        let isMounted = true
         readSavedLists()
         .then((data) => {
-            console.log(data)
-            setSavedLists(data);
+            if (isMounted) {
+                console.log(data)
+                setSavedLists(data);
+            } 
         })
+        return() => {isMounted = false}
     }, [])
     useEffect(() => {
         setLoadingState(false); 

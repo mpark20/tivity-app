@@ -18,6 +18,7 @@ import Loading from "./components/Loading"
 import { getDatabase, ref, onValue } from "firebase/database";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Logout from "./components/Logout";
+import AuthListener from "./components/AuthListener"
 
 class App extends Component {
   constructor(props) {
@@ -30,21 +31,21 @@ class App extends Component {
     this.toggleNav = this.toggleNav.bind(this); 
     this.state = {
       loading: true,
-      user: this.auth.currentUser,
+      user: getAuth().currentUser,
       theme: 'blue',
       navOpen: true,
     }
     
-    onAuthStateChanged(this.auth, (user) => {
-      this.updateUser(); 
-    })
+    /*onAuthStateChanged(getAuth(), (user) => {
+      this.updateUser();
+    })*/
   }
   componentDidMount() {
-    //this.timer = setTimeout(this.updateUser, 1000);
-    this.updateUser(); 
+    this.timer = setTimeout(this.updateUser, 1000);
+    //this.updateUser(); 
   }
   componentWillUnmount() {
-    //clearTimeout(this.timer); 
+    clearTimeout(this.timer); 
   }
   updateUser() {
     this.setState({
@@ -136,10 +137,15 @@ class App extends Component {
   }
   render() {
     
-    
+    if (this.state.loading) {
+      return(
+        <Loading/>
+      )
+    }
     return (
       <HashRouter>
         <div>
+          
           <div className='nav-container'>
             <div id='navbar' style={{width: this.state.navOpen ? '100%' : '0'}}>
               

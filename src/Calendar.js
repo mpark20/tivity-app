@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Day from './components/Day'
 import Loading from './components/Loading'
 import { getAuth } from "firebase/auth";
@@ -21,16 +21,16 @@ const Calendar = () => {
     const [events, setEvents] = useState(readSavedEvents());
 
     useEffect(() => {
+        console.log(monthNames[month-1])
         setDaysInMonth(new Date(year, month, 0).getDate());
         setCurrMonth(monthNames[(month-1)%12]);
         setDays(countDays())
-        console.log(month, currMonth)
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             setLoadingState(false);
             setUser(auth.currentUser);
             checkEvents(); 
         }, 1000)
-        
+        return() => {clearTimeout(timer)}
     }, [month, events])
 
     
@@ -55,7 +55,7 @@ const Calendar = () => {
         var dayList = []
         var firstDoW = new Date(year, month-1, 1).getDay(); 
         var monthDays = new Date(year, month, 0).getDate(); 
-        console.log(currMonth+' '+ daysInMonth)
+        //console.log(currMonth+' '+ daysInMonth)
         for (let i=0; i<firstDoW; i++) {
             let daysInPrevMonth = new Date(year, month-1, 0).getDate();
             let c = daysInPrevMonth-firstDoW+1+i;
@@ -70,6 +70,7 @@ const Calendar = () => {
             dayList.push(day);
             //setDays([...days, day])
         }
+        //console.log(dayList);
         return dayList; 
     }
     
@@ -189,6 +190,7 @@ const Calendar = () => {
                 <h4 key={day.key+"_eventsList1"}>{day.key.toLocaleDateString()}</h4>
                 {list.map((item, i)=>(
                     <div key={day.key+"_"+i}>
+                        
                         <button key={day.key + "_x"} className="x-btn" onClick={() => deleteEvent(item.key)}>x</button>
                         <div key={day.key+'_name'} className='event-title'>{item.time}{' '}{item.key.substring(0, item.key.indexOf('_'))}</div>
                         
@@ -219,7 +221,7 @@ const Calendar = () => {
             <div className="weekday">sat</div>
             
             {days.map((day, index) => (
-                <>
+                <div key={day.key}>
                 <div key={day.key+'box'} className="cal-box" onClick={() => showEvents(index)}>
                     <div className='day-count' key={day.key+'count'}>{day.count}</div>
                     <button key={day.key+'btn1'} className='x-btn add-event-btn' onClick={() => showAddEvent(index, day)}>+</button>
@@ -230,8 +232,8 @@ const Calendar = () => {
                     <div key={day.key+'list-items'}>{eventList(day, index)}</div>
                 </div>
 
-                <Day day={day} index={index} close={() => closeAddEvent(index)} add={addEvent} key={day.key}/>
-                </>
+                <Day day={day} index={index} close={() => closeAddEvent(index)} add={addEvent}/>
+                </div>
             ))}
             </div>
             

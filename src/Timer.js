@@ -117,13 +117,15 @@ class Timer extends Component {
   updateStats(t) {
     if (this.user) {
       var node1 = ref(this.db, "users/" + this.user.uid + "/stats/minutes");
-      var min = t; 
+      var min = t/60; 
       onValue(node1, (snapshot) => {
-        if (snapshot.val()) {min = snapshot.val()+(t/60.0)}
-        console.log(min);
-      })
-      set(node1, min); 
-      
+        if (snapshot.val()) {
+          min = snapshot.val() + min; 
+        }
+      }) 
+      console.log(t/60);
+      console.log(min)
+      set(node1, min)
     }
   }
   setTimer(minutes) {
@@ -148,21 +150,26 @@ class Timer extends Component {
     
     // Check if we're at zero.
     if (parseInt(this.state.timeLeft.h) === 0 && parseInt(this.state.timeLeft.m) === 0 && parseInt(this.state.timeLeft.s) === 0) { 
-      console.log(this.state.timeLeft)
-      this.audio.play(); 
-      this.updateStats(this.totalTime)
+      
+      
+      this.updateStats(this.totalTime-1)
       if (!this.isBreak) {  //if the interval that just finished was not a break, the next one will be.
+        //console.log(this.state.timeLeft)
+        this.audio.play().then(() => {
+          alert(this.state.tasks[this.intervals].title + ": time's up");
+        })
         
-        alert(this.state.tasks[this.intervals].title + ": time's up");
         this.intervals += 1;
         if (this.insertBreaks && this.intervals < this.state.tasks.length) {
           this.isBreak = true; 
         }
       }
       else {  //if the interval that just finished was a break, the next one will not be.
-        alert(this.breakLength + " min break has finished")
+        this.audio.play().then(() => {alert(this.breakLength + " min break has finished")})
+        
         this.isBreak = false;
       }
+      
       if (this.intervals < this.state.tasks.length) {
         if (this.isBreak) {
           this.setTimer(this.breakLength);
@@ -191,7 +198,7 @@ class Timer extends Component {
       }
     }
     else {
-      console.log(this.state.timeLeft)
+      //console.log(this.state.timeLeft)
       var hr = parseInt(this.state.timeLeft.h);
       var min = parseInt(this.state.timeLeft.m);
       var sec = parseInt(this.state.timeLeft.s);

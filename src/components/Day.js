@@ -1,5 +1,5 @@
 const Day = (props) => {
-    
+    //console.log(props.day.key)
     return(
         <div className="add-event" key={props.day.key+'events'}>
             <div style={{margin: '18px'}} key={props.day.key+'events_a'}>

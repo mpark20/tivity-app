@@ -10,23 +10,35 @@ const Planner = () => {
   const db = getDatabase(); 
   const auth = getAuth();
   const [user, setUser] = useState(auth.currentUser);
-  const [tasks, setTasks] = useState(readTasks());  // user's tasks on their todo list
+  const [tasks, setTasks] = useState([]);  // user's tasks on their todo list
   const [loading, setLoadingState] = useState(true);
-  const [recentEvents, setRecentEvents] = useState(upcomingEvents()); 
+  const [recentEvents, setRecentEvents] = useState([]); 
 
-  
+  useEffect(() => {
+    let isMounted = true //isMoutned=true when component mounts
+    
+      readTasks()
+      .then((tempTasks) => {
+        if (isMounted) {setTasks(tempTasks)} //setState called only if component has been mounted
+        
+      })
+      upcomingEvents()
+      .then((recents) => {
+        if (isMounted) {setRecentEvents(recents)}
+        
+      })
+    
+    return() => {isMounted = false} //cleanup function: isMounted=false when component unmounts
+  }, [])
   useEffect(() => { 
       setUser(auth.currentUser);
-      /*readTasks()
-      .then(() => {
-        setLoadingState(false); 
-      }).catch(() => {console.log('error')})*/
-      const timer = setTimeout(() => {
+      setLoadingState(false);
+      /*const timer = setTimeout(() => {
           setLoadingState(false);
           setUser(auth.currentUser);
           
       }, 1000)
-      return() => {clearTimeout(timer)}
+      return() => {clearTimeout(timer)}*/
   }, [tasks, recentEvents, user]);
   
   onAuthStateChanged(auth, (user) => {
@@ -41,7 +53,7 @@ const Planner = () => {
   };
 
   function readTasks() {
-    var temp = [];
+    /*var temp = [];
     if (user) { 
       var node = ref(db, "users/" + user.uid + "/todos"); 
       onValue(node, (snapshot) => {
@@ -52,22 +64,22 @@ const Planner = () => {
           
       }) 
     }
-    return temp; 
-    /*return new Promise((resolve, reject) => {
-      var temp = [];
+    return temp; */
+    return new Promise((resolve, reject) => {
+      var tempTasks = [];
       if (user) { 
         var node = ref(db, "users/" + user.uid + "/todos"); 
         onValue(node, (snapshot) => {
-            snapshot.forEach((childSnapshot) => { 
-                var item = childSnapshot.val();
-                temp.push(item);
-            });
-            
+          snapshot.forEach((childSnapshot) => { 
+              var item = childSnapshot.val();
+              tempTasks.push(item);
+          });
+          resolve(tempTasks);  
         }) 
       }
-      setTasks(temp);
-      resolve(); 
-    })*/
+      // resolve(tempTasks) used to be here, but it kept resolving an empty array.
+       
+    })
 
   }
   
@@ -168,7 +180,25 @@ const Planner = () => {
       }
   }
   function upcomingEvents() {
-    var now = Date.now(); 
+    return new Promise((resolve, reject) => {
+      var now = Date.now(); 
+      var recents = []; 
+      if (user) { 
+        var node = ref(db, "users/" + user.uid + "/events"); 
+        onValue(node, (snapshot) => {
+          snapshot.forEach((childSnapshot) => { 
+              var item = childSnapshot.val();
+              item.key = childSnapshot.key; 
+              var ms = new Date(item.date).getTime(); 
+              if ((ms-now) >= 0 && (ms-now) < 1209600000) {
+                recents.push(item); 
+              }
+          })
+          resolve(recents)
+        })  
+      }
+    })
+    /*var now = Date.now(); 
     var recents = []; 
       if (user) { 
         var node = ref(db, "users/" + user.uid + "/events"); 
@@ -183,7 +213,7 @@ const Planner = () => {
             })
         })  
       }
-      return recents; 
+      return recents; */
   }
 
   if (loading) {
