@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Planner from "./Planner";
 import SpotifyLogin from "./components/SpotifyLogin";
 import alarm from "./components/alarm2.mp3"
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 class Timer extends Component {
   constructor(props) {
@@ -46,8 +47,11 @@ class Timer extends Component {
     this.user = this.auth.currentUser;
     this.toggleImportList = this.toggleImportList.bind(this);
     this.importTasks = this.importTasks.bind(this);
+    this.handleOnDragEnd = this.handleOnDragEnd.bind(this);
     this.audio = new Audio(alarm); 
     this.audio.preload = 'auto';
+
+
     onAuthStateChanged(this.auth, (user) => {
       if (this.user) {
         console.log("user!!");
@@ -308,6 +312,17 @@ class Timer extends Component {
     }
     )
   }
+  handleOnDragEnd(result) {
+    if (!result.destination) return;
+    const items = this.state.tasks;
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    this.setState({
+      tasks: items,
+      timeLeft: {h:"00", m:this.formatted(items[0].time), s:"00"},
+    })
+    document.getElementById("task-label").innerHTML = this.state.tasks[0].title;
+  }
   render() {
     
     return (
@@ -328,7 +343,16 @@ class Timer extends Component {
             <div style={{width: "80%", margin: "10px auto"}}>
               <h2>task list</h2>
               <div id="task-list">
-                <TaskList tasks={this.state.tasks} delete={this.deleteTask} origin="timer"/>
+                <DragDropContext onDragEnd={this.handleOnDragEnd}>
+                  <Droppable droppableId='droppable'>
+                  {(provided) => (
+                      <div id='droppable' {...provided.droppableProps} ref={provided.innerRef}>
+                        <TaskList tasks={this.state.tasks} delete={this.deleteTask} origin="timer"/>
+                        {provided.placeholder}
+                      </div>
+                  )}
+                  </Droppable>
+              </DragDropContext>
               </div>
               <form autoComplete="off"> 
                   <input type="text" placeholder="task name..." id="task" required />

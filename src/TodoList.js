@@ -5,8 +5,10 @@ import './App.css';
 import TaskList from './components/TaskList';
 import Loading from './components/Loading';
 import Upcoming from './components/Upcoming';
+import Planner from './Planner';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-const Planner = () => {
+const TodoList = () => {
   const db = getDatabase(); 
   const auth = getAuth();
   const [user, setUser] = useState(auth.currentUser);
@@ -31,20 +33,22 @@ const Planner = () => {
     return() => {isMounted = false} //cleanup function: isMounted=false when component unmounts
   }, [])
   useEffect(() => { 
-      setUser(auth.currentUser);
-      setLoadingState(false);
-      /*const timer = setTimeout(() => {
-          setLoadingState(false);
-          setUser(auth.currentUser);
-          
-      }, 1000)
-      return() => {clearTimeout(timer)}*/
-  }, [tasks, recentEvents, user]);
+    console.log('todo list rendered')
+    setUser(auth.currentUser);
+    setLoadingState(false);
+    /*const timer = setTimeout(() => {
+        setLoadingState(false);
+        setUser(auth.currentUser);
+        
+    }, 1000)
+    return() => {clearTimeout(timer)}*/
+  }, [tasks, recentEvents, user]);  
   
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       document.getElementById("save-list").classList.add("inactive");
     }
+   
   })
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -86,13 +90,14 @@ const Planner = () => {
 
   function addTask() {
       var title = document.getElementById("task").value;
+      var index = tasks.length; 
       var task = {title: title, time: 25, id: Date.now()};
       if (title !== "") {
           setTasks([...tasks, task]);
           if (user) {document.getElementById("save-list").classList.remove("inactive")}
           document.getElementById("task").value = "";
           if (user) {
-              var node = ref(db, 'users/' + user.uid + '/todos/task'+ task.id);
+              var node = ref(db, 'users/' + user.uid + '/todos/'+ index+'_'+task.id);
               set(node, task); 
           }
       }
@@ -160,8 +165,11 @@ const Planner = () => {
     else {
       document.getElementById("save-message").innerHTML = "please log in to save lists to your planner."
     } 
+    
     cancelSaveList(); 
     clear(); 
+    setLoadingState(true)
+    setTimeout(() => {setLoadingState(false)}, 1000)
   }
   function cancelSaveList() {
     if (document.getElementById("exit-save").innerHTML ===  "done") {
@@ -216,6 +224,25 @@ const Planner = () => {
       return recents; */
   }
 
+  function handleOnDragEnd(result) {
+    if (!result.destination) return;
+    const items = tasks;
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setTasks(items);
+
+    if (user) {
+      var node = ref(db, 'users/' + user.uid + '/todos');
+      remove(node);
+      for (let i=0; i<items.length; i++) {
+        var child = ref(db, 'users/' + user.uid + '/todos/'+i+'_'+items[i].id)
+        var item = {title: items[i].title, time: items[i].time, id: items[i].id}
+        //set(child, item); 
+      }
+    }
+  }
+
   if (loading) {
     return(
       <Loading/>
@@ -223,15 +250,22 @@ const Planner = () => {
   }
   return (
     <div className='flex-container'>
-      <div className="split">        
+      <div className="split" id='split1' onKeyPress={handleKeyPress} > 
+              
         <div id="task-list" style={{width: "90%", margin: "10px auto"}}>
           <h2>my to-do list</h2>
           <>{emptyList()}</>
-          <TaskList tasks={tasks} delete={deleteTask} origin="planner"/>
-          <div className="btn-container">
-              <button onClick={nameList} className="btn white" style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
-              <button onClick={clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
-          </div>
+          <DragDropContext onDragEnd={handleOnDragEnd}> 
+            <Droppable droppableId='droppable'>
+            {(provided) => (
+                <div id='droppable' {...provided.droppableProps} ref={provided.innerRef}>
+                  <TaskList tasks={tasks} delete={deleteTask} origin="planner"/>
+                  {provided.placeholder}
+                </div>
+            )}
+            </Droppable>
+          </DragDropContext>
+          
           <div className="message" id="user-message" style={{marginTop: "0", fontSize: "12px", fontStyle: "italic"}}></div>
           <div id="name-list" style={{display:"none", animation: "fadeIn 500ms"}}>
             <form>
@@ -243,29 +277,31 @@ const Planner = () => {
             </div>
             <div className="message" id="save-message" style={{marginTop: "0"}}></div>
           </div>
+        </div>
+
+        <div style={{width: "90%", margin: "10px auto"}}>
+          <form autoComplete="off"  noValidate> 
+              <input type="text" placeholder="add a task..." id="task"  required />
+          </form>
+          
+          <br/><br/>
+          <div className="btn-container">
+            <button onClick={addTask} className="btn" id="add-task" >enter</button>
+            <button onClick={nameList} className={tasks.length===0 ? "btn white inactive":"btn white"} style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
+            <button onClick={clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
+          </div>
+
           <h2>upcoming events</h2>
           <Upcoming events={recentEvents}/>
-        </div>
+        </div> 
         
       </div>
 
       <div className="divide"></div>
 
-      <div className="split" onKeyPress={handleKeyPress}>
-        <div style={{width: "90%", margin: "10px auto"}}>
-          <h2 style={{marginBottom: "2px"}}>add a task</h2>
-          
-          <form autoComplete="off" noValidate> 
-              <input type="text" placeholder="task name..." id="task"  required />
-          </form>
-          <br/><br/>
-          <div className="btn-container">
-            <button onClick={addTask} className="btn" id="add-task">enter</button>
-          </div>
-          
-        </div>
+      <div className="split" >
+        <Planner origin="todos"/>
       </div>
-      
       
 
 
@@ -273,4 +309,4 @@ const Planner = () => {
   );
 }
  
-export default Planner;
+export default TodoList;

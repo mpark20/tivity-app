@@ -1,3 +1,4 @@
+import { process_params } from "express/lib/router";
 
 const Countdown = (props) => {
     if (props.state.tasks.length > 0) {
@@ -11,7 +12,7 @@ const Countdown = (props) => {
                     <button onClick={props.clearTimer} className="btn">reset</button>
                 </div>
                 <div id="timer">{props.state.timeLeft.h}:{props.state.timeLeft.m}:{props.state.timeLeft.s}</div>
-                <div id="task-label"></div>
+                <div id="task-label">{props.state.tasks[0].title}</div>
             </div>
         )
     }

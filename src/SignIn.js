@@ -104,6 +104,10 @@ const SignIn = (props) => {
             settings: {lightMode: true, darkMode: false, breakLength: "5"}
           });
         }
+        else {
+          set(ref(db, 'users/' + user.uid + '/displayName'), user.displayName)
+          set(ref(db, 'users/' + user.uid + '/email'), user.email)
+        }
         window.location.href = '#/todo';
       })
       .catch((error) => {

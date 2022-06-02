@@ -103,7 +103,13 @@ a {
 }
 .task-entry {
   animation: fadeIn 500ms;
+  margin: 5px 0;
+  display: flex; 
+  align-content: space-between;
+  border-bottom: solid 1px #9cbfd6;
+  padding: 1px;
 }
+
 #task, #time {
   font-family: nunito-l;
   float: left; 
@@ -205,7 +211,7 @@ input {
 }
 #task-time {
   float: right; 
-  display: inline;
+  
   overflow: hidden; 
   font-size: 12px;
   font-weight: normal;
@@ -366,16 +372,15 @@ p {
   color: rgb(235, 235, 235); 
 }
 .list-contents {
-  display: none;
   margin: 10px 18px; 
   padding: 10px; 
-  width: 50%; 
+  width: 100%; 
   font-style: italic; 
   background-color: white; 
   color: black;  
-  border: solid 0.5px #d6d6d6;  
+  /*border: solid 0.5px #d6d6d6;  
   box-shadow: 2px 2px 4px 2px#d6d6d6;
-  border-radius: 2px; 
+  border-radius: 2px; */
 }
 .dark .list-contents {
   box-shadow: none;

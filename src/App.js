@@ -8,7 +8,7 @@ import {
   HashRouter
 } from "react-router-dom";
 import Timer from "./Timer";
-import Planner from "./Planner";
+/*import Planner from "./Planner";*/
 import TodoList from "./TodoList";
 import Calendar from "./Calendar"
 import Settings from "./Settings";
@@ -18,7 +18,6 @@ import Loading from "./components/Loading"
 import { getDatabase, ref, onValue } from "firebase/database";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Logout from "./components/Logout";
-import AuthListener from "./components/AuthListener"
 
 class App extends Component {
   constructor(props) {
@@ -36,9 +35,9 @@ class App extends Component {
       navOpen: true,
     }
     
-    /*onAuthStateChanged(getAuth(), (user) => {
+    onAuthStateChanged(getAuth(), (user) => {
       this.updateUser();
-    })*/
+    })
   }
   componentDidMount() {
     this.timer = setTimeout(this.updateUser, 1000);
@@ -158,7 +157,7 @@ class App extends Component {
                   {this.state.user ? <li><p style={{color: 'black'}}>hello, {this.state.user.displayName}!</p></li> : <></>}
     
                   <li>{this.state.user ? <NavLink to="/todo">todo list</NavLink>: <></>}</li>
-                  <li>{this.state.user ? <NavLink to="/planner">planner</NavLink>: <></>}</li>
+                  {/*<li>{this.state.user ? <NavLink to="/planner">planner</NavLink>: <></>}</li>*/}
                   <li>{this.state.user ? <NavLink to="/calendar">calendar</NavLink>: <></>}</li>
                   <li><NavLink exact to="/">focus timer</NavLink></li>
                   <li>{this.state.user ? <NavLink to="/dashboard">dashboard</NavLink>: <></>}</li>
@@ -177,7 +176,7 @@ class App extends Component {
           
             <Switch>
             <Route path="/todo" component={()=> <TodoList/>}/>
-            <Route path="/planner" component={()=> <Planner user={this.state.user}/>}/>
+            {/*<Route path="/planner" component={()=> <Planner user={this.state.user}/>}/>*/}
             <Route path="/calendar" component={()=> <Calendar/>}/>
             <Route path="/dashboard" component={()=> <Dashboard/>}/>
             <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>

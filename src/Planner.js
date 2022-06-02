@@ -10,7 +10,6 @@ const Planner = (props) => {
     const [user, setUser] = useState(auth.currentUser);
     const [savedLists, setSavedLists] = useState([]); 
     const [loading, setLoadingState] = useState(true);
-
     
     useEffect(() => {
         let isMounted = true
@@ -24,6 +23,7 @@ const Planner = (props) => {
         return() => {isMounted = false}
     }, [])
     useEffect(() => {
+        console.log('planner rendered')
         setLoadingState(false); 
         /*console.log(firstRender.current)
         if (firstRender.current) {
@@ -44,6 +44,7 @@ const Planner = (props) => {
     }, [savedLists, user]); 
     
     
+    
     function readSavedLists() {
         return new Promise((resolve, reject) => {
             if (user) {
@@ -53,7 +54,7 @@ const Planner = (props) => {
                     snapshot.forEach(function(childSnapshot) { 
                         var item = childSnapshot.val();
                         item.key = childSnapshot.key;
-                        lists.push(item);       //.unshift() instead of .push()
+                        lists.unshift(item);       //.unshift() instead of .push()
                         console.log('getting saved lists')
                     })
                     resolve(lists);
@@ -104,7 +105,12 @@ const Planner = (props) => {
         return (
             <>
             {tasksArr.map((task, index)=>(
-                <div key={list.key+"_"+index}>{task}</div>
+                <div key={list.key+"_"+index+"case"}>
+                <label key={list.key+"_"+index+"label"}>
+                    <input type='checkbox' key={list.key+"_"+index}/>
+                    {task}
+                </label><br/>
+                </div>
             ))}
             </>
         );  
@@ -145,14 +151,14 @@ const Planner = (props) => {
         return(
             <div className="flex-container" > 
             <div className="page-container">
-                <h2>saved lists</h2>
+                <h2>my planner</h2>
                 {savedLists.map((list, index) => (
                     <div key={list.key}>
                         <button key={list.key + "_x"} className="x-btn" onClick={() => deleteList(list.key)}>x</button>
                         <button key={list.key+"_import"} className="btn impt-btn" style={{display: props.origin==='timer' ? 'block':'none'}} onClick={() => props.import(list.tasks)}>import</button>
                         <div key={list.key+"_title"} className="list-date" onClick={() => showList(index)}>{list.date}</div>
                         <div key={list.key+"_date"} className="list-title" onClick={() => showList(index)}>{list.key.substring(list.key.indexOf("_")+1)}</div>
-                        <div key={list.key+"_items"} className="list-contents" style={{display: props.origin==='timer' ? 'block':'none'}}>{listItems(list)}</div>
+                        <div key={list.key+"_items"} className="list-contents" style={{display: index===0 ? 'block':'none'}} >{listItems(list)}</div>
                         
                     </div>
                 ))}
