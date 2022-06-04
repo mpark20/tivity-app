@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import { getDatabase, ref, set, onValue, remove, child } from "firebase/database";
+import { getDatabase, ref, set, onValue, remove, child, orderByChild } from "firebase/database";
 import './App.css';
 import TaskList from './components/TaskList';
 import Loading from './components/Loading';
@@ -15,6 +15,7 @@ const TodoList = () => {
   const [tasks, setTasks] = useState([]);  // user's tasks on their todo list
   const [loading, setLoadingState] = useState(true);
   const [recentEvents, setRecentEvents] = useState([]); 
+  const [deleted, isDeleted] = useState(false);
 
   useEffect(() => {
     let isMounted = true //isMoutned=true when component mounts
@@ -35,7 +36,17 @@ const TodoList = () => {
   useEffect(() => { 
     console.log('todo list rendered')
     setUser(auth.currentUser);
+
     setLoadingState(false);
+    if (tasks.length > 15) {
+      isDeleted(false);
+      return;
+    }
+    if (deleted) {
+      reorder(tasks)
+      isDeleted(false);
+      console.log('reordered')
+    }
     /*const timer = setTimeout(() => {
         setLoadingState(false);
         setUser(auth.currentUser);
@@ -113,17 +124,28 @@ const TodoList = () => {
   }
   function deleteTask(id) {
     if (tasks.length > 0) { 
+      isDeleted(true);
       setTasks(tasks.filter((task) => task.id !== id))
-      if (user) {
-        var node = ref(db, "users/" + user.uid + "/todos/task" + id); 
-        remove(node);
-      }
-      else {
+      
+      /*if (user) {
+        var node = ref(db, "users/" + user.uid + "/todos/"); 
+        onValue(node, (snapshot) => {
+          snapshot.forEach((childSnapshot) => { 
+              var key = childSnapshot.key
+              if (key.includes(id)) {
+                var childNode = ref(db, "users/" + user.uid + "/todos/" + key); 
+                remove(childNode);
+                return;
+              }
+          })
+        }) 
+        
+      }*/
+      
+    }
+    else {
         document.getElementById("save-list").classList.add("inactive");
       }
-    }
-    
-    console.log(tasks);
   }
   function nameList() {
     if (user) {
@@ -230,19 +252,22 @@ const TodoList = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    setTasks(items);
-
+    reorder(items);
+    
+  }
+  function reorder(items) {
     if (user) {
       var node = ref(db, 'users/' + user.uid + '/todos');
-      remove(node);
-      for (let i=0; i<items.length; i++) {
-        var child = ref(db, 'users/' + user.uid + '/todos/'+i+'_'+items[i].id)
-        var item = {title: items[i].title, time: items[i].time, id: items[i].id}
-        //set(child, item); 
-      }
+      remove(node)
+      .then(() => {
+        for (let i=0; i<items.length && items.length < 15; i++) {
+          var child = ref(db, 'users/' + user.uid + '/todos/'+i+'_'+items[i].id)
+          var item = {title: items[i].title, time: items[i].time, id: items[i].id}
+          set(child, item); 
+        }
+      }).catch((err) => {console.log(err)})
     }
   }
-
   if (loading) {
     return(
       <Loading/>

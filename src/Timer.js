@@ -103,6 +103,7 @@ class Timer extends Component {
       tasks: [],
       timeLeft: {h: "00", m: "00", s: "00"},
     });
+    clearInterval(this.timer);
     this.totalTime = 0; 
     this.pauses = 0;   
     document.getElementsByClassName("timer-container")[0].removeAttribute("id"); 
@@ -147,6 +148,7 @@ class Timer extends Component {
     if ((parseInt(this.state.timeLeft.h) > 0 || parseInt(this.state.timeLeft.m) > 0)) {
       //document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
+      this.audio.play()
       this.timer = setInterval(this.tick, 100);
     } 
   }

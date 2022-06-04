@@ -4,6 +4,7 @@ import Loading from './components/Loading'
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref, onValue, set, remove } from "firebase/database";
 import GoogleCal from './components/GoogleCal';
+import Draggable from "react-draggable";
 
 const Calendar = () => {
     const auth = getAuth();  
@@ -221,18 +222,18 @@ const Calendar = () => {
             <div className="weekday">sat</div>
             
             {days.map((day, index) => (
-                <div key={day.key}>
-                <div key={day.key+'box'} className="cal-box" onClick={() => showEvents(index)}>
-                    <div className='day-count' key={day.key+'count'}>{day.count}</div>
-                    <button key={day.key+'btn1'} className='x-btn add-event-btn' onClick={() => showAddEvent(index, day)}>+</button>
-                </div>
-
-                <div className='events-list' key={day.key+'list'}>
-                    <button onClick={() => closeList(index)} className="btn white" key={day.key+'close'} style={{float: 'right'}}>x</button>
-                    <div key={day.key+'list-items'}>{eventList(day, index)}</div>
-                </div>
-
-                <Day day={day} index={index} close={() => closeAddEvent(index)} add={addEvent}/>
+                <div key={day.key} style={{position:'relative'}}>
+                    <div key={day.key+'box'} className="cal-box" onClick={() => showEvents(index)}>
+                        <div className='day-count' key={day.key+'count'}>{day.count}</div>
+                        <button key={day.key+'btn1'} className='x-btn add-event-btn' onClick={() => showAddEvent(index, day)}>+</button>
+                    </div>
+                    <Draggable>
+                    <div className='events-list' key={day.key+'list'}>
+                        <button onClick={() => closeList(index)} className="btn white" key={day.key+'close'} style={{float: 'right'}}>x</button>
+                        <div key={day.key+'list-items'}>{eventList(day, index)}</div>
+                    </div>
+                    </Draggable>
+                    <Day day={day} index={index} close={() => closeAddEvent(index)} add={addEvent}/>
                 </div>
             ))}
             </div>

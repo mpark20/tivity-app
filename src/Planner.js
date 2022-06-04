@@ -1,8 +1,10 @@
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getDatabase, ref, onValue, remove } from "firebase/database";
 import { useEffect, useState } from "react";
 import Loading from "./components/Loading";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import TaskList from "./components/TaskList";
 
 const Planner = (props) => {
     const auth = getAuth();  
@@ -10,7 +12,7 @@ const Planner = (props) => {
     const [user, setUser] = useState(auth.currentUser);
     const [savedLists, setSavedLists] = useState([]); 
     const [loading, setLoadingState] = useState(true);
-    
+
     useEffect(() => {
         let isMounted = true
         readSavedLists()
@@ -92,27 +94,28 @@ const Planner = (props) => {
             item.style.display = "none"
         }
     } 
+   
     function listItems(list) { 
-        var temp = []; 
-        for (let i=0; i<list.tasks.length; i++) {
-            temp[i] = list.tasks[i].title; 
-        }
-        var tasks = JSON.stringify(temp );
+       
+        /*var tasks = JSON.stringify(temp );
         tasks = tasks.replace(/"/g, '')
         tasks = tasks.replace('[', '')
         tasks = tasks.replace(']', '')
-        var tasksArr = tasks.split(","); 
+        var tasksArr = tasks.split(","); */
         return (
-            <>
-            {tasksArr.map((task, index)=>(
-                <div key={list.key+"_"+index+"case"}>
-                <label key={list.key+"_"+index+"label"}>
-                    <input type='checkbox' key={list.key+"_"+index}/>
-                    {task}
-                </label><br/>
-                </div>
+                    
+            <> 
+            {list.tasks.map((task, index)=>(
+                <Draggable key={task.id} draggableId={task.id+''} index={index}>
+                {(provided) => (
+                    <div className='list-contents' id={task.id+''} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                        <label><input type='checkbox'/>{task.title}</label>
+                    </div>
+                )}
+                </Draggable>
             ))}
             </>
+            
         );  
          
     }
@@ -123,10 +126,26 @@ const Planner = (props) => {
         remove(node);
         
     }
-   // function showImptBtn() {
+    function handleOnDragStart(result, index) {
+        //document.getElementById(result.draggableId).style.backgroundColor = '#ededed'
+        var dropReg = document.getElementsByClassName('droppable')[index]
+        dropReg.style.backgroundColor = '#f7f7f7';
+        dropReg.style.padding = '8px'
+    }
+    function handleOnDragEnd(result, index) {
+        //document.getElementById(result.draggableId).style.backgroundColor = 'transparent'
+        var dropReg = document.getElementsByClassName('droppable')[index]
+        dropReg.style.backgroundColor = 'initial';
+        dropReg.style.padding = 'initial'
+        if (!result.destination) {
+            return;
+        }
+        const items = savedLists[index].tasks;
+        console.log(items)
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
         
-    
-   // }
+    }
     
     if (loading) {
         return(
@@ -149,16 +168,27 @@ const Planner = (props) => {
         }
         
         return(
-            <div className="flex-container" > 
-            <div className="page-container">
+            <div className='flex-container'>
+            <div style={{width: "90%", margin: "10px auto"}}>
                 <h2>my planner</h2>
+                
                 {savedLists.map((list, index) => (
                     <div key={list.key}>
                         <button key={list.key + "_x"} className="x-btn" onClick={() => deleteList(list.key)}>x</button>
                         <button key={list.key+"_import"} className="btn impt-btn" style={{display: props.origin==='timer' ? 'block':'none'}} onClick={() => props.import(list.tasks)}>import</button>
                         <div key={list.key+"_title"} className="list-date" onClick={() => showList(index)}>{list.date}</div>
                         <div key={list.key+"_date"} className="list-title" onClick={() => showList(index)}>{list.key.substring(list.key.indexOf("_")+1)}</div>
-                        <div key={list.key+"_items"} className="list-contents" style={{display: index===0 ? 'block':'none'}} >{listItems(list)}</div>
+                        <DragDropContext onDragStart={(result) => {handleOnDragStart(result, index)}} onDragEnd={(result) => {handleOnDragEnd(result, index)}}>
+                            <Droppable droppableId="droppable">
+                                {(provided) => (
+                                    <div className='droppable' {...provided.droppableProps} ref={provided.innerRef}>
+                                        {listItems(list)}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                        
                         
                     </div>
                 ))}
