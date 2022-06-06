@@ -108,7 +108,7 @@ const Planner = (props) => {
             {list.tasks.map((task, index)=>(
                 <Draggable key={task.id} draggableId={task.id+''} index={index}>
                 {(provided) => (
-                    <div className='list-contents' id={task.id+''} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                    <div className='planner-item' id={task.id+''} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                         <label><input type='checkbox'/>{task.title}</label>
                     </div>
                 )}
@@ -127,13 +127,19 @@ const Planner = (props) => {
         
     }
     function handleOnDragStart(result, index) {
-        //document.getElementById(result.draggableId).style.backgroundColor = '#ededed'
+        
         var dropReg = document.getElementsByClassName('droppable')[index]
-        dropReg.style.backgroundColor = '#f7f7f7';
+        if (props.theme === 'dark') {
+            dropReg.style.backgroundColor = '#203a4f'
+        }
+        else {
+            dropReg.style.backgroundColor = '#edf3f7';
+        }
+        
         dropReg.style.padding = '8px'
     }
     function handleOnDragEnd(result, index) {
-        //document.getElementById(result.draggableId).style.backgroundColor = 'transparent'
+        
         var dropReg = document.getElementsByClassName('droppable')[index]
         dropReg.style.backgroundColor = 'initial';
         dropReg.style.padding = 'initial'
@@ -178,17 +184,18 @@ const Planner = (props) => {
                         <button key={list.key+"_import"} className="btn impt-btn" style={{display: props.origin==='timer' ? 'block':'none'}} onClick={() => props.import(list.tasks)}>import</button>
                         <div key={list.key+"_title"} className="list-date" onClick={() => showList(index)}>{list.date}</div>
                         <div key={list.key+"_date"} className="list-title" onClick={() => showList(index)}>{list.key.substring(list.key.indexOf("_")+1)}</div>
-                        <DragDropContext onDragStart={(result) => {handleOnDragStart(result, index)}} onDragEnd={(result) => {handleOnDragEnd(result, index)}}>
-                            <Droppable droppableId="droppable">
-                                {(provided) => (
-                                    <div className='droppable' {...provided.droppableProps} ref={provided.innerRef}>
-                                        {listItems(list)}
-                                        {provided.placeholder}
-                                    </div>
-                                )}
-                            </Droppable>
-                        </DragDropContext>
-                        
+                        <div className='list-contents'>
+                            <DragDropContext onDragStart={(result) => {handleOnDragStart(result, index)}} onDragEnd={(result) => {handleOnDragEnd(result, index)}}>
+                                <Droppable droppableId="droppable">
+                                    {(provided) => (
+                                        <div className='droppable' {...provided.droppableProps} ref={provided.innerRef}>
+                                            {listItems(list)}
+                                            {provided.placeholder}
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
+                        </div>
                         
                     </div>
                 ))}

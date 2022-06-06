@@ -154,7 +154,7 @@ class App extends Component {
               </div>
               
               <ul className="nav" style={{display: this.state.navOpen ? 'block' : 'none'}}>
-                  {this.state.user ? <li><p style={{color: 'black'}}>hello, {this.state.user.displayName}!</p></li> : <></>}
+                  {this.state.user ? <li><p style={{color: this.state.theme==='dark' ? 'white': 'black'}}>hello, {this.state.user.displayName}!</p></li> : <></>}
     
                   <li>{this.state.user ? <NavLink to="/todo">todo list</NavLink>: <></>}</li>
                   {/*<li>{this.state.user ? <NavLink to="/planner">planner</NavLink>: <></>}</li>*/}
@@ -175,7 +175,7 @@ class App extends Component {
           <div className="content">
           
             <Switch>
-            <Route path="/todo" component={()=> <TodoList/>}/>
+            <Route path="/todo" component={()=> <TodoList theme={this.state.theme}/>}/>
             {/*<Route path="/planner" component={()=> <Planner user={this.state.user}/>}/>*/}
             <Route path="/calendar" component={()=> <Calendar/>}/>
             <Route path="/dashboard" component={()=> <Dashboard/>}/>

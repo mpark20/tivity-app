@@ -104,30 +104,14 @@ const GoogleCal = ( props ) => {
                     if (dateTime) {
                         var date = dateTime.split('T')[0]; 
                         var time = dateTime.split('T')[1].substring(0,5);
-                        //console.log(new Date(date+"T00:00:00").toString())
-                        //if (ms-now <= 604800000) { //only get events in the next week
-                            //appendPre("<li>"+event.summary + ' (' + date +', '+time + ')'+"</li>")
-                            //recents.push(event.summary + ' (' + date +', '+time + ')');
-                            //console.log(new Date(date) + " " + time + " " + i)
-                            props.addEvent(new Date(date+"T00:00:00").toString(), event.summary, time)
-                        //}
+                        props.addEvent(new Date(date+"T00:00:00").toString(), event.summary, time)
+
                     }
                     else {
                         var date = event.start.date;
-                        //ms = new Date(date+" 00:00:00").getTime(); 
-                        //if (ms-now <= 604800000) {
-                            //appendPre("<li>"+event.summary + ' (' + date + ')'+"</li>")
-                            //recents.push(event.summary + ' (' + date + ')'); 
-                        //}
                         props.addEvent(new Date(date+"T00:00:00").toString(), event.summary, '(all day)')
                     }
-                    
-                    //tempSave(recents);
-                    /*document.getElementById("cal-message").style.display = "block";
-                    document.getElementById("hide").style.display = "block";
-                    document.getElementById("gcal").style.display = "none";*/
-                }
-                //eventList = document.getElementById("cal-message").innerHTML; 
+                } 
             } else {
                 appendPre('no events scheduled.');
                 
@@ -135,13 +119,7 @@ const GoogleCal = ( props ) => {
         });
         
     }
-    /*function tempSave(events) {
-        if (user) {
-            var node = ref(db, 'users/' + user.uid + '/gcalEvents');
-            set(node, events); 
-        }
-        setTimeout(() => {remove(node)}, 3000000) // clear info after 50 minutes
-    }*/
+
     function hideEvents() {
         document.getElementById("cal-message").style.display = "none";
         document.getElementById("hide").style.display = "none";
@@ -151,11 +129,7 @@ const GoogleCal = ( props ) => {
     function appendPre(message) {
         document.getElementById('cal-message').innerHTML += message;
     }
-    /*if (loading) {
-        return(
-          <Loading/>
-        )
-    }*/
+
     return(
         <>
             <div id="cal-message"></div>

@@ -92,7 +92,7 @@ const Calendar = () => {
                 //setDays(tempDays);
             }
             if (tempDays[i].events.length == 0 && document.getElementsByClassName('day-count')[i]) {
-                document.getElementsByClassName('day-count')[i].style.color = 'gray';
+                document.getElementsByClassName('day-count')[i].style.color = 'black';
             }
         }
         

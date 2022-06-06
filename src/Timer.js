@@ -6,6 +6,7 @@ import { getDatabase, set, ref, onValue } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Planner from "./Planner";
 import SpotifyLogin from "./components/SpotifyLogin";
+import WebPlayer from "./components/WebPlayer";
 import alarm from "./components/alarm2.mp3"
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
@@ -333,7 +334,7 @@ class Timer extends Component {
           <div style={{width: "80%", margin: "10px auto"}}>
             <div className='timer-container' id={this.state.timeLeft.h > 0 ? 'myDIV' : ''}>
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
-            <SpotifyLogin/>
+            <WebPlayer/>
             </div>
           </div>  
             

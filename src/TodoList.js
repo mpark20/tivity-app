@@ -8,7 +8,7 @@ import Upcoming from './components/Upcoming';
 import Planner from './Planner';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-const TodoList = () => {
+const TodoList = (props) => {
   const db = getDatabase(); 
   const auth = getAuth();
   const [user, setUser] = useState(auth.currentUser);
@@ -55,12 +55,12 @@ const TodoList = () => {
     return() => {clearTimeout(timer)}*/
   }, [tasks, recentEvents, user]);  
   
-  onAuthStateChanged(auth, (user) => {
+  /*onAuthStateChanged(auth, (user) => {
     if (!user) {
       document.getElementById("save-list").classList.add("inactive");
     }
    
-  })
+  })*/
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       addTask();  
@@ -151,7 +151,7 @@ const TodoList = () => {
     if (user) {
       if (tasks.length > 0) {
         document.getElementById("name-list").style.display = "block";
-        document.getElementById("exit-save").innerHTML = "cancel" 
+        //document.getElementById("exit-save").innerHTML = "cancel" 
       }
     }
     else {
@@ -160,20 +160,20 @@ const TodoList = () => {
     } 
   }
   function saveList() { 
-    var listName = document.getElementById("list-name").value;
+    /*var listName = document.getElementById("list-name").value;
     if (listName === "undefined") {
         listName = " "; 
     }
     if (listName.indexOf("_")!== -1) {
       listName.replace("_", " "); 
-    }
+    }*/
 
     var ms = Date.now();    
-    var listId = ms + "_" + listName;       //create unique key
+    var listId = ms + "_";       //create unique key
     var date = (new Date(parseInt(ms))).toString(); 
     date = date.substring(0, date.indexOf("G"));    //get date & time
 
-    console.log(listName);
+    //console.log(listName);
 
     var list = []; 
     list = {tasks: tasks, date: date}
@@ -182,18 +182,19 @@ const TodoList = () => {
       var node = ref(db, 'users/' + user.uid + '/savedLists/' + listId);
       set(node, list); 
       document.getElementById("save-message").innerHTML = "list saved"
-      document.getElementById("exit-save").innerHTML = "done"
+      //document.getElementById("exit-save").innerHTML = "done"
     }
     else {
       document.getElementById("save-message").innerHTML = "please log in to save lists to your planner."
     } 
     
-    cancelSaveList(); 
+    //cancelSaveList(); 
+    setTasks([]);
     clear(); 
     setLoadingState(true)
     setTimeout(() => {setLoadingState(false)}, 1000)
   }
-  function cancelSaveList() {
+  /*function cancelSaveList() {
     if (document.getElementById("exit-save").innerHTML ===  "done") {
       setTasks([]);
     }
@@ -201,7 +202,7 @@ const TodoList = () => {
     document.getElementById("name-list").style.display = "none";
     document.getElementById("exit-save").innerHTML = "cancel"
     document.getElementById("save-message").innerHTML = ""
-  }
+  }*/
   function emptyList() {
       if (tasks.length === 0) {
           return(
@@ -292,7 +293,8 @@ const TodoList = () => {
           </DragDropContext>
           
           <div className="message" id="user-message" style={{marginTop: "0", fontSize: "12px", fontStyle: "italic"}}></div>
-          <div id="name-list" style={{display:"none", animation: "fadeIn 500ms"}}>
+          <div className="message" id="save-message" style={{marginTop: "0"}}></div>
+          {/*<div id="name-list" style={{display:"none", animation: "fadeIn 500ms"}}>
             <form>
               <input type="text" className="text-field" id="list-name" placeholder="add a note..."/>
             </form>
@@ -300,8 +302,8 @@ const TodoList = () => {
               <button onClick={saveList} className="btn white">OK</button>
               <button onClick={cancelSaveList} className="btn white" id="exit-save">cancel</button>
             </div>
-            <div className="message" id="save-message" style={{marginTop: "0"}}></div>
-          </div>
+            
+          </div>*/}
         </div>
 
         <div style={{width: "90%", margin: "10px auto"}}>
@@ -312,7 +314,7 @@ const TodoList = () => {
           <br/><br/>
           <div className="btn-container">
             <button onClick={addTask} className="btn" id="add-task" >enter</button>
-            <button onClick={nameList} className={tasks.length===0 ? "btn white inactive":"btn white"} style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
+            <button onClick={saveList} className={tasks.length===0 || !user ? "btn white inactive":"btn white"} style={{backgroundColor:"#ededed"}} id="save-list">save to planner</button>
             <button onClick={clear} className="btn white" style={{backgroundColor:"#ededed"}}>clear</button>
           </div>
 
@@ -325,7 +327,7 @@ const TodoList = () => {
       <div className="divide"></div>
 
       <div className="split" >
-        <Planner origin="todos"/>
+        <Planner origin="todos" theme={props.theme}/>
       </div>
       
 

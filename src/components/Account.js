@@ -90,7 +90,7 @@ const Account = ( props ) => {
     return(
         <div id="acct" className="indented">
             
-            <h2>account</h2>
+            <h3>account</h3>
             <p>display name: {userInfo.dn}</p>
             <p>email: {userInfo.email}</p>
             <p>user ID: {userInfo.uid}</p>

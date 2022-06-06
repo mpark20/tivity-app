@@ -165,9 +165,9 @@ const Display = (props) => {
     
     }
     function fillValues() { 
-        if (breakLength) {
+        /*if (breakLength) {
             document.getElementById("breakLength").value = breakLength;
-        }
+        }*/
         let blueBox = document.getElementById("blueMode");
         let redBox = document.getElementById('redMode');
         let darkBox = document.getElementById("darkMode");
@@ -208,7 +208,7 @@ const Display = (props) => {
     }
     return(
         <div id="display" className="indented">
-            <h2>display</h2>
+            <h3>display</h3>
             <p style={{marginBottom: "5px"}}>color theme:</p>
             <form style={{marginBottom: "20px"}}>
                 <div className="checklist">
@@ -225,7 +225,7 @@ const Display = (props) => {
                 </div>
             </form>
             <p style={{marginBottom: "5px"}}>break length (minutes):</p>
-            <input type="number" className="text-field"id="breakLength" defaultValue={breakLength}/>
+            <input type="number" className="text-field"id="breakLength" defaultValue={breakLength ? breakLength : 5}/>
             <button className="btn" id="saveSettings" onClick={saveSettings} style={{float:"none"}}>save settings</button>
             <div id="save-message" className="message"></div>
         </div> 

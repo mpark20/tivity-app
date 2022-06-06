@@ -5,17 +5,13 @@ const TogglePlay = () => {
     const player = useSpotifyPlayer();
     const playbackState = usePlaybackState(); 
     
-    function toggle() {
-        console.log(player.togglePlay()); 
-        if (playbackState.paused) {
-            document.getElementById('play').innerHTML = 'pause'
-            
-        }
-        else {
-            document.getElementById('play').innerHTML = 'play'
-            console.log('paused')
-        }
-        
+    function pause() {
+      player.pause()
+      .then(() => {
+        console.log('paused')
+        console.log(playbackState)
+      }).catch((err) => {console.log(err)})
+      
     }
     
     if (player === null) {
@@ -23,8 +19,8 @@ const TogglePlay = () => {
     }
     return (
       <div className='btn-container'>
-        <button onClick={toggle} className='btn white' id="play">play</button>
-        <button onClick={toggle} style={{display:'none'}} className='btn white' id="pause">pause</button>
+        <button onClick={pause} className='btn white' id="pause">pause</button>
+        <button onClick={() => player.resume()} className='btn white' id="pause">play</button>
       </div>
     );
   };

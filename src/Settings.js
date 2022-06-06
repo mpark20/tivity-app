@@ -23,6 +23,7 @@ const Settings = (props) => {
       <h1>settings</h1>
       {/*<div id="not-logged-in" ><p><a href="/#/auth" style={{textDecoration: "underline"}}>log in</a> to view adjust settings</p></div>*/}
       <Account/>
+      <br/>
       <Display light={props.light} breakLength={props.breakLength}/>
     </div>
     </div>
