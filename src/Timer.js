@@ -334,7 +334,7 @@ class Timer extends Component {
           <div style={{width: "80%", margin: "10px auto"}}>
             <div className='timer-container' id={this.state.timeLeft.h > 0 ? 'myDIV' : ''}>
             <Countdown state={this.state} startTimer={this.startTimer} pauseTimer={this.pauseTimer} resumeTimer={this.resumeTimer} clearTimer={this.clearTimer}/>
-            <WebPlayer/>
+            <SpotifyLogin/>
             </div>
           </div>  
             

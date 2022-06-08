@@ -18,7 +18,7 @@ const TodoList = (props) => {
   const [deleted, isDeleted] = useState(false);
 
   useEffect(() => {
-    let isMounted = true //isMoutned=true when component mounts
+    let isMounted = true //isMounted=true when component mounts
     
       readTasks()
       .then((tempTasks) => {

@@ -28,6 +28,7 @@ class App extends Component {
     this.updateUser = this.updateUser.bind(this);
     this.logout = this.logout.bind(this); 
     this.toggleNav = this.toggleNav.bind(this); 
+    this.closeNav = this.closeNav.bind(this);
     this.state = {
       loading: true,
       user: getAuth().currentUser,
@@ -134,6 +135,18 @@ class App extends Component {
       })
     }
   }
+  closeNav() {
+    var x = window.matchMedia('(max-width: 700px')
+    if (x.matches) {
+      this.setState({
+        loading: this.state.loading,
+        user: this.auth.currentUser,
+        theme: this.state.theme,
+        breakLength: this.state.breakLength,
+        navOpen: false,
+      })
+    }
+  }
   render() {
     
     if (this.state.loading) {
@@ -156,13 +169,13 @@ class App extends Component {
               <ul className="nav" style={{display: this.state.navOpen ? 'block' : 'none'}}>
                   {this.state.user ? <li><p style={{color: this.state.theme==='dark' ? 'white': 'black'}}>hello, {this.state.user.displayName}!</p></li> : <></>}
     
-                  <li>{this.state.user ? <NavLink to="/todo">todo list</NavLink>: <></>}</li>
+                  <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/todo">todo list</NavLink>: <></>}</li>
                   {/*<li>{this.state.user ? <NavLink to="/planner">planner</NavLink>: <></>}</li>*/}
-                  <li>{this.state.user ? <NavLink to="/calendar">calendar</NavLink>: <></>}</li>
-                  <li><NavLink exact to="/">focus timer</NavLink></li>
-                  <li>{this.state.user ? <NavLink to="/dashboard">dashboard</NavLink>: <></>}</li>
-                  <li>{this.state.user ? <NavLink to="/settings">settings</NavLink>: <></>}</li>
-                  <li>{this.state.user ? <></> : <NavLink to="/login">log in</NavLink>}</li>
+                  <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/calendar">calendar</NavLink>: <></>}</li>
+                  <li onClick={this.closeNav}><NavLink exact to="/">focus timer</NavLink></li>
+                  <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/dashboard">dashboard</NavLink>: <></>}</li>
+                  <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/settings">settings</NavLink>: <></>}</li>
+                  <li onClick={this.closeNav}>{this.state.user ? <></> : <NavLink to="/login">log in</NavLink>}</li>
                   
               </ul>
             </div>
