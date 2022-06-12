@@ -259,9 +259,10 @@ const TodoList = (props) => {
   function reorder(items) {
     if (user) {
       var node = ref(db, 'users/' + user.uid + '/todos');
-      remove(node)
+      remove(node)    //all current items are removed
       .then(() => {
-        for (let i=0; i<items.length && items.length < 15; i++) {
+        //each item is added back in the new order (limited to 15 for preventing infinite loops while testing)
+        for (let i=0; i<items.length && items.length < 15; i++) {   
           var child = ref(db, 'users/' + user.uid + '/todos/'+i+'_'+items[i].id)
           var item = {title: items[i].title, time: items[i].time, id: items[i].id}
           set(child, item); 

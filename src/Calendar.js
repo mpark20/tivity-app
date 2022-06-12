@@ -116,6 +116,7 @@ const Calendar = () => {
 
     function showAddEvent(index) {
         document.getElementsByClassName('add-event')[index].style.display = 'block';
+        closeList(index); 
     }
 
     function closeAddEvent(index) {
@@ -161,7 +162,11 @@ const Calendar = () => {
         remove(node);
     }
     function showEvents(index) {
-        document.getElementsByClassName('events-list')[index].style.display = 'block'; 
+        if (document.getElementsByClassName('add-event')[index].style.display !== 'block') {
+             document.getElementsByClassName('events-list')[index].style.display = 'block';
+        }
+        
+         
         
     }
     function eventList(day, index) { 

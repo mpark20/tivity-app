@@ -517,13 +517,17 @@ p {
 .add-event {
   animation: fadeIn 500ms; 
   display: none;
-  width: 40%;
+  width: 60%;
   min-height: 40vh; 
-  margin: auto 15%;
+  top: 30%;
+  left: 20%; 
   background-color: white; 
   z-index: 1;
   position: absolute; 
   box-shadow: 0px 0px 5px 0px grey;
+}
+.dark .add-event {
+  background-color: #142533;
 }
 .events-list {
   animation: fadeIn 500ms; 

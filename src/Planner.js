@@ -16,7 +16,7 @@ const Planner = (props) => {
     useEffect(() => {
         let isMounted = true
         readSavedLists()
-        .then((data) => {
+        .then((data) => {       //when readSavedLists() resolves, the data is stored in a state variable
             if (isMounted) {
                 console.log(data)
                 setSavedLists(data);
@@ -26,23 +26,8 @@ const Planner = (props) => {
     }, [])
     useEffect(() => {
         console.log('planner rendered')
-        setLoadingState(false); 
-        /*console.log(firstRender.current)
-        if (firstRender.current) {
-            readSavedLists()
-            firstRender.current = false
-        }
-        else {
-            setLoadingState(false); 
-            console.log(savedLists); 
-        }*/
+        setLoadingState(false);     //loading screen terminates 
         
-
-        /*const timer = setTimeout(()=>{
-            setUser(auth.currentUser); 
-            setLoadingState(false); 
-        }, 1000)
-        return() => {clearTimeout(timer)}*/
     }, [savedLists, user]); 
     
     
@@ -52,14 +37,14 @@ const Planner = (props) => {
             if (user) {
                 var node = ref(db, "users/" + user.uid + "/savedLists"); 
                 onValue(node, (snapshot) => {
-                    var lists = []
+                    var lists = []      //local list variable to store info from database
                     snapshot.forEach(function(childSnapshot) { 
                         var item = childSnapshot.val();
                         item.key = childSnapshot.key;
-                        lists.unshift(item);       //.unshift() instead of .push()
+                        lists.unshift(item);       //each entry is appended to the front of the list
                         console.log('getting saved lists')
                     })
-                    resolve(lists);
+                    resolve(lists);  //resolves once the info from the database had been read and stored locally
                 })
             }
              
@@ -166,8 +151,8 @@ const Planner = (props) => {
             return(
                 <div className='flex-container'>
                 <div className="page-container">
-                    <h2>saved lists</h2>
-                    <div>you currently don't have any lists saved.</div>
+                    <h2>my planner</h2>
+                    <div>your planner is currently empty. </div>
                 </div>
                 </div>
             )

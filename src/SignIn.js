@@ -53,8 +53,10 @@ const SignIn = (props) => {
         displayName: uname,
         email: email,
         savedLists: "",
-        settings: {lightMode: "true", darkMode: "false", breakLength: "5"}
+        settings: {lightMode: "true", darkMode: "false", breakLength: "5"}, 
+        stats: {minutes: 0, sessions: 0}
       });
+      
       updateProfile(auth.currentUser, {
         displayName: uname, email: email
       }, welMess(message, user));

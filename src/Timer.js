@@ -120,18 +120,18 @@ class Timer extends Component {
     console.log("removed task id: "+id);
     
   }
-  updateStats(t) {
+  updateStats(t) { //runs every time the timer reaches zero
     if (this.user) {
       var node1 = ref(this.db, "users/" + this.user.uid + "/stats/minutes");
-      var min = t/60; 
+      var min = t/60; //converts seconds elapsed to minutes
       onValue(node1, (snapshot) => {
         if (snapshot.val()) {
-          min = snapshot.val() + min; 
+          min = snapshot.val() + min; //adds current value to new value
         }
       }) 
       console.log(t/60);
       console.log(min)
-      set(node1, min)
+      set(node1, min) //saves new value to the database
     }
   }
   setTimer(minutes) {
@@ -150,7 +150,7 @@ class Timer extends Component {
       //document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
       this.audio.play()
-      this.timer = setInterval(this.tick, 100);
+      this.timer = setInterval(this.tick, 10);
     } 
   }
   tick() {
@@ -159,7 +159,7 @@ class Timer extends Component {
     if (parseInt(this.state.timeLeft.h) === 0 && parseInt(this.state.timeLeft.m) === 0 && parseInt(this.state.timeLeft.s) === 0) { 
       
       
-      this.updateStats(this.totalTime-1)
+      
       if (!this.isBreak) {  //if the interval that just finished was not a break, the next one will be.
         //console.log(this.state.timeLeft)
         this.audio.play().then(() => {
@@ -195,12 +195,14 @@ class Timer extends Component {
         document.getElementsByClassName("timer-container")[0].removeAttribute("id"); 
         document.getElementById("summary").style.opacity = "1";
         if (this.user) {
+          this.updateStats(this.totalTime-1)
           var node2 = ref(this.db, "users/" + this.user.uid + "/stats/sessions");
           var ns = 1; 
           onValue(node2, (snapshot) => {
             if (snapshot.val()) {ns = snapshot.val()+1}
           })
           set(node2, ns); 
+          
         }
       }
     }
@@ -235,7 +237,7 @@ class Timer extends Component {
     this.updateStats(this.totalTime); 
   }
   resumeTimer() {
-    this.timer = setInterval(this.tick, 100);
+    this.timer = setInterval(this.tick, 10);
     document.getElementById("resume").style.display = "none";
     document.getElementById("pause").style.display = "block";
   }

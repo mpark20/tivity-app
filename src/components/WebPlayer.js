@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import spotifyLogo from './spotify-brands.svg'
 
 const WebPlayer = (props) => {
-    //const AUTH_TOKEN = "BQCsUFUjCeUsXLraPOTQzFtHpvH0oz3QDCFiErtIpn2_Q6cASVEwlDQIF7x79LI-shWdgL4q_DNam-16UBvn_ercNO3dQC7TMo1KpH4hS1-3-IMqZ1htsiwNFBkSG2f_4DTSs9yYD6Bk-w"; 
+    //const AUTH_TOKEN = "BQA9sNbOv1xjXJm2XnHHg8eRdAhAjIFROvx6nWPKoKhWh2eS8ePgiROfUENT7TU20cbcCfCoz1RuOc7krRsAPWYpfp0Z7CUwoHeTBp9tD0cGNNvld_j2HYkZlTlMZgvel0MSrvaqOz_en_2VSzhr-t9GdzTKtDKauK-qM83qSvbnyUHuKHLTYuGws3lFGXr2vTU"; 
     const AUTH_TOKEN = props.token; 
     const getOAuthToken = useCallback(callback => callback(AUTH_TOKEN), []) 
     console.log(AUTH_TOKEN)
