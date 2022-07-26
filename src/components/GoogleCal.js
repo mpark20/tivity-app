@@ -82,16 +82,16 @@ const GoogleCal = ( props ) => {
     function listUpcomingEvents() {
         gapi.client.calendar.events.list({
           'calendarId': 'primary',
-          'timeMin': (new Date()).toISOString(),
+          'timeMin': (new Date(Date.now()-15770000000)).toISOString(),    //starts from the last 6 months
           'showDeleted': false,
           'singleEvents': true,
-          'maxResults': 10,
+          'maxResults': 50,
           'orderBy': 'startTime'
         })
         .then(function(response) {
             var events = response.result.items;
-            console.log(events[0])
-            var recents = []; 
+            //console.log(events[0])
+            
             document.getElementById('cal-message').innerHTML = "";
 
             if (events.length > 0) {
@@ -105,7 +105,7 @@ const GoogleCal = ( props ) => {
                         var date = dateTime.split('T')[0]; 
                         var time = dateTime.split('T')[1].substring(0,5);
                         props.addEvent(new Date(date+"T00:00:00").toString(), event.summary, time)
-
+                        console.log(event.summary)
                     }
                     else {
                         var date = event.start.date;
@@ -134,7 +134,7 @@ const GoogleCal = ( props ) => {
         <>
             <div id="cal-message"></div>
             <div className="btn-container">
-                <button onClick={handleClientLoad} className="btn" style={{backgroundColor: '#ffa1a1'}} id="gcal">sync with Google Calendar</button>
+                <button onClick={handleClientLoad} className="btn" style={{backgroundColor: '#ffa1a1'}} id="gcal">import from Google Calendar</button>
                 
             </div>
             <a id="event-link"></a>

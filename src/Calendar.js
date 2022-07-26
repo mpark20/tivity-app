@@ -205,7 +205,7 @@ const Calendar = () => {
             </div>
         )
     }
-    
+  
     return(
         <div className='flex-container'>
         <div className="page-container">
@@ -213,6 +213,7 @@ const Calendar = () => {
             <h2>{currMonth} {year}</h2>
             <GoogleCal addEvent={addEvent}/>
             <div className='btn-container'>
+                <button className='btn' onClick={()=>{setMonth(dt.getMonth()+1)}}>today</button>
                 <button className='btn white' onClick={prevMonth}>prev</button>
                 <button className='btn white' onClick={nextMonth}>next</button>
             </div>
