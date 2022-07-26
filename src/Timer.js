@@ -150,7 +150,7 @@ class Timer extends Component {
       //document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
       this.audio.play()
-      this.timer = setInterval(this.tick, 10);
+      this.timer = setInterval(this.tick, 1000);
     } 
   }
   tick() {
