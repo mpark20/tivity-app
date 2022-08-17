@@ -21,10 +21,11 @@ const Settings = (props) => {
     <div className="flex-container" > 
     <div className="page-container">  
       <h1>settings</h1>
-      {/*<div id="not-logged-in" ><p><a href="/#/auth" style={{textDecoration: "underline"}}>log in</a> to view adjust settings</p></div>*/}
+      <p class='subtitle'>click the "save settings" button to save your changes</p>
+      
       <Account/>
       <br/>
-      <Display light={props.light} breakLength={props.breakLength}/>
+      <Display light={props.light} breakLength={props.breakLength} origin={'returning'}/>
     </div>
     </div>
   )

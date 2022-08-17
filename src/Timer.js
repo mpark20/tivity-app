@@ -28,7 +28,7 @@ class Timer extends Component {
     this.startTimer = this.startTimer.bind(this);
     this.intervals = 0;
     this.timer = 0;
-    this.breakLength = props.breakLength; 
+    this.breakLength = props.breakLength ? props.breakLength : 5; 
     this.isBreak = false; 
     this.insertBreaks = true;
     this.changeBreakOption = this.changeBreakOption.bind(this);
@@ -60,6 +60,13 @@ class Timer extends Component {
         onValue(node, (snapshot) => {
             this.setBreakLength(snapshot.val());
         })
+      }
+      else {
+        let b = localStorage.getItem('breakLength');
+        if (b == null) {
+            localStorage.setItem('breakLength', this.breakLength);
+        }
+        this.breakLength = b; 
       }
     })
     
@@ -149,8 +156,8 @@ class Timer extends Component {
     if ((parseInt(this.state.timeLeft.h) > 0 || parseInt(this.state.timeLeft.m) > 0)) {
       //document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
-      this.audio.play()
-      this.timer = setInterval(this.tick, 1000);
+      this.audio.play();
+      this.timer = setInterval(this.tick, 10);
     } 
   }
   tick() {
@@ -169,16 +176,22 @@ class Timer extends Component {
         this.intervals += 1;
         if (this.insertBreaks && this.intervals < this.state.tasks.length) {
           this.isBreak = true; 
+          this.setTimer(this.breakLength);
+          document.getElementById("task-label").innerHTML = "break";
         }
       }
       else {  //if the interval that just finished was a break, the next one will not be.
         this.audio.play().then(() => {alert(this.breakLength + " min break has finished")})
-        
         this.isBreak = false;
+        if (this.intervals < this.state.tasks.length) {
+          this.setTimer(parseInt(this.state.tasks[this.intervals].time));
+          document.getElementById("task-label").innerHTML = this.state.tasks[this.intervals].title;
+        }
       }
       
-      if (this.intervals < this.state.tasks.length) {
+      /*if (this.intervals < this.state.tasks.length) {
         if (this.isBreak) {
+          console.log(this.breakLength)
           this.setTimer(this.breakLength);
           document.getElementById("task-label").innerHTML = "break";
         }
@@ -187,8 +200,8 @@ class Timer extends Component {
           document.getElementById("task-label").innerHTML = this.state.tasks[this.intervals].title;
         }
         
-      }
-      else {
+      }*/
+      if (this.intervals >= this.state.tasks.length) {
         clearInterval(this.timer); 
         this.intervals = 0; 
         document.getElementById("task-label").innerHTML = "";
@@ -237,7 +250,7 @@ class Timer extends Component {
     this.updateStats(this.totalTime); 
   }
   resumeTimer() {
-    this.timer = setInterval(this.tick, 10);
+    this.timer = setInterval(this.tick, 1000);
     document.getElementById("resume").style.display = "none";
     document.getElementById("pause").style.display = "block";
   }

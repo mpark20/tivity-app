@@ -90,10 +90,10 @@ const Account = ( props ) => {
     return(
         <div id="acct" className="indented">
             
-            <h3>account</h3>
-            <p>display name: {userInfo.dn}</p>
-            <p>email: {userInfo.email}</p>
-            <p>user ID: {userInfo.uid}</p>
+            
+            <div>display name: <input className="text-field" id='edit-displayName' defaultValue={userInfo.dn}/></div>
+            <div>email: <input className="text-field" id='edit-email' defaultValue={userInfo.email}/></div>
+            <div >user ID: <input className="text-field" defaultValue={userInfo.uid} style={{backgroundColor: '#ededed'}} disabled /></div>
             <div id="reauthenticate">
                 <input type="password" className="text-field" id="password" placeholder="please re-enter your password"/>
                 <button className="btn" onClick={reauth} style={{margin: "10px 5px 20px 0"}}>delete account</button>

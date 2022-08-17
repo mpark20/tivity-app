@@ -7,11 +7,13 @@ import {
   Switch,
   HashRouter
 } from "react-router-dom";
+import Landing from "./Landing";
 import Timer from "./Timer";
 /*import Planner from "./Planner";*/
 import TodoList from "./TodoList";
 import Calendar from "./Calendar"
 import Settings from "./Settings";
+import Settings2 from "./Settings2";
 import SignIn from "./SignIn";
 import Dashboard from "./Dashboard";
 import Loading from "./components/Loading"
@@ -26,9 +28,12 @@ class App extends Component {
     this.auth = getAuth(); 
     this.db = getDatabase(); 
     this.updateUser = this.updateUser.bind(this);
+    this.checkTheme = this.checkTheme.bind(this);
     this.logout = this.logout.bind(this); 
     this.toggleNav = this.toggleNav.bind(this); 
     this.closeNav = this.closeNav.bind(this);
+    this.hideNav = this.hideNav.bind(this);
+    //this.navWidth = window.innerWidth > 700 ? '20%' : '100%';
     this.state = {
       loading: true,
       user: getAuth().currentUser,
@@ -61,14 +66,23 @@ class App extends Component {
           this.snapshotToArray(snapshot);
       })
     } else { 
-        document.querySelector('body').classList.remove("dark"); 
-        document.querySelector('body').classList.remove("red");
+        var loc = localStorage.getItem('theme');
+        if (loc == null) {
+          localStorage.setItem('theme', 'blue')
+        }
+        this.setState({
+          loading: false,
+          user: this.auth.currentUser, 
+          theme: loc,
+          navOpen: this.state.navOpen,
+        })
+        this.checkTheme();
     }
 
   }
   snapshotToArray(snapshot) {
     var settings = [];
-    var body = document.querySelector('body'); 
+    
     snapshot.forEach(function(childSnapshot) {
         var option = childSnapshot.val();
         settings.push(option); 
@@ -82,7 +96,13 @@ class App extends Component {
       breakLength: parseInt(settings[0]),
       navOpen: this.state.navOpen,
     })
+    this.checkTheme(); 
     
+    
+  }
+  checkTheme() {
+    var body = document.querySelector('body'); 
+
     if (this.state.theme === 'blue') {
       body.classList.remove("dark");
       body.classList.remove('red');
@@ -97,7 +117,6 @@ class App extends Component {
       body.classList.add("dark");
       body.classList.remove('red');
     }
-    
   }
   logout() {
     signOut(this.auth).then(() => {
@@ -116,6 +135,7 @@ class App extends Component {
     });   
   }
   toggleNav() {
+    var content = document.getElementsByClassName('content');
     if (this.state.navOpen) {
       this.setState({
         loading: this.state.loading,
@@ -124,6 +144,12 @@ class App extends Component {
         breakLength: this.state.breakLength,
         navOpen: false,
       })
+      if (window.innerWidth > 700) {
+        for (let i=0; i<content.length; i++) {
+          content[i].style.margin = '0 1px 0 0';
+        }
+      }
+      
     }
     else {
       this.setState({
@@ -133,10 +159,16 @@ class App extends Component {
         breakLength: this.state.breakLength,
         navOpen: true,
       })
+      if (window.innerWidth > 700) {
+        for (let i=0; i<content.length; i++) {
+          content[i].style.margin = '0 1px 0 20%';
+        }
+      }
+      
     }
   }
   closeNav() {
-    var x = window.matchMedia('(max-width: 700px')
+    var x = window.matchMedia('max-width: 700px')
     if (x.matches) {
       this.setState({
         loading: this.state.loading,
@@ -146,6 +178,17 @@ class App extends Component {
         navOpen: false,
       })
     }
+  }
+  hideNav() {
+    console.log('hideNav')
+    this.setState({
+      loading: this.state.loading,
+      user: this.auth.currentUser,
+      theme: this.state.theme,
+      breakLength: this.state.breakLength,
+      navOpen: false,
+    })
+    
   }
   render() {
     
@@ -159,7 +202,7 @@ class App extends Component {
         <div>
           
           <div className='nav-container'>
-            <div id='navbar' style={{width: this.state.navOpen ? '100%' : '0'}}>
+            <div id='navbar' style={{width: this.state.navOpen ? 'inherit' : '0'}}>
               
               <div className="logo" style={{display: this.state.navOpen ? 'block' : 'none'}}>
                 <p style={{display:'inline'}}>tivity</p>
@@ -168,13 +211,13 @@ class App extends Component {
               
               <ul className="nav" style={{display: this.state.navOpen ? 'block' : 'none'}}>
                   {this.state.user ? <li><p style={{color: this.state.theme==='dark' ? 'white': 'black'}}>hello, {this.state.user.displayName}!</p></li> : <></>}
-    
+                  
                   <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/todo">todo list</NavLink>: <></>}</li>
                   {/*<li>{this.state.user ? <NavLink to="/planner">planner</NavLink>: <></>}</li>*/}
                   <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/calendar">calendar</NavLink>: <></>}</li>
-                  <li onClick={this.closeNav}><NavLink exact to="/">focus timer</NavLink></li>
+                  <li onClick={this.closeNav}><NavLink to="/focus-timer">focus timer</NavLink></li>
                   <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/dashboard">dashboard</NavLink>: <></>}</li>
-                  <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/settings">settings</NavLink>: <></>}</li>
+                  <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/settings">settings</NavLink>: <NavLink to="/guest-settings">settings</NavLink>}</li>
                   <li onClick={this.closeNav}>{this.state.user ? <></> : <NavLink to="/login">log in</NavLink>}</li>
                   
               </ul>
@@ -192,9 +235,11 @@ class App extends Component {
             {/*<Route path="/planner" component={()=> <Planner user={this.state.user}/>}/>*/}
             <Route path="/calendar" component={()=> <Calendar/>}/>
             <Route path="/dashboard" component={()=> <Dashboard/>}/>
-            <Route path="/settings" component={()=> <Settings user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
+            <Route path="/settings" component={()=> <Settings origin='returning' user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
+            <Route path="/guest-settings" component={()=> <Settings2 origin='guest' theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
             <Route path="/login" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
-            <Route exact path="/" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
+            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
+            <Route exact path="/" component={()=> <Landing hideNav={this.hideNav}/>}/>
             </Switch>
           </div>
         </div>

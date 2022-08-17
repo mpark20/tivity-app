@@ -14,6 +14,7 @@
 body {
   margin: 0;
   font-family: nunito;
+  transition: 0.3s; 
 }
 
 .dark {
@@ -33,9 +34,9 @@ ul {
   
 }
 #navbar {
+  position: fixed;
   top: 0; 
-  width: 20%; 
-  min-height: 100vh;
+  height: 100vh;
   float: left; 
   background-color: #f7f7f7;
   border-bottom: solid 1px;
@@ -80,7 +81,7 @@ a {
     transition: opacity linear 100ms;
   }
 .content {
-  margin: 0 1px 0 0 ;
+  margin: 0 1px 0 20% ;
   z-index: -1;   
 }
 .flex-container {
@@ -174,9 +175,9 @@ button {
   color: black; 
   
 }
-.red  {
+/*.red  {
   color: #ffa1a1;
-}
+}*/
 .red .white {
   background-color: #ededed;
   color: black; 
@@ -261,15 +262,11 @@ input {
   font-family: nunito-l;
   float: none; 
   margin: 10px 0;  
-  width: 90%;
-}
-#breakLength {
-  width: 10%; 
-  margin: 0 0 20px 0; 
-  float: none; 
+  width: 100%;
   background-color: white; 
   color: black; 
 }
+
 .signin {
   width: 250px;
   margin: 50px auto;
@@ -335,9 +332,11 @@ input {
 .page-container h1 {
   margin-bottom: 0; 
 }
-.page-container p {
-  margin-bottom: 20px; 
-  margin-top: 0; 
+
+.subtitle {
+  margin-bottom: 20px;
+  font-size: 12px; 
+  font-style: italic;
 }
 .dash {
   display: flex; 
@@ -438,6 +437,9 @@ p {
   border-radius: 5px; 
   background-color: #f7f7f7;
   transition: opacity linear 500ms; 
+}
+.dark #summary {
+  color: black; 
 }
 .btn-container #new-entry {
   margin: 0; 
@@ -595,14 +597,18 @@ p {
   background-color: #203a4f;
   box-shadow: none;
 }
+
+
+
 @media screen and (max-width: 700px) {
   .nav-container {
-    width: 70%
-  }
-  #navbar {  
-    position: absolute; 
+    width: 100%
   }
   
+  .content {
+    margin: 0 1px 0 0;
+    transition: margin-left linear 300ms;
+  }
   .flex-container {
     display: block; 
   }

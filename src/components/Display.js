@@ -1,6 +1,5 @@
-
 import { getDatabase, ref, set, onValue } from "firebase/database";
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
+import { getAuth, updateProfile, updateEmail } from "@firebase/auth";
 import { useEffect, useState} from "react";
 import Loading from "./Loading"
 
@@ -71,9 +70,16 @@ const Display = (props) => {
                 setTheme(settings[1]); 
             }
             else {
-                setBreakLength(5);
-                setTheme('blue')
-                
+                let loc = localStorage.getItem('theme'); 
+                let loc2 = localStorage.getItem('breakLength');
+                if (loc == null) {
+                    localStorage.setItem('theme', theme);
+                }
+                if (loc2 == null) {
+                    localStorage.setItem('breakLength', breakLength);
+                }
+                setTheme(loc);
+                setBreakLength(loc2);
             }
             resolve(); 
         })
@@ -81,26 +87,6 @@ const Display = (props) => {
         
     }
 
-    /*function snapshotToArray(snapshot) {
-        var settings = [];
-        snapshot.forEach(function(childSnapshot) {
-            var option = childSnapshot.val();
-            settings.push(option);
-        });
-        setBreakLength(settings[0]);
-        dark = settings[1]; 
-        light = settings[2];  
-        console.log(settings); 
-        
-        if (light===true) {
-            body.classList.remove("dark"); 
-            //console.log("light") 
-        }
-        else {
-            body.classList.add("dark");
-            //console.log("dark"); 
-        } 
-    }*/
     function blueMode() {
         //setTheme('blue');
         blue = true;  
@@ -135,32 +121,45 @@ const Display = (props) => {
     
     
     function saveSettings() {
-        
-        if (user) {
-            var bl = document.getElementById("breakLength").value;
-            var th = '';
-            let blueBox = document.getElementById("blueMode");
-            let redBox = document.getElementById('redMode');
-            let darkBox = document.getElementById("darkMode");
+        var dname = document.getElementById("edit-displayName").value;
+        var email = document.getElementById("edit-email").value;
 
-            if (blueBox.checked == true) {
-                th = 'blue'
-            }
-            else if (redBox.checked == true) {
-                th = 'red'
-            }
-            if (darkBox.checked == true) {
-                th = 'dark'
-            }
+        var bl = document.getElementById("breakLength").value;
+        var th = '';
+        let blueBox = document.getElementById("blueMode");
+        let redBox = document.getElementById('redMode');
+        let darkBox = document.getElementById("darkMode");
+
+        if (blueBox.checked == true) {
+            th = 'blue'
+        }
+        else if (redBox.checked == true) {
+            th = 'red'
+        }
+        if (darkBox.checked == true) {
+            th = 'dark'
+        }
+        if (user) {
             var settings = {breakLength: bl, theme: th}
             var node = ref(db, 'users/' + user.uid + '/settings');
             set(node, settings)
-            document.getElementById("save-message").innerHTML = "saved";
-            console.log(settings.breakLength+" "+settings.theme);
-            setBreakLength(bl);
+
+            updateProfile(auth.currentUser, {
+                displayName: dname
+            })
+            updateEmail(auth.currentUser, email)  
+            .then(() => {
+                document.getElementById("save-message").innerHTML = "saved";
+                console.log(user.displayName + ' ' + user.email)
+                window.location.reload(); 
+            })  
+            
+            //console.log(settings.breakLength+" "+settings.theme);
+            //setBreakLength(bl);
         }
         else {
-            document.getElementById("save-message").innerHTML = "please log in to save settings."; 
+            localStorage.setItem('theme', th);
+            localStorage.setItem('breakLength', bl);
         }
     
     }
@@ -195,8 +194,6 @@ const Display = (props) => {
             darkBox.checked = true; 
             body.classList.remove('red');
             body.classList.add("dark");
-           
-            
         }  
          
         
@@ -208,24 +205,26 @@ const Display = (props) => {
     }
     return(
         <div id="display" className="indented">
-            <h3>display</h3>
-            <p style={{marginBottom: "5px"}}>color theme:</p>
+            
+            <h4 style={{marginBottom: "5px"}}>color theme:</h4>
             <form style={{marginBottom: "20px"}}>
                 <div className="checklist">
                 <input type="checkbox" placeholder="blue" onChange={blueMode} className="checklist" id="blueMode" />
-                <label htmlFor="light" style={{fontSize: "14px"}}>blue</label>
+                <label htmlFor="light" style={{fontSize: "14px"}}>cool</label>
                 </div>
                 <div className="checklist">
                 <input type="checkbox" placeholder="red" onChange={redMode} id="redMode"className="checklist" />
-                <label htmlFor="red" style={{fontSize: "14px"}}>red</label>
+                <label htmlFor="red" style={{fontSize: "14px"}}>warm</label>
                 </div>
                 <div className="checklist">
                 <input type="checkbox" placeholder="dark" onChange={darkMode} id="darkMode"className="checklist" />
                 <label htmlFor="dark" style={{fontSize: "14px"}}>dark</label>
                 </div>
             </form>
-            <p style={{marginBottom: "5px"}}>break length (minutes):</p>
-            <input type="number" className="text-field"id="breakLength" defaultValue={breakLength ? breakLength : 5}/>
+            <h4 style={{marginBottom: "5px"}}>break length:</h4>
+            <div style={{fontStyle:'italic', fontSize: '12px'}}>(minutes)</div>
+            <input type="number" className="text-field"id="breakLength" defaultValue={breakLength ? breakLength : 5} style={{width: '10%'}}/>
+            
             <button className="btn" id="saveSettings" onClick={saveSettings} style={{float:"none"}}>save settings</button>
             <div id="save-message" className="message"></div>
         </div> 
