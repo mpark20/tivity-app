@@ -82,7 +82,7 @@ const GoogleCal = ( props ) => {
     function listUpcomingEvents() {
         gapi.client.calendar.events.list({
           'calendarId': 'primary',
-          'timeMin': (new Date(Date.now()-15770000000)).toISOString(),    //starts from the last 6 months
+          'timeMin': (new Date(Date.now()-2629800000)).toISOString(),    //starts from the last month
           'showDeleted': false,
           'singleEvents': true,
           'maxResults': 50,
@@ -98,14 +98,23 @@ const GoogleCal = ( props ) => {
                 for (let i = 0; i < events.length; i++) {
                     var event = events[i];
                     var dateTime = event.start.dateTime;
+                    var summ = event.summary; 
+                    if (summ.indexOf('.') != -1 || summ.indexOf('#') != -1 || summ.indexOf('$') != -1) {
+                        summ = summ.replaceAll('.', ' ').replaceAll('#', ' ').replaceAll('$', ' ');
+                    }
+                    if (summ.indexOf('[') != -1 || summ.indexOf(']') != -1) {
+                        summ = summ.replaceAll('[', ')').replaceAll(']', ')');
+                    }
+                    /*
                     var ms = new Date(dateTime).getTime(); 
                     var now = Date.now(); 
-
+                    */
                     if (dateTime) {
                         var date = dateTime.split('T')[0]; 
                         var time = dateTime.split('T')[1].substring(0,5);
-                        props.addEvent(new Date(date+"T00:00:00").toString(), event.summary, time)
-                        console.log(event.summary)
+                       
+                        props.addEvent(new Date(date+"T00:00:00").toString(), summ, time)
+                        console.log(summ)
                     }
                     else {
                         var date = event.start.date;
@@ -134,7 +143,7 @@ const GoogleCal = ( props ) => {
         <>
             <div id="cal-message"></div>
             <div className="btn-container">
-                <button onClick={handleClientLoad} className="btn" style={{backgroundColor: '#ffa1a1'}} id="gcal">import from Google Calendar</button>
+                <button onClick={handleClientLoad} className="btn" style={{backgroundColor: '#ffa1a1'}} id="gcal">pull from Google Calendar</button>
                 
             </div>
             <a id="event-link"></a>

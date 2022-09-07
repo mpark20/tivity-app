@@ -67,15 +67,21 @@ class App extends Component {
       })
     } else { 
         var loc = localStorage.getItem('theme');
+        var loc2 = localStorage.getItem('breakLength');
         if (loc == null) {
           localStorage.setItem('theme', 'blue')
+        }
+        if (loc2 == null) {
+          localStorage.setItem('breakLength', 5);
         }
         this.setState({
           loading: false,
           user: this.auth.currentUser, 
           theme: loc,
+          breakLength: loc2,
           navOpen: this.state.navOpen,
         })
+        console.log(localStorage.getItem('breakLength'), localStorage.getItem('theme'));
         this.checkTheme();
     }
 
@@ -211,7 +217,7 @@ class App extends Component {
               
               <ul className="nav" style={{display: this.state.navOpen ? 'block' : 'none'}}>
                   {this.state.user ? <li><p style={{color: this.state.theme==='dark' ? 'white': 'black'}}>hello, {this.state.user.displayName}!</p></li> : <></>}
-                  
+                  <li onClick={this.closeNav}>{this.state.user ? <></> : <NavLink exact to="/">home</NavLink>}</li>
                   <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/todo">todo list</NavLink>: <></>}</li>
                   {/*<li>{this.state.user ? <NavLink to="/planner">planner</NavLink>: <></>}</li>*/}
                   <li onClick={this.closeNav}>{this.state.user ? <NavLink to="/calendar">calendar</NavLink>: <></>}</li>

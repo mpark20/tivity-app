@@ -52,26 +52,26 @@ class Timer extends Component {
     this.audio = new Audio(alarm); 
     this.audio.preload = 'auto';
 
-
     onAuthStateChanged(this.auth, (user) => {
       if (this.user) {
         console.log("user!!");
         var node = ref(this.db, "users/" + this.user.uid + "/settings/breakLength");
         onValue(node, (snapshot) => {
             this.setBreakLength(snapshot.val());
-        })
+        });
       }
       else {
-        let b = localStorage.getItem('breakLength');
-        if (b == null) {
+        if (localStorage.getItem('breakLength') == null) {
             localStorage.setItem('breakLength', this.breakLength);
+            console.log(this.breakLength);
         }
-        this.breakLength = b; 
+        this.breakLength = localStorage.getItem('breakLength'); 
       }
     })
     
     
   }
+ 
   setBreakLength(bl) {
     this.breakLength = bl;
     console.log(bl)
@@ -157,7 +157,7 @@ class Timer extends Component {
       //document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
       this.audio.play();
-      this.timer = setInterval(this.tick, 10);
+      this.timer = setInterval(this.tick, 1000);
     } 
   }
   tick() {

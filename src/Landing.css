@@ -1,52 +1,62 @@
 
-/*#navbar {
-    width: 100% !important; 
-    height: auto; 
-    overflow: hidden; 
-}
-.x-icon {
-    display: none !important; 
-}
-.nav {
-    padding: 6px 0
-}
-.nav li {
-    float: right;
-}  
-.nav li a, .nav li p, .logo {
-    display: block;
-    color: #b0b0b0; 
-    text-align: left;
-    padding: 4px 16px;
-}
-.logo {
-    color: black;
-    float: left; 
-}
-.content {
-    margin: 0; 
-}*/
 #welcome {
     display: grid; 
-    grid-template-columns: 1fr 4fr;
-    grid-template-areas: 'words space';
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: 'words opt';
     padding: 5%;
-    font-size: 30px;
+    
+    background-color: rgba(156, 191, 214, 0.2);
+}
+#slogan {
+    grid-area: words;
+    font-size: 40px;
     text-align: right;
     font-style: italic;
-    background-color: rgba(156, 191, 214, 0.2);
+    padding: 5%
+}
+.opt {
+    margin: auto;
+    background-color: white; 
+    padding: 15%;
+    font-size: 12px; 
+    width: 60%;
+    border-radius: 0.5vw;
+
+}
+.opt .btn {
+    margin-top: 5%; 
+    float: none;
+    font-size: 1vw;
+}
+.shadow {
+    box-shadow: 0.25vw 0.25vw 0.25vw #ccc;
 }
 .features {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: "image cap";
+    /*background-color: #f7f7f7;*/
+    width: 90%;
+    margin: 2%; 
 }
 .feat {
+    grid-area: image;
+    display: inherit;
+    box-shadow: 0.5vw 0.5vw 0.5vw #ccc;
+    margin: 0 2%;
+    border-radius: 2%;
     
-    padding: 5%;
+}
+.feat img {
+    width: 100%;
+    border-radius: inherit;
+    /*box-shadow: 0.5vw 0.5vw 0.5vw #ccc;*/
 }
 .desc {
+    grid-area: cap; 
+    margin: auto;
     padding: 5%;
+    font-size: 14px;
 }
 .scrollFade {
     opacity: 1;
@@ -54,16 +64,34 @@
 }
 .scrollFade--hidden {
     opacity: 0.4;
-    padding: 5% 0 0 1%; 
+    margin: 5% 5% 0 0; 
     pointer-events: none;
 }
 .scrollFade--visible {
     opacity: 1;
-    padding: 0;
+    margin: 2%;
     pointer-events: all;
 }
 .scrollFade--animate {
     transition: opacity 0.5s ease-in-out;
-    transition: padding 0.5s ease-in-out;
+    transition: margin 0.5s ease-in-out;
 }
   
+@media screen and (max-width: 1000px) {
+
+    .features {
+        display: block;
+        width: 90%;
+        margin: 2%; 
+    }
+    .feat {
+        display: inherit;
+        box-shadow: 0.5vw 0.5vw 0.5vw #ccc;
+        margin: 0 2%;
+    }
+    
+    .desc {
+        padding: 3%;
+    }
+
+}

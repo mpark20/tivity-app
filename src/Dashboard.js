@@ -91,7 +91,7 @@ const Dashboard = () => {
     <div className='flex-container'>
     <div className="page-container">
       <h1 id="dash-heading" style={{marginBottom: '30px'}}>{user ? user.displayName+"'s dashboard" : "hello user"}</h1>
-      <p id="unlogged" style={{display: user ? 'none' : 'block'}}><NavLink to="/auth" style={{textDecoration: "underline"}}>log in </NavLink>to view your stats</p>
+      <p id="unlogged" style={{display: user ? 'none' : 'block'}}><NavLink to="/login" style={{textDecoration: "underline"}}>log in </NavLink>to view your stats</p>
       <div className="dash">
         <p>total minutes: {mins ? mins.toFixed(1): '--'}</p>
       </div>
