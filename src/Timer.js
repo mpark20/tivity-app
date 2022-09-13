@@ -60,13 +60,13 @@ class Timer extends Component {
             this.setBreakLength(snapshot.val());
         });
       }
-      else {
+      /*else {
         if (localStorage.getItem('breakLength') == null) {
             localStorage.setItem('breakLength', this.breakLength);
             console.log(this.breakLength);
         }
         this.breakLength = localStorage.getItem('breakLength'); 
-      }
+      }*/
     })
     
     

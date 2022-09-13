@@ -21,7 +21,7 @@ const Settings = (props) => {
     <div className="flex-container" > 
     <div className="page-container">  
       <h1>settings</h1>
-      <p class='subtitle'>click the "save settings" button to save your changes</p>
+      <p className='subtitle'>click the "save settings" button to save your changes</p>
       
       <Account/>
       <br/>

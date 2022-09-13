@@ -66,19 +66,19 @@ class App extends Component {
           this.snapshotToArray(snapshot);
       })
     } else { 
-        var loc = localStorage.getItem('theme');
-        var loc2 = localStorage.getItem('breakLength');
-        if (loc == null) {
-          localStorage.setItem('theme', 'blue')
+        if (localStorage.getItem('theme') == null) {
+          localStorage.setItem('theme', 'blue');
+          console.log('test')
         }
-        if (loc2 == null) {
+        if (localStorage.getItem('breakLength') == null) {
           localStorage.setItem('breakLength', 5);
+          console.log('test')
         }
         this.setState({
           loading: false,
           user: this.auth.currentUser, 
-          theme: loc,
-          breakLength: loc2,
+          theme: localStorage.getItem('theme'),
+          breakLength: localStorage.getItem('breakLength'),
           navOpen: this.state.navOpen,
         })
         console.log(localStorage.getItem('breakLength'), localStorage.getItem('theme'));

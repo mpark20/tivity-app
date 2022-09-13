@@ -20,7 +20,6 @@ import darkTheme from './images/theme3.png'
 
 const Home = ( props ) => {
     var fadeElements = document.getElementsByClassName('scrollFade');
-    console.log(props)
     function scrollFade() {
         var viewportBottom = window.scrollY + window.innerHeight;
 
