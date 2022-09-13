@@ -121,9 +121,6 @@ const Display = (props) => {
     
     
     function saveSettings() {
-        var dname = document.getElementById("edit-displayName").value;
-        var email = document.getElementById("edit-email").value;
-
         var bl = document.getElementById("breakLength").value;
         var th = '';
         let blueBox = document.getElementById("blueMode");
@@ -140,6 +137,8 @@ const Display = (props) => {
             th = 'dark'
         }
         if (user) {
+            var dname = document.getElementById("edit-displayName").value;
+            var email = document.getElementById("edit-email").value;
             var settings = {breakLength: bl, theme: th}
             var node = ref(db, 'users/' + user.uid + '/settings');
             set(node, settings)
