@@ -18,7 +18,7 @@ const Planner = (props) => {
         readSavedLists()
         .then((data) => {       //when readSavedLists() resolves, the data is stored in a state variable
             if (isMounted) {
-                console.log(data)
+                //console.log(data)
                 setSavedLists(data);
             } 
         })

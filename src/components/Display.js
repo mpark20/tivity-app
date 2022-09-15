@@ -220,8 +220,8 @@ const Display = (props) => {
                 <label htmlFor="dark" style={{fontSize: "14px"}}>dark</label>
                 </div>
             </form>
-            <h4 style={{marginBottom: "5px"}}>break length:</h4>
-            <div style={{fontStyle:'italic', fontSize: '12px'}}>(minutes)</div>
+            <h4 style={{marginBottom: "5px", display: "inline"}}>break length:</h4>
+            <p style={{fontStyle:'italic', fontSize: '12px'}}>(minutes)</p>
             <input type="number" className="text-field"id="breakLength" defaultValue={breakLength ? breakLength : 5} style={{width: '10%'}}/>
             
             <button className="btn" id="saveSettings" onClick={saveSettings} style={{float:"none"}}>save settings</button>

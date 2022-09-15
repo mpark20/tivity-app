@@ -5,6 +5,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 import "./firebase";
 import Loading from "./components/Loading";
+import Bar from "./components/Bar";
 
 const Dashboard = () => {
   const auth = getAuth();
@@ -92,7 +93,9 @@ const Dashboard = () => {
     <div className="page-container">
       <h1 id="dash-heading" style={{marginBottom: '30px'}}>{user ? user.displayName+"'s dashboard" : "hello user"}</h1>
       <p id="unlogged" style={{display: user ? 'none' : 'block'}}><NavLink to="/login" style={{textDecoration: "underline"}}>log in </NavLink>to view your stats</p>
-      <div className="dash">
+      <Bar totalMin={mins ? mins.toFixed(1): 0} avgMin={mins && sessions && mins!=0 ? (mins/sessions).toFixed(1): 0} sessions={sessions ? sessions: 0}/>
+      
+      {/*<div className="dash">
         <p>total minutes: {mins ? mins.toFixed(1): '--'}</p>
       </div>
       <div className="dash">
@@ -100,7 +103,7 @@ const Dashboard = () => {
       </div>
       <div className="dash">
         <p>average minutes per session: {mins && sessions && mins!=0 ? (mins/sessions).toFixed(1): '--'}</p>
-      </div>
+  </div>*/}
       
     </div>
     </div>

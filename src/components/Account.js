@@ -13,9 +13,13 @@ const Account = ( props ) => {
     const [loading, setLoadingState] = useState(true);
     //add user as a state variable?
     useEffect(()=> {
+        let isMounted = true; 
         setFields()
         .then(() => {
-            setLoadingState(false);
+            if (isMounted) {
+                setLoadingState(false);
+            }
+            
         })
         /*const timer = setTimeout(() => {
             setFields(); 
@@ -24,15 +28,16 @@ const Account = ( props ) => {
         return() => {
             clearTimeout(timer); 
         }*/
+        return() => {isMounted = false;}
     }, []);
 
     onAuthStateChanged(auth, (user) => {
         if (user) { 
-            console.log("user!"); 
+            //console.log("user!"); 
             tempUserInfo = {dn:user.displayName, email:user.email, uid:user.uid};
             
         } else { 
-            console.log("no user"); 
+            //console.log("no user"); 
         }
     });
     

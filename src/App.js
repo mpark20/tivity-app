@@ -20,6 +20,8 @@ import Loading from "./components/Loading"
 import { getDatabase, ref, onValue } from "firebase/database";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Logout from "./components/Logout";
+import "@progress/kendo-theme-material/dist/all.css";
+import "hammerjs";
 
 class App extends Component {
   constructor(props) {
