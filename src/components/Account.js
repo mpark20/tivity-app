@@ -82,7 +82,8 @@ const Account = ( props ) => {
         .then(() => {
             signOut(auth).then(() => {
                 console.log("account deleted")
-                window.location.reload(); 
+                //window.location.reload(); 
+                window.location.href = '#/home'; 
             }).catch((error) => {
                 console.log(error); 
             });

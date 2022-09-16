@@ -53,7 +53,7 @@ const Home = ( props ) => {
         scrollFade();
     });
     return(
-        <div style={{backgroundColor: '#f9f9f9'}}> 
+        <div > 
             
             <section id='welcome'>
                 <div id='slogan'>
@@ -99,8 +99,8 @@ const Home = ( props ) => {
             <section  style={{width: "90%", margin: '3%'}}>
                 <h2>the pomodoro method...</h2>
                 <p>
-                        is a popular time-management technique that breaks work periods into 25-minute sessions 
-                        followed by 5-minute breaks. The <i>tivity</i> focus timer uses this strategy to help users 
+                        A popular time-management technique that breaks work periods into 25-minute sessions 
+                        followed by 5-minute break: the <i>tivity</i> focus timer uses this strategy to help users 
                         lead productive study sessions.
                 </p>
                 <br/>

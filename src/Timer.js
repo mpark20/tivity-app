@@ -81,7 +81,7 @@ class Timer extends Component {
     return doubleDigit; 
   }
   handleKeyPress = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !document.getElementById('add-task').classList.contains('inactive')) {
       this.addTask();  
     }
   };
@@ -116,6 +116,8 @@ class Timer extends Component {
     this.pauses = 0;   
     document.getElementsByClassName("timer-container")[0].removeAttribute("id"); 
     document.getElementById("summary").style.opacity = "0";
+    document.getElementById('add-task').classList.remove('inactive')
+    document.getElementById('task').classList.remove('inactive')
   }
   deleteTask(id) {
     const tasks = this.state.tasks;
@@ -157,6 +159,9 @@ class Timer extends Component {
       //document.getElementsByClassName("timer-container")[0].setAttribute("id", "myDIV");
       this.totalTime += 1; 
       this.audio.play();
+      document.getElementById('start-btn').classList.add('inactive');
+      document.getElementById('add-task').classList.add('inactive')
+      document.getElementById('task').classList.add('inactive')
       this.timer = setInterval(this.tick, 10);
     } 
   }
@@ -266,10 +271,13 @@ class Timer extends Component {
     clearInterval(this.timer); 
     document.getElementById("pause").style.display = "";
     document.getElementById("resume").style.display = "none";
+    document.getElementById('start-btn').classList.remove('inactive');
+    document.getElementById('add-task').classList.remove('inactive')
+    document.getElementById('task').classList.remove('inactive')
     document.getElementsByClassName("timer-container")[0].removeAttribute("id");
     this.totalTime = 0;
     this.pauses = 0; 
-     
+    
   }
   changeBreakOption() {
     this.insertBreaks = !this.insertBreaks;

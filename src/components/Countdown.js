@@ -6,7 +6,7 @@ const Countdown = (props) => {
         return (
             <div>
                 <div className="btn-container">
-                    <button onClick={props.startTimer} className="btn">start</button>
+                    <button onClick={props.startTimer} className="btn" id='start-btn'>start</button>
                     <button onClick={props.pauseTimer} className="btn" id="pause">pause</button>
                     <button onClick={props.resumeTimer} className="btn" style={{display: "none"}} id="resume">resume</button>
                     <button onClick={props.clearTimer} className="btn">reset</button>
@@ -20,7 +20,7 @@ const Countdown = (props) => {
         return (
             <>
                 <div className="btn-container" style={{opacity: "0.7"}}>
-                    <button className="btn inactive">start</button>
+                    <button className="btn inactive" id='start-btn'>start</button>
                     <button className="btn inactive" id="pause">pause</button>
                     <button className="btn inactive" style={{display: "none"}} id="resume">resume</button>
                     <button className="btn inactive">reset</button>
