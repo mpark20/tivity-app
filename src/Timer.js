@@ -15,7 +15,7 @@ class Timer extends Component {
     super(props); 
     this.state = {
       tasks: [],
-      timeLeft: {h:"00", m:"00", s:"00"},
+      timeLeft: {h:"00", m:"00", s:"00"}
     } 
     this.totalTime = 0; 
     this.updateStats = this.updateStats.bind(this); 
@@ -28,6 +28,7 @@ class Timer extends Component {
     this.startTimer = this.startTimer.bind(this);
     this.intervals = 0;
     this.timer = 0;
+    this.sessionLength = props.sessionLength ? props.sessionLength : 25; 
     this.breakLength = props.breakLength ? props.breakLength : 5; 
     this.isBreak = false; 
     this.insertBreaks = true;
@@ -39,7 +40,9 @@ class Timer extends Component {
     this.resumeTimer = this.resumeTimer.bind(this);
     this.clearTimer = this.clearTimer.bind(this);
     this.saveList = this.saveList.bind(this);
+
     this.setBreakLength = this.setBreakLength.bind(this);
+    this.setSessionLength = this.setSessionLength.bind(this);
     this.nameList = this.nameList.bind(this);
     this.listName = ""; 
     this.cancelSaveList = this.cancelSaveList.bind(this);
@@ -54,19 +57,18 @@ class Timer extends Component {
 
     onAuthStateChanged(this.auth, (user) => {
       if (this.user) {
-        console.log("user!!");
-        var node = ref(this.db, "users/" + this.user.uid + "/settings/breakLength");
-        onValue(node, (snapshot) => {
+        var node1 = ref(this.db, "users/" + this.user.uid + "/settings/breakLength");
+        onValue(node1, (snapshot) => {
             this.setBreakLength(snapshot.val());
+            
+        });
+        var node2 = ref(this.db, "users/" + this.user.uid + "/settings/sessionLength");
+        onValue(node2, (snapshot) => {
+            this.setSessionLength(snapshot.val());
+            
         });
       }
-      /*else {
-        if (localStorage.getItem('breakLength') == null) {
-            localStorage.setItem('breakLength', this.breakLength);
-            console.log(this.breakLength);
-        }
-        this.breakLength = localStorage.getItem('breakLength'); 
-      }*/
+      
     })
     
     
@@ -75,6 +77,10 @@ class Timer extends Component {
   setBreakLength(bl) {
     this.breakLength = bl;
     console.log(bl)
+  }
+  setSessionLength(sl) {
+    this.sessionLength = sl; 
+    console.log(sl);
   }
   formatted(num) {
     var doubleDigit = ("0" + num).slice(-2);
@@ -102,7 +108,7 @@ class Timer extends Component {
       }); 
 
       document.getElementById("task").value = "";
-      document.getElementById("time").value = 25;
+      document.getElementById("time").value = this.sessionLength;
     }
     
   }
@@ -162,7 +168,7 @@ class Timer extends Component {
       document.getElementById('start-btn').classList.add('inactive');
       document.getElementById('add-task').classList.add('inactive')
       document.getElementById('task').classList.add('inactive')
-      this.timer = setInterval(this.tick, 10);
+      this.timer = setInterval(this.tick, 1000);
     } 
   }
   tick() {
@@ -255,7 +261,7 @@ class Timer extends Component {
     this.updateStats(this.totalTime); 
   }
   resumeTimer() {
-    this.timer = setInterval(this.tick, 10);
+    this.timer = setInterval(this.tick, 1000);
     document.getElementById("resume").style.display = "none";
     document.getElementById("pause").style.display = "block";
   }
@@ -382,7 +388,7 @@ class Timer extends Component {
               </div>
               <form autoComplete="off"> 
                   <input type="text" placeholder="task name..." id="task" required />
-                  <input type="number" step={5} placeholder="minutes" id="time" required defaultValue={25}/>
+                  <input type="number" step={5} placeholder="minutes" id="time" required defaultValue={this.sessionLength}/>
               </form>
               <br/><br/>
               <div className="btn-container">

@@ -221,7 +221,7 @@ const TodoList = (props) => {
               var item = childSnapshot.val();
               item.key = childSnapshot.key; 
               var ms = new Date(item.date).getTime(); 
-              if ((ms-now) >= 0 && (ms-now) < 1209600000) {
+              if ((ms-now) >= 0 && (ms-now) < 604800000) {
                 recents.push(item); 
               }
           })
@@ -320,6 +320,7 @@ const TodoList = (props) => {
           </div>
 
           <h2>upcoming events</h2>
+          <p className='subtitle'>your events for the next 7 days:</p>
           <Upcoming events={recentEvents}/>
         </div> 
         

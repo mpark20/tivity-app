@@ -117,15 +117,27 @@ const Calendar = () => {
     function showAddEvent(index) {
         document.getElementsByClassName('add-event')[index].style.display = 'block';
         closeList(index); 
+        let calboxes = document.getElementsByClassName('cal-box');
+        for (let i=0; i<calboxes.length; i++) {
+            calboxes[i].classList.add('inactive');
+        }
     }
 
     function closeAddEvent(index) {
         document.getElementsByClassName('add-event')[index].style.display = 'none';
         document.getElementsByClassName('events-list')[index].style.display = 'none';
+        let calboxes = document.getElementsByClassName('cal-box');
+        for (let i=0; i<calboxes.length; i++) {
+            calboxes[i].classList.remove('inactive');
+        }
         
     }
     function closeList(index) {
         document.getElementsByClassName('events-list')[index].style.display = 'none';
+        let calboxes = document.getElementsByClassName('cal-box');
+        for (let i=0; i<calboxes.length; i++) {
+            calboxes[i].classList.remove('inactive');
+        }
     }
     function addEvent(day, n, t) {
         //var d = day.key; 
@@ -142,7 +154,7 @@ const Calendar = () => {
             else {
                 var dt = day;
             }
-            console.log(dt);
+            //console.log(dt);
             var node = ref(db, 'users/' + user.uid + '/events/'+n+'_'+new Date(dt).getTime()) 
             set(node, ev)
             setEvents(readSavedEvents()) //rereads events since the database has been updated
@@ -156,14 +168,18 @@ const Calendar = () => {
         
     }
     function deleteEvent(key) {
-        console.log('remove ' + key);
+        //console.log('remove ' + key);
         setEvents(events.filter((item) => item.key !== key));
         var node = ref(db, "users/" + user.uid + "/events/" + key); 
         remove(node);
     }
     function showEvents(index) {
         if (document.getElementsByClassName('add-event')[index].style.display !== 'block') {
-             document.getElementsByClassName('events-list')[index].style.display = 'block';
+            document.getElementsByClassName('events-list')[index].style.display = 'block';
+            let calboxes = document.getElementsByClassName('cal-box');
+            for (let i=0; i<calboxes.length; i++) {
+                calboxes[i].classList.add('inactive');
+            }
         }
         
          
@@ -193,19 +209,27 @@ const Calendar = () => {
         }
         return(
             <div  key={day.key+"_eventList"}>
-                <h4 key={day.key+"_eventsList1"}>{day.key.toLocaleDateString()}</h4>
-                {list.map((item, i)=>(
+                <h3>{day.key.toLocaleDateString()}</h3>
+                {list.slice(0).reverse().map((item, i)=>(
                     <div key={day.key+"_"+i}>
                         
-                        <button key={day.key + "_x"} className="x-btn" onClick={() => deleteEvent(item.key)}>x</button>
-                        <div key={day.key+'_name'} className='event-title'>{item.time}{' '}{item.key.substring(0, item.key.indexOf('_'))}</div>
+                        
+                        <div className='event-title'>
+                            <button className="x-btn" style={{gridArea:'x'}} onClick={() => deleteEvent(item.key)}>x</button>
+                            <div style={{gridArea:'title'}}>{item.key.substring(0, item.key.indexOf('_'))}</div>
+                            <div style={{gridArea:'time'}}>{item.time}</div>
+                        </div>
                         
                     </div>
                 ))}
             </div>
         )
     }
-  
+    if (loading) {
+        return(
+            <Loading/>
+        )
+    }
     return(
         <div className='flex-container'>
         <div className="page-container">
@@ -227,6 +251,7 @@ const Calendar = () => {
             <div className="weekday">fri</div>
             <div className="weekday">sat</div>
             
+            
             {days.map((day, index) => (
                 <div key={day.key} style={{position:'relative'}}>
                     <div key={day.key+'box'} className="cal-box" onClick={() => showEvents(index)}>
@@ -242,6 +267,7 @@ const Calendar = () => {
                     <Day day={day} index={index} close={() => closeAddEvent(index)} add={addEvent}/>
                 </div>
             ))}
+            
             </div>
             
         </div>

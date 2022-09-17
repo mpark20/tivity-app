@@ -3,13 +3,14 @@ import { getAuth, updateProfile, updateEmail } from "@firebase/auth";
 import { useEffect, useState} from "react";
 import Loading from "./Loading"
 
-const Display = (props) => {
+const FunctionSettings = (props) => {
     const db = getDatabase();  
     const auth = getAuth(); 
     const body = document.querySelector("body");
     const [loading, setLoadingState] = useState(true);
     const [theme, setTheme] = useState(props.theme); 
     const [breakLength, setBreakLength] = useState(props.breakLength); 
+    const [sessionLength, setSessionLength] = useState(props.sessionLength);
     const [user, setUser] = useState(auth.currentUser);
    
     var blue = false; 
@@ -36,23 +37,19 @@ const Display = (props) => {
     
      
     useEffect(() => {
-        /*const timer = setTimeout(()=> {
-                        setLoadingState(false);
-                        readSettings(); 
-                        fillValues();
-                        setUser(auth.currentUser)
-                    }, 1000); 
-        return() => {
-            clearTimeout(timer)
-        }*/
+        let isMounted = true;
+        
         setUser(auth.currentUser); 
         readSettings()
         .then(() => {
-            console.log(theme+" "+breakLength);
-            setLoadingState(false);
-            fillValues();
+            if (isMounted) {
+                //console.log(theme+" "+breakLength);
+                setLoadingState(false);
+                fillValues();
+            }
         })
-    }, [breakLength, theme]); 
+        return() => {isMounted = false; }
+    }, [sessionLength, breakLength, theme]); 
 
 
     function readSettings() {
@@ -66,20 +63,26 @@ const Display = (props) => {
                         settings.push(option);
                     });
                 })
-                setBreakLength(parseInt(settings[0]));
-                setTheme(settings[1]); 
+                setBreakLength(parseInt(settings[0]))
+                setSessionLength(parseInt(settings[1]));
+                setTheme(settings[2]); 
             }
             else {
                 let loc = localStorage.getItem('theme'); 
                 let loc2 = localStorage.getItem('breakLength');
+                let loc3 = localStorage.getItem('sessionLength');
                 if (loc == null) {
                     localStorage.setItem('theme', theme);
                 }
                 if (loc2 == null) {
                     localStorage.setItem('breakLength', breakLength);
                 }
+                if (loc3 == null) {
+                    localStorage.setItem('sessionLength', sessionLength);
+                }
                 setTheme(loc);
                 setBreakLength(loc2);
+                setSessionLength(loc3)
             }
             resolve(); 
         })
@@ -88,6 +91,7 @@ const Display = (props) => {
     }
 
     function blueMode() {
+        
         //setTheme('blue');
         blue = true;  
         red = false; 
@@ -121,6 +125,8 @@ const Display = (props) => {
     
     
     function saveSettings() {
+        document.getElementById('settings').classList.add('inactive');
+        var sl = document.getElementById("sessionLength").value;
         var bl = document.getElementById("breakLength").value;
         var th = '';
         let blueBox = document.getElementById("blueMode");
@@ -137,9 +143,10 @@ const Display = (props) => {
             th = 'dark'
         }
         if (user) {
+            
             var dname = document.getElementById("edit-displayName").value;
             var email = document.getElementById("edit-email").value;
-            var settings = {breakLength: bl, theme: th}
+            var settings = {sessionLength: sl, breakLength: bl, theme: th}
             var node = ref(db, 'users/' + user.uid + '/settings');
             set(node, settings)
 
@@ -148,19 +155,24 @@ const Display = (props) => {
             })
             updateEmail(auth.currentUser, email)  
             .then(() => {
-                document.getElementById("save-message").innerHTML = "saved";
+                
                 console.log(user.displayName + ' ' + user.email)
-                window.location.reload(); 
+                //window.location.reload(); 
             })  
             
             //console.log(settings.breakLength+" "+settings.theme);
             //setBreakLength(bl);
+            
         }
         else {
             localStorage.setItem('theme', th);
             localStorage.setItem('breakLength', bl);
+            localStorage.setItem('sessionLength', sl);
         }
-    
+        setTimeout(() => {document.getElementById('settings').classList.remove('inactive')}, 1000)
+        window.location.reload()
+        //document.getElementById("save-message").innerHTML = "saved";
+        //setTimeout(() => {document.getElementById("save-message").innerHTML = ""}, 1000)
     }
     function fillValues() { 
         /*if (breakLength) {
@@ -205,6 +217,14 @@ const Display = (props) => {
     return(
         <div id="display" className="indented">
             
+            <h4 style={{marginBottom: "5px"}}>session length:</h4>
+            <p style={{fontStyle:'italic', fontSize: '12px'}}>(minutes)</p>
+            <input type="number" className="text-field"id="sessionLength" defaultValue={sessionLength ? sessionLength : 25} style={{width: '10%'}}/>
+
+            <h4 style={{marginBottom: "5px"}}>break length:</h4>
+            <p style={{fontStyle:'italic', fontSize: '12px'}}>(minutes)</p>
+            <input type="number" className="text-field"id="breakLength" defaultValue={breakLength ? breakLength : 5} style={{width: '10%'}}/>
+
             <h4 style={{marginBottom: "5px"}}>color theme:</h4>
             <form style={{marginBottom: "20px"}}>
                 <div className="checklist">
@@ -220,14 +240,13 @@ const Display = (props) => {
                 <label htmlFor="dark" style={{fontSize: "14px"}}>dark</label>
                 </div>
             </form>
-            <h4 style={{marginBottom: "5px", display: "inline"}}>break length:</h4>
-            <p style={{fontStyle:'italic', fontSize: '12px'}}>(minutes)</p>
-            <input type="number" className="text-field"id="breakLength" defaultValue={breakLength ? breakLength : 5} style={{width: '10%'}}/>
-            
+
             <button className="btn" id="saveSettings" onClick={saveSettings} style={{float:"none"}}>save settings</button>
             <div id="save-message" className="message"></div>
+
+            
         </div> 
     );
     
 }
-export default Display
+export default FunctionSettings;

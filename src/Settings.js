@@ -1,8 +1,6 @@
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import './App.css';
-import Account from "./components/Account";
-import Display from "./components/Display";
-import { useEffect } from "react";
+import { getAuth } from "firebase/auth";
+import AccountSettings from "./components/AccountSettings";
+import FunctionSettings from "./components/FunctionSettings";
 
 const Settings = (props) => {
   const auth = getAuth();
@@ -19,13 +17,13 @@ const Settings = (props) => {
 
   return (
     <div className="flex-container" > 
-    <div className="page-container">  
+    <div className="page-container" id='settings'>  
       <h1>settings</h1>
       <p className='subtitle'>click the "save settings" button to save your changes</p>
       
-      <Account/>
+      <AccountSettings/>
       <br/>
-      <Display light={props.light} breakLength={props.breakLength} origin={'returning'}/>
+      <FunctionSettings light={props.light} breakLength={props.breakLength} origin={'returning'}/>
     </div>
     </div>
   )

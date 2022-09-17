@@ -3,7 +3,7 @@ import { getAuth, deleteUser, reauthenticateWithCredential, reauthenticateWithPo
 import { getDatabase, ref, remove } from "firebase/database";
 import Loading from './Loading';
 
-const Account = ( props ) => {
+const AccountSettings = () => {
     const auth = getAuth(); 
     const user = auth.currentUser; 
     const db = getDatabase(); 
@@ -14,9 +14,11 @@ const Account = ( props ) => {
     //add user as a state variable?
     useEffect(()=> {
         let isMounted = true; 
-        setFields()
+        //setFields()
+        getUserInfo()
         .then(() => {
             if (isMounted) {
+                setUserInfo(tempUserInfo);
                 setLoadingState(false);
             }
             
@@ -31,7 +33,7 @@ const Account = ( props ) => {
         return() => {isMounted = false;}
     }, []);
 
-    onAuthStateChanged(auth, (user) => {
+    /*onAuthStateChanged(auth, (user) => {
         if (user) { 
             //console.log("user!"); 
             tempUserInfo = {dn:user.displayName, email:user.email, uid:user.uid};
@@ -39,15 +41,21 @@ const Account = ( props ) => {
         } else { 
             //console.log("no user"); 
         }
-    });
-    
-    function setFields() {   
+    });*/
+    function getUserInfo() {
         return new Promise((resolve, reject) => {
-            setUserInfo(tempUserInfo);
-            resolve(); 
+            if (user) { 
+                //console.log("user!"); 
+                tempUserInfo = {dn:user.displayName, email:user.email, uid:user.uid};
+                
+            } else { 
+                //console.log("no user"); 
+            }
+            resolve();
         })
-       
+        
     }
+    
     function toggleShowReauth() {
         const ra = document.getElementById("reauthenticate")
         if (user) {
@@ -110,4 +118,4 @@ const Account = ( props ) => {
         </div> 
     )  
 }
-export default Account; 
+export default AccountSettings; 

@@ -43,9 +43,7 @@ class App extends Component {
       navOpen: true,
     }
     
-    onAuthStateChanged(getAuth(), (user) => {
-      this.updateUser();
-    })
+    
   }
   componentDidMount() {
     this.timer = setTimeout(this.updateUser, 1000);
@@ -70,20 +68,22 @@ class App extends Component {
     } else { 
         if (localStorage.getItem('theme') == null) {
           localStorage.setItem('theme', 'blue');
-          console.log('test')
         }
         if (localStorage.getItem('breakLength') == null) {
           localStorage.setItem('breakLength', 5);
-          console.log('test')
+        }
+        if (localStorage.getItem('sessionLength') == null) {
+          localStorage.setItem('sessionLength', 25);
         }
         this.setState({
           loading: false,
           user: this.auth.currentUser, 
           theme: localStorage.getItem('theme'),
           breakLength: localStorage.getItem('breakLength'),
+          sessionLength: localStorage.getItem('sessionLength'),
           navOpen: this.state.navOpen,
         })
-        console.log(localStorage.getItem('breakLength'), localStorage.getItem('theme'));
+        console.log(localStorage.getItem('breakLength'), localStorage.getItem('theme'), localStorage.getItem('sessionLength'));
         this.checkTheme();
     }
 
@@ -100,8 +100,9 @@ class App extends Component {
     this.setState({
       loading: false,
       user: this.auth.currentUser,
-      theme: settings[1],
       breakLength: parseInt(settings[0]),
+      sessionLength: parseInt(settings[1]),
+      theme: settings[2],
       navOpen: this.state.navOpen,
     })
     this.checkTheme(); 
@@ -133,6 +134,7 @@ class App extends Component {
         user: null,
         theme: this.state.theme,
         breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
         navOpen: this.state.navOpen,
       })
       document.querySelector("body").classList.remove("dark");
@@ -150,6 +152,7 @@ class App extends Component {
         user: this.auth.currentUser,
         theme: this.state.theme,
         breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
         navOpen: false,
       })
       if (window.innerWidth > 700) {
@@ -165,6 +168,7 @@ class App extends Component {
         user: this.auth.currentUser,
         theme: this.state.theme,
         breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
         navOpen: true,
       })
       if (window.innerWidth > 700) {
@@ -183,6 +187,7 @@ class App extends Component {
         user: this.auth.currentUser,
         theme: this.state.theme,
         breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
         navOpen: false,
       })
     }
@@ -194,6 +199,7 @@ class App extends Component {
       user: this.auth.currentUser,
       theme: this.state.theme,
       breakLength: this.state.breakLength,
+      sessionLength: this.state.sessionLength,
       navOpen: false,
     })
     
@@ -243,10 +249,10 @@ class App extends Component {
             {/*<Route path="/planner" component={()=> <Planner user={this.state.user}/>}/>*/}
             <Route path="/calendar" component={()=> <Calendar/>}/>
             <Route path="/dashboard" component={()=> <Dashboard/>}/>
-            <Route path="/settings" component={()=> <Settings origin='returning' user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
-            <Route path="/guest-settings" component={()=> <Settings2 origin='guest' theme={this.state.theme} breakLength={this.state.breakLength}/>}/>
+            <Route path="/settings" component={()=> <Settings origin='returning' user={this.state.user} theme={this.state.theme} breakLength={this.state.breakLength} sessionLength={this.state.sessionLength}/>}/>
+            <Route path="/guest-settings" component={()=> <Settings2 origin='guest' theme={this.state.theme} breakLength={this.state.breakLength} sessionLength={this.state.sessionLength}/>}/>
             <Route path="/login" component={()=> <SignIn user={this.state.user} light={this.light}/>}/>
-            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} />}/>
+            <Route path="/focus-timer" component={()=> <Timer user={this.state.user} breakLength={this.state.breakLength} sessionLength={this.state.sessionLength}/>}/>
             <Route exact path="/" component={()=> <Landing hideNav={this.hideNav}/>}/>
             </Switch>
           </div>

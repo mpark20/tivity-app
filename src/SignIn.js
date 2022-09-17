@@ -53,7 +53,7 @@ const SignIn = (props) => {
         displayName: uname,
         email: email,
         savedLists: "",
-        settings: {lightMode: "true", darkMode: "false", breakLength: "5"}, 
+        settings: {sessionLength: 25, breakLength: 5, theme: 'blue'}, 
         stats: {minutes: 0, sessions: 0}
       });
       
@@ -103,7 +103,7 @@ const SignIn = (props) => {
             displayName: user.displayName,
             email: user.email,
             savedLists: "",
-            settings: {lightMode: true, darkMode: false, breakLength: "5"}
+            settings: {sessionLength: 25, breakLength: 5, theme: 'blue'}
           });
         }
         else {

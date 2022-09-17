@@ -329,7 +329,7 @@ input {
   width: 70%; 
   margin: 20px auto; 
 }
-.page-container h1 {
+.page-container h1, h2 {
   margin-bottom: 0; 
 }
 
@@ -544,27 +544,25 @@ p {
   position: absolute; 
   box-shadow: 0px 0px 5px 0px grey;
   padding: 1% 2%;
-  font-style: italic;
 }
 .dark .events-list {
   background-color: #142533;
 }
 .event-title {
-  display: block; 
+  display: grid;
+  grid-template-areas:
+    "x time"
+    "x title";
+  grid-template-rows: 16px 1fr;
+  grid-template-columns: 20px 1fr;
   margin: 10px 0;
+  background-color: #f5f5f5;
+  padding: 2%;
+  border-radius: 5px;
+  font-size: 12px;
 }
-.web-player {
-  margin: 5% 1%; 
-  padding: 10px; 
-  border: 2px black;
-  border-radius: 2px;  
-  box-shadow: 1px 1px 4px 1px grey; 
-  width: 90%; 
-  overflow: hidden;
-}
-.dark .web-player {
-  background-color: #142533;
-  box-shadow: none;
+.split .event-title {
+  display: block;
 }
 .x-icon {
   color: #b0b0b0; 
