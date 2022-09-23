@@ -547,6 +547,7 @@ p {
 }
 .dark .events-list {
   background-color: #142533;
+  box-shadow: none; 
 }
 .event-title {
   display: grid;
@@ -560,6 +561,9 @@ p {
   padding: 2%;
   border-radius: 5px;
   font-size: 12px;
+}
+.dark .event-title {
+  color: black; 
 }
 .split .event-title {
   display: block;

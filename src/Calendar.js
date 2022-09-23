@@ -235,12 +235,16 @@ const Calendar = () => {
         <div className="page-container">
             
             <h2>{currMonth} {year}</h2>
+            <p className='subtitle' style={{marginBottom: '0'}}>hover and click the "+" to add an event</p>
+            <p className='subtitle' >click on a day to view its events: if a date is red, you have an event scheduled!</p>
             <GoogleCal addEvent={addEvent}/>
+            
             <div className='btn-container'>
                 <button className='btn' onClick={()=>{setMonth(dt.getMonth()+1)}}>today</button>
                 <button className='btn white' onClick={prevMonth}>prev</button>
                 <button className='btn white' onClick={nextMonth}>next</button>
             </div>
+            
             <div>
              
             <div className="weekday">sun</div>

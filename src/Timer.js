@@ -124,6 +124,7 @@ class Timer extends Component {
     document.getElementById("summary").style.opacity = "0";
     document.getElementById('add-task').classList.remove('inactive')
     document.getElementById('task').classList.remove('inactive')
+    document.getElementById('navbar').classList.remove('inactive')
   }
   deleteTask(id) {
     const tasks = this.state.tasks;
@@ -132,7 +133,7 @@ class Timer extends Component {
         tasks: tasks.filter((task) => task.id !== id),
       });
     }
-    console.log("removed task id: "+id);
+    //console.log("removed task id: "+id);
     
   }
   updateStats(t) { //runs every time the timer reaches zero
@@ -142,6 +143,7 @@ class Timer extends Component {
       onValue(node1, (snapshot) => {
         if (snapshot.val()) {
           min = snapshot.val() + min; //adds current value to new value
+          console.log(min);
         }
       }) 
       console.log(t/60);
@@ -168,6 +170,7 @@ class Timer extends Component {
       document.getElementById('start-btn').classList.add('inactive');
       document.getElementById('add-task').classList.add('inactive')
       document.getElementById('task').classList.add('inactive')
+      document.getElementById('navbar').classList.add('inactive')
       this.timer = setInterval(this.tick, 1000);
     } 
   }
@@ -280,6 +283,7 @@ class Timer extends Component {
     document.getElementById('start-btn').classList.remove('inactive');
     document.getElementById('add-task').classList.remove('inactive')
     document.getElementById('task').classList.remove('inactive')
+    document.getElementById('navbar').classList.remove('inactive')
     document.getElementsByClassName("timer-container")[0].removeAttribute("id");
     this.totalTime = 0;
     this.pauses = 0; 

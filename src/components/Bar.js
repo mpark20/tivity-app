@@ -13,7 +13,7 @@ import {
   // Graph data
   
   
-  const categories = ["total (min)", "average per session (min)", "# of sessions"];
+  const categories = ["total (min)", "average per session (min)", "# of completed sessions"];
   
   const seriesLabels = {
     visible: true,

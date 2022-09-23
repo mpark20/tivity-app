@@ -42,7 +42,10 @@ class App extends Component {
       theme: 'blue',
       navOpen: true,
     }
-    
+    onAuthStateChanged(getAuth(), (user) => {
+      this.updateUser(); 
+      console.log('user changed')
+    })
     
   }
   componentDidMount() {
